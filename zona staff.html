@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="zona staff.css">
+    <title>Mozos orden</title>
+</head>
+<body>
+
+    <div class="principal">
+       <div class="menu">
+          <nav>
+            <ul>
+                <li><a href="inicio.html">Inicio</a></li>
+                <li><a href="redes y pagos.html">Redes y pagos</a></li>
+                <li><a href="reservas.html">Reservas</a></li>
+                <li><a href="zona staff.html">Mozos orden</a></li>
+            </ul>
+          </nav>
+        </div>
+    <div class="contenido">
+        <div class="barra-busqueda">
+              <input type="text" placeholder="Buscar...">
+             <button><i class="fa-solid fa-magnifying-glass"></i>
+               </button>
+        </div>
+
+        <form class="formulario">
+            <h2>Ordenes</h2>
+            <label for="pedido">Nombre del pedido</label>
+            <input type="text" id="pedido" name="pedido" placeholder="Nombre del pedido" required>
+            
+            <label for="bebida">bebidas</label>
+            <input type="text" id="bebida" name="bebida" placeholder="Bebidas">
+            
+            <label for="postre">postre</label>
+            <input type="text" id="postre" name="postre" placeholder="Postre">
+
+            <label for="extra">extras</label>
+            <input type="text" id="extra" name="extra" placeholder="Extras">
+
+            <label for="exclusiones">exclusiones</label>
+            <input type="text" id="exclusiones" name="exclusiones" placeholder="Exclusiones">
+
+            <label for="mesa">mesa</label>
+            <input type="number" id="mesa" name="mesa" placeholder="Numero de mesa" required>
+
+            <button type="submit" class="subir-pedido">Confirmar</button>
+            
+        </form>
+
+    </div>
+</div>
+
+</body>
+</html>
