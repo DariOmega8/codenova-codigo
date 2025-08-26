@@ -25,7 +25,7 @@
              <button><i class="fa-solid fa-magnifying-glass"></i>
                </button>
         </div>
-        <form class="formulario">
+        <form class="formulario" action="reservas.php" method="POST">
             <h2>Reserva</h2>
             <label for="cantidad">Cantidad de personas</label>
             <input type="number" id="personas" name="personas" placeholder="Cantidad de personas" required>
@@ -39,7 +39,7 @@
             <label for="telefono">Numero de telefono</label>
             <input type="tel" id="telefono" name="telefono" placeholder="Numero de telefono" required>
 
-            <button type="submit" class="confirmar-reserva">Confirmar</button>
+            <button type="submit" name="confirmar" class="confirmar-reserva">Confirmar</button>
             
         </form>
 
