@@ -14,7 +14,9 @@ if (isset($_POST['confirmar'])) {
         $telefono = $_POST['telefono'];
 
         $sql = "INSERT INTO reserva (hora, cantidad, fecha ) VALUES ('$hora', '$cantidad', '$fecha')";
+
         $sql2 = "INSERT INTO reserva telefono (telefono) VALUES ('$telefono')";
+        
         $resultado = mysqli_query($conexion, $sql);
 
         if ($resultado) {
