@@ -1,19 +1,19 @@
 <?php
 
+session_start();
 include 'conexion.php';
 
 if (isset($_POST['confirmar'])) {
-
-    if ( empty($_POST['personas']) || empty($_POST['hora']) ||empty($_POST['fecha']) ) {
-          echo "error en los datos"; 
+    if ( empty($_POST['personas']) || empty($_POST['hora']) || empty($_POST['fecha']) ) {
+        echo "error en los datos"; 
     } else {
-
         $cantidad = $_POST['personas'];
         $hora = $_POST['hora'];
         $fecha = $_POST['fecha'];
+        $id_cliente = $_SESSION['id_cliente']; 
 
-        $sql = "INSERT INTO reserva (hora, cantidad, fecha ) VALUES ('$hora', '$cantidad', '$fecha')";
-
+        $sql = "INSERT INTO reserva (hora, cantidad, fecha, id_cliente) VALUES ('$hora', '$cantidad', '$fecha', '$id_cliente')";
+  
         $resultado = mysqli_query($conexion, $sql);
         
             if ($resultado) {
@@ -25,9 +25,5 @@ if (isset($_POST['confirmar'])) {
         }
 
         }
-        
-        
     }
-}
-
 ?>
