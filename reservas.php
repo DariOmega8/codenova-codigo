@@ -1,6 +1,7 @@
 <?php
 
 include 'conexion.php';
+session_start();
 
 if (isset($_POST['confirmar'])) {
 
@@ -11,8 +12,9 @@ if (isset($_POST['confirmar'])) {
         $cantidad = $_POST['personas'];
         $hora = $_POST['hora'];
         $fecha = $_POST['fecha'];
+        $id_cliente = $_SESSION['cliente_id cliente'];
 
-        $sql = "INSERT INTO reserva (hora, cantidad, fecha ) VALUES ('$hora', '$cantidad', '$fecha')";
+        $sql = "INSERT INTO reserva (hora, cantidad, fecha, cliente_id cliente ) VALUES ('$hora', '$cantidad', '$fecha', '$id_cliente' )";
 
         $resultado = mysqli_query($conexion, $sql);
         
