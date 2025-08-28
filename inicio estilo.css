@@ -6,11 +6,7 @@
 }
 
 body{
-    background: url(imagenes/fondo.jpg);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    color: rgb(255, 0, 0);
+    background-color: #0d3b66;
 }
 .barra-busqueda {
     display: flex;
@@ -37,11 +33,12 @@ button:hover{
     display: block;
     text-decoration: none;
     padding: 20px;
-    color: rgb(0, 0, 0);
+    color: #e0f2f1;
     font-size: 18px;
 }
 .menu nav ul a:hover{
-    background-color: rgb(168, 212, 155);
+    background-color: #00796b; 
+    color: #81d4fa; 
 }
 
 .principal {

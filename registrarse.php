@@ -5,8 +5,8 @@ session_start();
 
 if (isset($_POST['submit'])) {
 
-    if (strlen($_POST['gmail']) < 2 || strlen($_POST['contraseña']) < 4) {
-        echo "ingrese mas datos"; 
+    if (empty($_POST['gmail'])|| empty($_POST['contraseña']) ) {
+        echo "ingrese los datos"; 
     } else {
 
         $gmail = $_POST['gmail'];
