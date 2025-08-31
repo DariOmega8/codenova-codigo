@@ -1,30 +1,42 @@
 <?php
 
-session_start();
 include 'conexion.php';
 session_start();
 
-if (isset($_POST['confirmar'])) {
-    if ( empty($_POST['personas']) || empty($_POST['hora']) || empty($_POST['fecha']) ) {
-        echo "error en los datos"; 
-    } else {
-        $cantidad = $_POST['personas'];
-        $hora = $_POST['hora'];
-        $fecha = $_POST['fecha'];
-        $id_cliente = $_SESSION['cliente_id cliente'];
+if (!isset($_SESSION['id_usuario'])) {
+    die(" Debes iniciar sesión para reservar");
+}
 
-        $sql = "INSERT INTO reserva (hora, cantidad, fecha, cliente_id cliente ) VALUES ('$hora', '$cantidad', '$fecha', '$id_cliente' )";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $cantidad = $_POST['personas'];
+    $hora = $_POST['hora'];
+    $fecha = $_POST['fecha'];
+    $estado = "pendiente";
+    $id_usuario = $_SESSION['id_usuario'];
 
-        $resultado = mysqli_query($conexion, $sql);
-        
-            if ($resultado) {
-            header("Location: reservas.html");
-            exit;
+    // Obtener id_cliente desde usuario
+    $sqlCliente = "SELECT `id cliente` FROM cliente WHERE `usuario_id usuario` = ?";
+    $stmt = $conexion->prepare($sqlCliente);
+    $stmt->bind_param("i", $id_usuario);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $row = $res->fetch_assoc();
 
+    if ($row) {
+        $id_cliente = $row['id cliente'];
+
+        $sqlReserva = "INSERT INTO reserva (`hora de inicio`, estado, cantidad, fecha, `cliente_id cliente`, `cliente_usuario_id usuario`) 
+                       VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt2 = $conexion->prepare($sqlReserva);
+        $stmt2->bind_param("ssdsii", $hora, $estado, $cantidad, $fecha, $id_cliente, $id_usuario);
+
+        if ($stmt2->execute()) {
+            echo " reserva realizada correctamente";
         } else {
-            echo "Error en la reserva: " . mysqli_error($conexion);
+            echo " Error reserva: " . $stmt2->error;
         }
-
-        }
+    } else {
+        echo " Cliente no encontrado";
     }
+}
 ?>

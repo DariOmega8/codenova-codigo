@@ -1,35 +1,49 @@
 <?php
 
-include 'conexion.php';
+include("conexion.php");
 
-session_start();
-
-if (isset($_POST['submit'])) {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre = $_POST['nombre'];
-    $fecha_nacimiento = $_POST['fecha de nacimiento'];
-    $telefono = $_POST['telefono'];
+    $fecha = $_POST['fecha'];
+    $gmail = $_POST['gmail'];
+    $pass = password_hash($_POST['contraseña'], PASSWORD_BCRYPT);
     $nacionalidad = $_POST['nacionalidad'];
-    $id_usuario = $_SESSION['id_usuario'];
-    
+    $telefono = $_POST['telefono'];
 
-    $sql = "INSERT INTO clientes (nombre, fecha de nacimiento, nacionalidad, usuario_id usuario) VALUES ('$nombre', '$fecha_nacimiento', '$nacionalidad', '$id_usuario')";
+    // Insertar usuario
+    $sqlUsuario = "INSERT INTO `usuario`(`nombre`, `fecha de nacimiento`, `gmail`, `contraseña`) 
+                   VALUES ("$nombre", "$fecha", "$gmail", "$pass")";
+    $stmt = $conn->prepare($sqlUsuario);
+    $stmt->bind_param("ssss", $nombre, $fecha, $gmail, $pass);
 
+    if ($stmt->execute()) {
+        $idUsuario = $conn->insert_id;
 
-    $resultado = mysqli_query($conexion, $sql);
-    $id_cliente = mysqli_insert_id($conexion);
+        // Insertar cliente
+        $sqlCliente = "INSERT INTO `cliente` (`nacionalidad`, `usuario_id usuario`) VALUES ("$nacionalidad", "$idUsuario")";
+        $stmt2 = $conn->prepare($sqlCliente);
+        $stmt2->bind_param("si", $nacionalidad, $idUsuario);
 
-    $_SESSION['id_cliente'] = $id_cliente;
+        if ($stmt2->execute()) {
+            $idCliente = $conn->insert_id;
 
-    $sql = "INSERT INTO telefono (telefono, id_cliente) VALUES ('$telefono', '$id_cliente',)"
+            // Insertar telefono
+            $sqlTel = "INSERT INTO `telefono` (`telefono`, `cliente_id cliente`, `cliente_usuario_id usuario`) 
+                       VALUES ("$telefono", "$idCliente", "$idUsuario")";
+            $stmt3 = $conn->prepare($sqlTel);
+            $stmt3->bind_param("sii", $telefono, $idCliente, $idUsuario);
 
-    if ($resultado) {
-            header("Location: inicio.html");
-            exit;
+            if ($stmt3->execute()) {
+                echo " Registro exitoso";
+            } else {
+                echo "Error teléfono: " . $stmt3->error;
+            }
         } else {
-            echo "Error en el registro: " . mysqli_error($conexion);
+            echo "Error cliente: " . $stmt2->error;
         }
-
+    } else {
+        echo "Error usuario: " . $stmt->error;
+    }
 }
-
 
 ?>
