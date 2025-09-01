@@ -1,10 +1,13 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio la chackra</title>
-    <link rel="stylesheet" href="inicio estilo.css">
+    <link rel="stylesheet" href="inicio_estilo.css">
     <script src="https://kit.fontawesome.com/69a3421d9e.js" crossorigin="anonymous"></script>
 </head>
 
@@ -15,21 +18,29 @@
         <div class="menu">
           <nav>
             <ul>
-                <li><a href="inicio.html">Inicio</a></li>
-                <li><a href="redes y pagos.html">Redes y pagos</a></li>
-                <li><a href="reservas.html">Reservas</a></li>
-                <li><a href="zona staff.html">Mozos orden</a></li>
-                <li><a href="historia.html">Historia</a></li>
+                <li><a href="inicio.php">Inicio</a></li>
+                <li><a href="redes_pagos.php">Redes y pagos</a></li>
+                <li><a href="reservas.php">Reservas</a></li>
+                <li><a href="zona_staff.html">Mozos orden</a></li>
+                <li><a href="historia.php">Historia</a></li>
               </ul>
           </nav>
         </div>
 
     <div class="contenido">
-    <div class="barra-busqueda">
-        <input type="text" placeholder="Buscar...">
-        <button><i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-    </div>
+   <div class="barra-busqueda">
+      <input type="text" placeholder="Buscar...">
+      <button class="lupa"><i class="fa-solid fa-magnifying-glass"></i></button>
+  </div>
+  <div class="botones-sesion">
+    <?php if (isset($_SESSION['id_usuario'])): ?>
+      <span class="bienvenida">Bienvenido <?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?></span>
+      <a href="cerrar_sesion.php" class="btn-logout" role="button">Cerrar sesión</a>
+    <?php else: ?>
+      <a href="iniciar_sesion.html" class="btn-login" role="button">Iniciar sesión</a>
+      <a href="registrarse_cliente.html" class="btn-register" role="button">Registrarse</a>
+    <?php endif; ?>
+  </div>
 
     <div class="banner">
         <h1>La chakra gourmet</h1>

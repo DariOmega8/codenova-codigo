@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="iniciar sesion.css">
+    <link rel="stylesheet" href="iniciar_sesion.css">
     <title>Inicio sesion</title>
 </head>
 <body>
 
     <div class="contenedor">
-        <form class="formulario" method="post" action="iniciar sesion.php">
+        <form class="formulario" method="post" action="iniciar_sesion.php">
 
             <h2>Iniciar sesión</h2>
             <label for="gmail">Gmail</label>
@@ -18,11 +18,11 @@
             <label for="password">Contraseña</label>
             <input type="password" name="contraseña" placeholder="Contraseña" required>
 
-            <button type="submit" name="submit" class="registrarse">Registrarse</button>
+            <button type="submit" name="submit" class="registrarse">Iniciar sesion</button>
             
             <div class="opciones">
                 <a href="" class="opcion1">¿Olvidaste tu contraseña?</a>
-                <button type="button" class="iniciar-sesion">Iniciar sesion </button>
+                <button type="button" class="iniciar-sesion" onclick="location.href='registrarse_cliente.html'">Registrarse</button>
             </div>
         </form>
     </div>

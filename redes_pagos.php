@@ -12,11 +12,11 @@
         <div class="menu">
           <nav>
             <ul>
-                <li><a href="inicio.html">Inicio</a></li>
-                <li><a href="redes y pagos.html">Redes y pagos</a></li>
-                <li><a href="reservas.html">Reservas</a></li>
-                <li><a href="zona staff.html">Mozos orden</a></li>
-                <li><a href="historia.html">Historia</a></li>
+                <li><a href="inicio.php">Inicio</a></li>
+                <li><a href="redes_pagos.php">Redes y pagos</a></li>
+                <li><a href="reservas.php">Reservas</a></li>
+                <li><a href="zona_staff.html">Mozos orden</a></li>
+                <li><a href="historia.php">Historia</a></li>
             </ul>
           </nav>
         </div>
@@ -27,6 +27,15 @@
              <button><i class="fa-solid fa-magnifying-glass"></i>
                </button>
                </div>
+               <div class="botones-sesion">
+    <?php if (isset($_SESSION['id_usuario'])): ?>
+      <span class="bienvenida">Bienvenido <?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?></span>
+      <a href="cerrar_sesion.php" class="btn-logout" role="button">Cerrar sesión</a>
+    <?php else: ?>
+      <a href="iniciar_sesion.html" class="btn-login" role="button">Iniciar sesión</a>
+      <a href="registrarse_cliente.html" class="btn-register" role="button">Registrarse</a>
+    <?php endif; ?>
+  </div>
                <h1>Redes y pagos</h1>
       <div class="informacion">   
         <div class="redes">

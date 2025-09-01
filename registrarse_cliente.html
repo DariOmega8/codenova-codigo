@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="registrarse cliente.css">
+    <link rel="stylesheet" href="registrarse_cliente.css">
     <title>Inicio cliente</title>
 </head>
 <body>
 
     <div class="contenedor">
-        <form class="formulario" method="post" action="registrarse cliente.php">
+        <form class="formulario" method="post" action="registrarse_cliente.php">
             <h2>Formulario</h2>
              <label for="name">Nombre</label>
              <input type="text" name="nombre" placeholder="Nombre" required>
 
+             <label for="date">Fecha de nacimiento</label>
              <input type="date" name="fecha_nacimiento" required>
-              <label for="date">Fecha de nacimiento</label>
+            
 
             <label for="gmail">Gmail</label>
             <input type="email" name="gmail" placeholder="Correo electrónico" required>
@@ -27,7 +28,7 @@
            
             
             <label for="text">Nacionalidad</label>
-            <select class="nacionalidad" aria-label="Default select example">
+            <select class="nacionalidad" name="nacionalidad" aria-label="Default select example" required>
   <option value="Afganistán">Afganistán</option>
   <option value="Albania">Albania</option>
   <option value="Alemania">Alemania</option>
