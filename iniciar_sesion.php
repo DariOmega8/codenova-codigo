@@ -11,7 +11,7 @@ if (isset($_POST['gmail']) || isset($_POST['contraseña'])) {
     $resultado = mysqli_query($conexion, $sql);
 
     if ($row = mysqli_fetch_assoc($resultado)) {
-        if ($contrasena === $row['contraseña']) { // comparación directa (sin password_hash)
+        if ($contrasena === $row['contraseña']) { 
             $_SESSION['id_usuario'] = $row['id usuario'];
             $_SESSION['nombre'] = $row['nombre'];
             header("Location: inicio.php");

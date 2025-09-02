@@ -11,25 +11,25 @@ if (isset($_POST['submit'])) {
         echo " Complete todos los campos";
     } else {
         $gmail = $_POST['gmail'];
-        $contrasena = $_POST['contraseña']; // usamos variable sin ñ para evitar errores en PHP
+        $contrasena = $_POST['contraseña']; 
         $nombre = $_POST['nombre'];
         $fecha_nacimiento = $_POST['fecha_nacimiento'];
         $nacionalidad = $_POST['nacionalidad'];
         $telefono = $_POST['telefono'];
 
-        // Insertar en usuario
+       
         $sqlUsuario = "INSERT INTO usuario (nombre, `fecha de nacimiento`, gmail, contraseña) 
                        VALUES ('$nombre', '$fecha_nacimiento', '$gmail', '$contrasena')";
         if (mysqli_query($conexion, $sqlUsuario)) {
             $id_usuario = mysqli_insert_id($conexion);
 
-            // Insertar en cliente
+
             $sqlCliente = "INSERT INTO cliente (nacionalidad, `usuario_id usuario`) 
                            VALUES ('$nacionalidad', '$id_usuario')";
             if (mysqli_query($conexion, $sqlCliente)) {
                 $id_cliente = mysqli_insert_id($conexion);
 
-                // Insertar teléfono
+                
                 $sqlTelefono = "INSERT INTO telefono (telefono, `cliente_id cliente`, `cliente_usuario_id usuario`) 
                                 VALUES ('$telefono', '$id_cliente', '$id_usuario')";
                 if (mysqli_query($conexion, $sqlTelefono)) {

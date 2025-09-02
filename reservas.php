@@ -3,11 +3,6 @@ session_start();
 include 'conexion.php';
 
 
-if (!isset($_SESSION['id_usuario'])) {
-    header("Location: iniciar_sesion.html");
-    exit;
-}
-
 if (isset($_POST['confirmar'])) {
     $cantidad = $_POST['personas'];
     $hora = $_POST['hora'];
