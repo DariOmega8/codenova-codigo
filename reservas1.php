@@ -1,6 +1,5 @@
 <?php
 session_start();
-include 'conexion.php';
 
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: iniciar_sesion.html");
@@ -23,7 +22,7 @@ if (!isset($_SESSION['id_usuario'])) {
             <ul>
                 <li><a href="inicio.php">Inicio</a></li>
                 <li><a href="redes_pagos.php">Redes y pagos</a></li>
-                <li><a href="reservas.php">Reservas</a></li>
+                <li><a href="reservas1.php">Reservas</a></li>
                 <li><a href="zona_staff.html">Mozos orden</a></li>
                 <li><a href="historia.php">Historia</a></li>
             </ul>
@@ -31,10 +30,10 @@ if (!isset($_SESSION['id_usuario'])) {
     </header>
 
     <section class="contenido">
-        <aside class="barra-busqueda">
+        <section class="barra-busqueda">
             <input type="text" placeholder="Buscar...">
             <button><i class="fa-solid fa-magnifying-glass"></i></button>
-       </aside>
+    </section>
 
       <aside class="botones-sesion">
         <?php if (isset($_SESSION['id_usuario'])): ?>

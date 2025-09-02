@@ -22,12 +22,13 @@ if (isset($_POST['submit'])) {
                        VALUES ('$nombre', '$fecha_nacimiento', '$gmail', '$contrasena')";
         if (mysqli_query($conexion, $sqlUsuario)) {
             $id_usuario = mysqli_insert_id($conexion);
-
+          
 
             $sqlCliente = "INSERT INTO cliente (nacionalidad, `usuario_id usuario`) 
                            VALUES ('$nacionalidad', '$id_usuario')";
             if (mysqli_query($conexion, $sqlCliente)) {
                 $id_cliente = mysqli_insert_id($conexion);
+                $_SESSION['id_cliente'] = $id_cliente;
 
                 
                 $sqlTelefono = "INSERT INTO telefono (telefono, `cliente_id cliente`, `cliente_usuario_id usuario`) 

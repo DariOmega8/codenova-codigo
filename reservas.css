@@ -108,3 +108,63 @@ button:hover{
 .confirmar-reserva:hover {
     background: #2d4373;
 }
+
+:root{
+  --verde: #198754;
+  --naranja: #fd7e14;
+  --negro: #000000;
+  --btn-padding: 8px 14px;
+  --btn-radius: 6px;
+}
+
+.botones-sesion {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 9999;
+}
+
+.botones-sesion a {
+  display: inline-block;
+  padding: var(--btn-padding);
+  border-radius: var(--btn-radius);
+  text-decoration: none;
+  font-weight: 600;
+  border: 2px solid transparent;
+  transition: filter 150ms ease, transform 120ms ease;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.btn-login {
+  background: var(--verde) !important;
+  color: #000 !important;
+  border-color: var(--verde) !important;
+}
+
+.btn-register {
+  background: var(--naranja) !important;
+  color: #000 !important;
+  border-color: var(--naranja) !important;
+}
+
+.btn-logout {
+  background: var(--negro) !important;
+  color: #fff !important;
+  border-color: var(--negro) !important;
+}
+
+.btn-login:hover,.btn-register:hover {
+  filter: brightness(0.92);
+  transform: translateY(-1px);
+}
+
+.btn-logout:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.botones-sesion a { text-decoration: none; }
