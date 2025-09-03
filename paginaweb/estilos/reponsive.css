@@ -18,8 +18,11 @@ img {
 
 /* Móviles (320px - 576px) */
 @media (max-width: 576px) {
+ 
   .principal {
-    flex-direction: column;
+    
+    display: grid;
+    grid: repeat(2, 60px);
   }
   nav ul {
     display: flex;
@@ -35,9 +38,6 @@ img {
 
 /* Tablets (577px - 992px) */
 @media (min-width: 577px) and (max-width: 992px) {
-  .principal {
-    flex-direction: column;
-  }
   nav ul {
     display: flex;
     flex-wrap: wrap;
@@ -47,5 +47,13 @@ img {
   }
   nav ul li {
     margin: 10px;
+  }
+
+  .principal {
+ display: flex;
+  flex-direction: row; 
+  position:absolute;
+
+    
   }
 }
