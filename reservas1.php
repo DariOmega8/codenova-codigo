@@ -30,12 +30,12 @@ if (!isset($_SESSION['id_usuario'])) {
     </header>
 
     <section class="contenido">
-        <section class="barra-busqueda">
+        <header class="barra-busqueda">
             <input type="text" placeholder="Buscar...">
             <button><i class="fa-solid fa-magnifying-glass"></i></button>
-    </section>
+    </header>
 
-      <aside class="botones-sesion">
+      <header class="botones-sesion">
         <?php if (isset($_SESSION['id_usuario'])): ?>
           <span class="bienvenida">Bienvenido <?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?></span>
           <a href="cerrar_sesion.php" class="btn-logout" role="button">Cerrar sesión</a>
@@ -43,7 +43,7 @@ if (!isset($_SESSION['id_usuario'])) {
           <a href="iniciar_sesion.html" class="btn-login" role="button">Iniciar sesión</a>
           <a href="registrarse_cliente.html" class="btn-register" role="button">Registrarse</a>
         <?php endif; ?>
-      </aside>
+        </header>
    
 
         <form class="formulario" action="reservas.php" method="POST">

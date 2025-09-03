@@ -25,12 +25,12 @@ session_start();
     </header>
 
     <section class="contenido">
-        <section class="barra-busqueda">
+        <header class="barra-busqueda">
             <input type="text" placeholder="Buscar...">
             <button><i class="fa-solid fa-magnifying-glass"></i></button>
-        </section>
+    </header>
 
-      <aside class="botones-sesion">
+      <header class="botones-sesion">
         <?php if (isset($_SESSION['id_usuario'])): ?>
           <span class="bienvenida">Bienvenido <?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?></span>
           <a href="cerrar_sesion.php" class="btn-logout" role="button">Cerrar sesión</a>
@@ -38,7 +38,7 @@ session_start();
           <a href="iniciar_sesion.html" class="btn-login" role="button">Iniciar sesión</a>
           <a href="registrarse_cliente.html" class="btn-register" role="button">Registrarse</a>
            <?php endif; ?>
-      </aside>
+        </header>
 
         <h1>Redes y pagos</h1>
 
@@ -46,9 +46,9 @@ session_start();
             <section class="redes">
                 <h2>Redes Sociales</h2>
                 <ul>
-                    <li><strong>Numero de teléfono:</strong> Momo ponele onda</li>
-                    <li><strong>Gmail:</strong> que auris de virgo momo</li>
-                    <li><strong>Instagram:</strong> bien de payaso te vestiste hoy momo</li>
+                    <li><strong>Numero de teléfono:</strong> +34947494</li>
+                    <li><strong>Gmail:</strong> chacragourmet@gmail.com</li>
+                    <li><strong>Instagram:</strong> instagram/enlace</li>
                 </ul>
             </section>
 

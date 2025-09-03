@@ -29,12 +29,12 @@ session_start();
 
     <section class="contenido">
 
-      <section class="barra-busqueda">
+      <header class="barra-busqueda">
         <input type="text" placeholder="Buscar...">
         <button class="lupa"><i class="fa-solid fa-magnifying-glass"></i></button>
-      </section>
+     </header>
 
-      <aside class="botones-sesion">
+      <header class="botones-sesion">
         <?php if (isset($_SESSION['id_usuario'])): ?>
           <span class="bienvenida">Bienvenido <?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?></span>
           <a href="cerrar_sesion.php" class="btn-logout" role="button">Cerrar sesión</a>
@@ -42,10 +42,10 @@ session_start();
           <a href="iniciar_sesion.html" class="btn-login" role="button">Iniciar sesión</a>
           <a href="registrarse_cliente.html" class="btn-register" role="button">Registrarse</a>
         <?php endif; ?>
-      </aside>
+        </header>
 
       <section class="banner">
-        <h1>La chakra gourmet</h1>
+        <h1>La chacra gourmet</h1>
       </section>
 
       <section class="informacion">
@@ -70,27 +70,27 @@ session_start();
         <article class="plato">
           <img src="imagenes/milanesa.jpg" alt="">
           <div class="plato-info">
-            <h3>milanesa con fideo</h3>
+            <h3>Nombre del plato</h3>
             <h4>Descripcion del plato</h4>
-            <p>es una milanesa con fideo</p>
+            <p>informacion del plato</p>
           </div>
         </article>
 
         <article class="plato">
           <img src="imagenes/ñoquis.png" alt="">
           <div class="plato-info">
-            <h3>ñoquis revolvidos</h3>
+             <h3>Nombre del plato</h3>
             <h4>Descripcion del plato</h4>
-            <p>momo dio dislike a la pagina</p>
+            <p>informacion del plato</p>
           </div>
         </article>
 
         <article class="plato">
-          <img src="imagenes/balatrero.png" alt="">
+          <img src="imagenes/milanesa.jpg" alt="">
           <div class="plato-info">
-            <h3>balatrero balatraz</h3>
+            <h3>Nombre del plato</h3>
             <h4>Descripcion del plato</h4>
-            <p>los balatreros dicen banana</p>
+            <p>informacion del plato</p>
           </div>
         </article>
       </section>

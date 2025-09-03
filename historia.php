@@ -26,12 +26,12 @@ session_start();
     </header>
 
     <section class="contenido">
-        <section class="barra-busqueda">
+        <header class="barra-busqueda">
             <input type="text" placeholder="Buscar...">
             <button><i class="fa-solid fa-magnifying-glass"></i></button>
-    </section>
+        </header>
 
-        <aside class="botones-sesion">
+        <header class="botones-sesion">
             <?php if (isset($_SESSION['id_usuario'])): ?>
                 <span class="bienvenida">Bienvenido <?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?></span>
                 <a href="cerrar_sesion.php" class="btn-logout" role="button">Cerrar sesión</a>
@@ -39,48 +39,38 @@ session_start();
                 <a href="iniciar_sesion.html" class="btn-login" role="button">Iniciar sesión</a>
                 <a href="registrarse_cliente.html" class="btn-register" role="button">Registrarse</a>
             <?php endif; ?>
-        </aside>
+        </header>
 
         <h1>Historia</h1>
 
         <article class="informacion">  
             <h2>Fundación del restaurante en la chacra</h2>
-            <p>Momo, el famoso streamer italiano que vive en
-               Argentina, fundó el restaurante en la chacra como
-               un homenaje a sus raíces y a la cultura local. Su 
-               comunidad lo apoya con entusiasmo, a pesar de 
-               bromear sobre sus costumbres y ocurrencias.</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis 
+                cupiditate reprehenderit, eum accusamus facere consectetur exercitationem.
+                 Suscipit, minima praesentium. Minima saepe culpa itaque eum aperiam vel iste
+                  delectus, a adipisci!.</p>
 
             <h2>Inspiración y visión gourmet</h2>
-            <p>La visión gourmet de Momo está marcada por su
-               amor por la cocina italiana y argentina. Sus 
-               seguidores suelen bromear con que Momo nunca 
-               permite que le revuelvan los ñoquis, 
-               convirtiendo esta preferencia en uno de los 
-               memes más populares de su canal.</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis architecto 
+                ab voluptatum suscipit et atque odio optio fugit. Cupiditate placeat harum
+                 voluptatum voluptatem neque repellendus earum minus veritatis, nostrum a!.</p>
 
             <h2>Crecimiento y evolución</h2>
-            <p>El restaurante creció rápidamente gracias a la 
-               fama de Momo y a los memes que lo rodean. 
-               Entre los más conocidos está el de “Momo con 
-               dos ladrillos en la mano”, que representa su 
-               actitud decidida y su estilo único para resolver
-               problemas.</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Et voluptate
+                 veniam vitae esse ullam recusandae ratione obcaecati, quam facere quia
+                  fuga totam temporibus, necessitatibus blanditiis culpa in eius, magnam 
+                  aliquid!.</p>
 
             <h2>Reconocimientos y logros</h2>
-            <p>Además de recibir premios gastronómicos, Momo es 
-               reconocido por su comunidad por frases como 
-               “banana” y por sus reacciones divertidas ante 
-               los platos estrella del restaurante. Los memes 
-               sobre sus gustos culinarios y su personalidad 
-               han ayudado a difundir su historia.</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                Error aperiam nemo illum natus sit fugiat nostrum quis excepturi
+                 nulla ab quam, vel ex facere consectetur dicta quia modi harum impedit!.</p>
 
             <h2>Compromiso con la calidad y la comunidad</h2>
-            <p>Momo mantiene un fuerte compromiso con la calidad 
-               y la comunidad, siempre interactuando con sus 
-               seguidores y aceptando con humor los memes que 
-               surgen, como el famoso “momo dio dislike a la 
-               página” o sus aventuras con los balatreros.</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur 
+                magnam non nam quaerat voluptatem maxime facilis, soluta maiores 
+                molestiae eius eligendi, nostrum, voluptatum id est distinctio 
+                reprehenderit dolorum? Eligendi, veniam?.</p>
         </article>
     </section>
 </main>
