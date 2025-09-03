@@ -7,7 +7,7 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio la chakra</title>
-    <link rel="stylesheet" href="inicio_estilo.css">
+    <link rel="stylesheet" href="estilos/inicio_estilo.css">
     <script src="https://kit.fontawesome.com/69a3421d9e.js" crossorigin="anonymous"></script>
 </head>
 

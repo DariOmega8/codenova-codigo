@@ -12,7 +12,7 @@ if (!isset($_SESSION['id_usuario'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reservas</title>
-  <link rel="stylesheet" href="reservas.css">
+  <link rel="stylesheet" href="estilos/reservas.css">
 </head>
 <body>
 
