@@ -13,6 +13,7 @@ if (!isset($_SESSION['id_usuario'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reservas</title>
   <link rel="stylesheet" href="estilos/reservas.css">
+    <link rel="stylesheet" href="estilos/reponsive.css">
 </head>
 <body>
 

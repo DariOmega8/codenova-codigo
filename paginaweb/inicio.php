@@ -8,6 +8,7 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio la chakra</title>
     <link rel="stylesheet" href="estilos/inicio_estilo.css">
+    <link rel="stylesheet" href="estilos/reponsive.css">
     <script src="https://kit.fontawesome.com/69a3421d9e.js" crossorigin="anonymous"></script>
 </head>
 
@@ -68,7 +69,7 @@ session_start();
         <h2>platos estrella</h2>
 
         <article class="plato">
-          <img src="imagenes/milanesa.jpg" alt="">
+          <img src="estilos/imagenes/milanesa.jpg" alt="">
           <div class="plato-info">
             <h3>Nombre del plato</h3>
             <h4>Descripcion del plato</h4>
@@ -77,7 +78,7 @@ session_start();
         </article>
 
         <article class="plato">
-          <img src="imagenes/ñoquis.png" alt="">
+          <img src="estilos/imagenes/ñoquis.png" alt="">
           <div class="plato-info">
              <h3>Nombre del plato</h3>
             <h4>Descripcion del plato</h4>
@@ -86,7 +87,7 @@ session_start();
         </article>
 
         <article class="plato">
-          <img src="imagenes/milanesa.jpg" alt="">
+          <img src="estilos/imagenes/milanesa.jpg" alt="">
           <div class="plato-info">
             <h3>Nombre del plato</h3>
             <h4>Descripcion del plato</h4>
@@ -98,7 +99,7 @@ session_start();
       <section class="ubicacion">
         <h2>ubicacion</h2>
         <p>cupiditate dolorem magni porro error nulla voluptatum consequatur aliquid.</p>
-        <img src="imagenes/ñoquis.png" alt="">
+        <img src="estilos/imagenes/ñoquis.png" alt="">
       </section>
 
     </section>  

@@ -8,6 +8,7 @@ session_start();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Redes y Pagos</title>
   <link rel="stylesheet" href="estilos/ryp.css">
+    <link rel="stylesheet" href="estilos/reponsive.css">
 </head>
 <body>
 

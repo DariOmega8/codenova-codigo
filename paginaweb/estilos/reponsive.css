@@ -1,0 +1,51 @@
+
+.principal {
+  display: flex;
+  flex-direction: row; 
+}
+/* Ajuste de imágenes para que no se salgan */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Evitar scroll horizontal */
+.contenido, .principal, .formulario {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Móviles (320px - 576px) */
+@media (max-width: 576px) {
+  .principal {
+    flex-direction: column;
+  }
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0;
+    padding: 5px 0;
+  }
+  nav ul li {
+    margin: 5px 10px;
+  }
+}
+
+/* Tablets (577px - 992px) */
+@media (min-width: 577px) and (max-width: 992px) {
+  .principal {
+    flex-direction: column;
+  }
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0;
+    padding: 5px 0;
+  }
+  nav ul li {
+    margin: 10px;
+  }
+}
