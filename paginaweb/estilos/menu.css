@@ -1,15 +1,20 @@
-.entrantes, .Comidas, .bebidas, .postres {
+.categoria {
   margin-bottom: 40px;
 }
+.categoria article .plato-link {
+  text-decoration: none;
+  color: inherit; 
+}
 
-.entrantes h2, .Comidas h2, .bebidas h2, .postres h2 {
+
+.categoria h2 {
   margin-bottom: 20px;
   font-size: 28px;
   color: #fff;
   text-align: center;
 }
 
-.entrantes article, .Comidas article, .bebidas article, .postres article {
+.categoria article {
   display: flex;
   align-items: center;
   background: #fff;
@@ -20,12 +25,12 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.entrantes article:hover, .Comidas article:hover, .bebidas article:hover, .postres article:hover {
+.categoria article:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-.entrantes article img, .Comidas article img, .bebidas article img, .postres article img {
+.categoria article img {
   width: 120px;
   height: 120px;
   border-radius: 8px;
@@ -33,18 +38,18 @@
   margin-right: 20px;
 }
 
-.entrantes article h3, .Comidas article h3, .bebidas article h3, .postres article h3 {
+.categoria article h3 {
   margin: 0 0 8px 0;
   font-size: 20px;
   color: #333;
 }
 
-.entrantes article p, .Comidas article p, .bebidas article p, .postres article p {
+.categoria article p {
   margin: 0 0 10px 0;
   color: #555;
 }
 
-.entrantes article .precio, .Comidas article .precio, .bebidas article .precio, .postres article .precio {
+.categoria article .precio {
   font-weight: bold;
   color: #198754;
   font-size: 18px;

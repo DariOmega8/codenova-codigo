@@ -1,29 +1,30 @@
 <?php
 session_start();
+include 'conexion.php';
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu</title>
-    <link rel="stylesheet" href="estilos/estilo_general.css">
-    <link rel="stylesheet" href="estilos/menu.css">
-    <script src="https://kit.fontawesome.com/69a3421d9e.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Menú</title>
+  <link rel="stylesheet" href="estilos/estilo_general.css">
+  <link rel="stylesheet" href="estilos/menu.css">
+  <link rel="stylesheet" href="estilos/reponsive.css">
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
-
+    <script src="https://kit.fontawesome.com/69a3421d9e.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <main class="principal">
+  <main class="principal">
 
     <header class="menu">
       <nav>
         <ul>
           <li><a href="inicio.php">Inicio</a></li>
           <li><a href="redes_pagos.php">Redes y pagos</a></li>
-          <li><a href="reservas1.php">Reservas</a></li>
+          <li><a href="reserva1.php">Reservas</a></li>
           <li><a href="zona_staff.html">Mozos orden</a></li>
           <li><a href="historia.php">Historia</a></li>
         </ul>
@@ -31,8 +32,9 @@ session_start();
     </header>
 
     <section class="contenido">
+      <h1 style="color:#fff; margin-bottom:20px;">Menú del restaurante</h1>
 
-      <header class="barra-busqueda">
+       <header class="barra-busqueda">
         <input type="text" placeholder="Buscar...">
         <button class="lupa"><i class="fa-solid fa-magnifying-glass"></i></button>
      </header>
@@ -47,186 +49,63 @@ session_start();
         <?php endif; ?>
         </header>
 
-      <section class="entrantes">
-        <h2>Entrantes</h2>
-        <article>
-          <img src="estilos/imagenes/entrante.png" alt="">
-          <div>
-          <h3>tabla de quesos</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-       <article>
-          <img src="estilos/imagenes/entrante.png" alt="">
-          <div>
-          <h3>tabla de quesos</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-        <article>
-          <img src="estilos/imagenes/entrante.png" alt="">
-          <div>
-          <h3>tabla de quesos</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-        <article>
-          <img src="estilos/imagenes/entrante.png" alt="">
-          <div>
-          <h3>tabla de quesos</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-        <article>
-          <img src="estilos/imagenes/entrante.png" alt="">
-          <div>
-          <h3>tabla de quesos</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-        
-      </section>
+      <?php
       
-      <section class="Comidas">
-        <h2>Comidas</h2>
-        <article>
-          <img src="estilos/imagenes/comida.png" alt="">
-          <div>
-          <h3>Asado</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-         <article>
-          <img src="estilos/imagenes/comida.png" alt="">
-          <div>
-          <h3>Asado</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-         <article>
-          <img src="estilos/imagenes/comida.png" alt="">
-          <div>
-          <h3>Asado</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-         <article>
-          <img src="estilos/imagenes/comida.png" alt="">
-          <div>
-          <h3>Asado</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-         <article>
-          <img src="estilos/imagenes/comida.png" alt="">
-          <div>
-          <h3>Asado</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
+      $sqlCat = "SELECT `id menu` AS id_menu, tipo FROM `menu`";
+      $resCat = mysqli_query($conexion, $sqlCat);
+      if (!$resCat) {
+          echo "<p style='color:orange;'>Error al leer categorías: " . mysqli_error($conexion) . "</p>";
+      } else {
+          while ($cat = mysqli_fetch_assoc($resCat)) {
+              $id_menu = (int)$cat['id_menu'];
+              echo "<section class='categoria'>";
+              echo "<h2>" . htmlspecialchars($cat['tipo']) . "</h2>";
 
-      </section>
+              $sqlPlatos = "SELECT p.`id platos` AS id_plato, p.nombre, p.descripcion, p.precio
+                            FROM `platos` p
+                            WHERE p.`menu_id menu` = $id_menu";
+              $resPlatos = mysqli_query($conexion, $sqlPlatos);
 
-      <section class="bebidas">
-        <h2>Bebidas</h2>
-         <article>
-          <img src="estilos/imagenes/bebida.png" alt="">
-          <div>
-          <h3>Coca cola</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-         <article>
-          <img src="estilos/imagenes/bebida.png" alt="">
-          <div>
-          <h3>Coca cola</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-         <article>
-          <img src="estilos/imagenes/bebida.png" alt="">
-          <div>
-          <h3>Coca cola</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-         <article>
-          <img src="estilos/imagenes/bebida.png" alt="">
-          <div>
-          <h3>Coca cola</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-         <article>
-          <img src="estilos/imagenes/bebida.png" alt="">
-          <div>
-          <h3>Coca cola</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-      </section>
+              if (!$resPlatos) {
+                  echo "<p style='color:orange;'>Error al leer platos: " . mysqli_error($conexion) . "</p>";
+              } else {
+                  
+                  while ($plato = mysqli_fetch_assoc($resPlatos)) {
+                      
+                      $id_plato = isset($plato['id_plato']) ? $plato['id_plato'] : 0;
+                      $nombre = isset($plato['nombre']) ? $plato['nombre'] : 'Sin nombre';
+                      $descripcion = isset($plato['descripcion']) ? $plato['descripcion'] : '';
+                      
+                      $descripcion_corta = mb_strlen($descripcion) > 120 ? mb_substr($descripcion,0,120) . '...' : $descripcion;
+                      $precio = isset($plato['precio']) ? $plato['precio'] : '---';
 
-      <section class="postres">
-        <h2>Postres</h2>
-         <article>
-          <img src="estilos/imagenes/postres.png" alt="">
-          <div>
-          <h3>Pastel de chocolate blanco con fresa</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-        <article>
-          <img src="estilos/imagenes/postres.png" alt="">
-          <div>
-          <h3>Pastel de chocolate blanco con fresa</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-        <article>
-          <img src="estilos/imagenes/postres.png" alt="">
-          <div>
-          <h3>Pastel de chocolate blanco con fresa</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-        <article>
-          <img src="estilos/imagenes/postres.png" alt="">
-          <div>
-          <h3>Pastel de chocolate blanco con fresa</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-        <article>
-          <img src="estilos/imagenes/postres.png" alt="">
-          <div>
-          <h3>Pastel de chocolate blanco con fresa</h3>
-          <p>lorem gjkgbg kjgnjgb mgkgjng mgjngj jmngjhbngjgng</p>
-          <span class="precio">Precio $340</span>
-          </div>
-        </article>
-      </section>
+                      $imagen_default = "estilos/imagenes/balatro.png";
+                      $img = $imagen_default;
+                     
+                      if (isset($plato['imagen']) && !empty($plato['imagen'])) {
+                          $img = $plato['imagen'];
+                      }
 
-    </section>  
-  </main> 
-    
+                      echo "<article>";
+                      echo "  <a href='plato.php?id=" . intval($id_plato) . "' class='plato-link'>";
+                      echo "    <img src='" . htmlspecialchars($img) . "' alt='" . htmlspecialchars($nombre) . "'>";
+                      echo "    <div class='info'>";
+                      echo "      <h3>" . htmlspecialchars($nombre) . "</h3>";
+                      echo "      <p>" . htmlspecialchars($descripcion_corta) . "</p>";
+                      echo "      <span class='precio'>Precio $" . htmlspecialchars($precio) . "</span>";
+                      echo "    </div>";
+                      echo "  </a>";
+                      echo "</article>";
+                  }
+              }
+
+              echo "</section>";
+          }
+      }
+      ?>
+
+    </section>
+  </main>
 </body>
 </html>
+

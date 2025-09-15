@@ -39,17 +39,52 @@ $img = isset($plato['imagen']) && !empty($plato['imagen']) ? $plato['imagen'] : 
   <title><?php echo htmlspecialchars($plato['nombre']); ?></title>
   <link rel="stylesheet" href="estilos/estilo_general.css">
   <link rel="stylesheet" href="estilos/plato.css">
+  <link rel="stylesheet" href="estilos/reponsive.css">
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/69a3421d9e.js" crossorigin="anonymous"></script>
 </head>
 <body>
-  <main class="detalle-plato" style="padding:20px;">
-    <a href="menu.php" style="display:inline-block; margin-bottom:20px;">← Volver al menú</a>
+  <main class="principal" style="padding:20px;">
+     
+    <header class="menu">
+      <nav>
+        <ul>
+          <li><a href="inicio.php">Inicio</a></li>
+          <li><a href="redes_pagos.php">Redes y pagos</a></li>
+          <li><a href="reservas1.php">Reservas</a></li>
+          <li><a href="zona_staff.html">Mozos orden</a></li>
+          <li><a href="historia.php">Historia</a></li>
+        </ul>
+      </nav>
+    </header>
 
-    <h1><?php echo htmlspecialchars($plato['nombre']); ?></h1>
-    <p><strong>Categoría:</strong> <?php echo htmlspecialchars($plato['categoria']); ?></p>
-    <img src="<?php echo htmlspecialchars($img); ?>" alt="<?php echo htmlspecialchars($plato['nombre']); ?>" style="max-width:400px; width:100%; height:auto; display:block; margin:10px 0;">
-    <p><strong>Precio:</strong> $<?php echo htmlspecialchars($plato['precio']); ?></p>
-    <p><strong>Descripción completa:</strong></p>
-    <p><?php echo nl2br(htmlspecialchars($plato['descripcion'])); ?></p>
+    <section class="contenido">
+
+      <header class="barra-busqueda">
+        <input type="text" placeholder="Buscar...">
+        <button class="lupa"><i class="fa-solid fa-magnifying-glass"></i></button>
+     </header>
+
+      <header class="botones-sesion">
+        <?php if (isset($_SESSION['id_usuario'])): ?>
+          <span class="bienvenida">Bienvenido <?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?></span>
+          <a href="cerrar_sesion.php" class="btn-logout" role="button">Cerrar sesión</a>
+        <?php else: ?>
+          <a href="iniciar_sesion.html" class="btn-login" role="button">Iniciar sesión</a>
+          <a href="registrarse_cliente.html" class="btn-register" role="button">Registrarse</a>
+        <?php endif; ?>
+        </header>
+      <article class="detalle-plato">
+        <h1><?php echo htmlspecialchars($plato['nombre']); ?></h1>
+        <p><strong>Categoría:</strong> <?php echo htmlspecialchars($plato['categoria']); ?></p>
+        <img src="<?php echo htmlspecialchars($img); ?>" alt="<?php echo htmlspecialchars($plato['nombre']); ?>" style="max-width:400px; width:100%; height:auto; display:block; margin:10px 0;">
+        <p><strong>Precio:</strong> $<?php echo htmlspecialchars($plato['precio']); ?></p>
+        <p><strong>Descripción completa:</strong></p>
+        <p><?php echo nl2br(htmlspecialchars($plato['descripcion'])); ?></p>
+     </article>
+    </section>
   </main>
 </body>
 </html>
