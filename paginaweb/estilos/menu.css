@@ -1,0 +1,51 @@
+.entrantes, .Comidas, .bebidas, .postres {
+  margin-bottom: 40px;
+}
+
+.entrantes h2, .Comidas h2, .bebidas h2, .postres h2 {
+  margin-bottom: 20px;
+  font-size: 28px;
+  color: #fff;
+  text-align: center;
+}
+
+.entrantes article, .Comidas article, .bebidas article, .postres article {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  padding: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.entrantes article:hover, .Comidas article:hover, .bebidas article:hover, .postres article:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.entrantes article img, .Comidas article img, .bebidas article img, .postres article img {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+.entrantes article h3, .Comidas article h3, .bebidas article h3, .postres article h3 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.entrantes article p, .Comidas article p, .bebidas article p, .postres article p {
+  margin: 0 0 10px 0;
+  color: #555;
+}
+
+.entrantes article .precio, .Comidas article .precio, .bebidas article .precio, .postres article .precio {
+  font-weight: bold;
+  color: #198754;
+  font-size: 18px;
+}
