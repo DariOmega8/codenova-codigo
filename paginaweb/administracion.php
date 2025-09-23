@@ -2,90 +2,142 @@
 session_start();
 include "conexion.php";
 
+if (!isset($_SESSION['es_administrador']) || $_SESSION['es_administrador'] !== true) {
+    header("Location: inicio.php");
+    exit();
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zona Administrativa</title>
+  <title>Zona administrativa</title>
   <link rel="stylesheet" href="estilos/estilo_general.css">
   <style>
-    .admin-section {
-      background:#fff; padding:15px; margin:15px 0; border-radius:8px;
-    }
-    .admin-section h3 { margin-top:0; }
+    details { margin-bottom: 15px; background: #fff; padding: 10px; border-radius: 6px; }
+    summary { font-weight: bold; cursor: pointer; margin-bottom: 8px; }
+    form { margin: 10px 0; }
+    input, select { margin: 5px 0; padding: 6px; }
+    button { padding: 6px 12px; background: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background: #f4f4f4; }
   </style>
 </head>
 <body>
-  <main class="principal">
-    <header class="menu">
-      <nav>
-        <ul>
-          <li><a href="inicio.php">Inicio</a></li>
-          <li><a href="redes_pagos.php">Redes y pagos</a></li>
-          <li><a href="reserva1.php">Reservas</a></li>
-          <li><a href="zona_staff.html">Mozos orden</a></li>
-          <li><a href="historia.php">Historia</a></li>
-        </ul>
-      </nav>
-    </header>
+<main class="principal">
+  <header class="menu">
+    <nav>
+      <ul>
+        <li><a href="inicio.php">Inicio</a></li>
+        <li><a href="redes_pagos.php">Redes y pagos</a></li>
+        <li><a href="reservas1.php">Reservas</a></li>
+        <li><a href="zona_staff.php">Mozos orden</a></li>
+        <li><a href="historia.php">Historia</a></li>
+         <li><a href="menu.php">Menu</a></li>
+           <?php 
+            if (isset($_SESSION['es_administrador']) && $_SESSION['es_administrador'] === true) {
+                echo '<li><a href="administracion.php">Panel Admin</a></li>';
+            }
+            ?>
+      </ul>
+    </nav>
+  </header>
 
-    <section class="contenido">
-      <h2>Bienvenido, <?php echo htmlspecialchars($nombre['nombre']); ?></h2>
+  <section class="contenido">
+    <h1 style="color:#fff;">Panel de administración</h1>
 
-      <div class="admin-section">
-        <h3>Creación de usuarios</h3>
-        <form method="POST" action="crear_usuario.php">
-          <input type="text" name="nombre" placeholder="Nombre" required>
-          <input type="email" name="gmail" placeholder="Correo" required>
-          <input type="password" name="contraseña" placeholder="Contraseña" required>
-          <input type="text" name="categorizacion" placeholder="Categorización (admin, cliente, empleado)" required>
-          <button type="submit">Crear</button>
-        </form>
-      </div>
+    
+    <details>
+      <summary>Creación de usuarios</summary>
+      <form method="post" action="crear_usuarios.php">
+        <label>Nombre:</label><br>
+        <input type="text" name="nombre" required><br>
+        <label>Fecha de nacimiento:</label><br>
+        <input type="date" name="fecha" required><br>
+        <label>Gmail:</label><br>
+        <input type="email" name="gmail" required><br>
+        <label>Contraseña:</label><br>
+        <input type="password" name="password" required><br>
+        <label>Tipo:</label><br>
+        <select name="tipo" required>
+          <option value="administrador">Administrador</option>
+          <option value="empleado">Empleado</option>
+        </select><br>
+        <button type="submit">Crear usuario</button>
+      </form>
+    </details>
 
-      <div class="admin-section">
-        <h3>Reservas</h3>
+    
+    <details>
+      <summary>Gestión de platos</summary>
+      <form method="post" action="editar_platos.php">
+        <input type="hidden" name="accion" value="agregar">
+        <label>Nombre:</label><br>
+        <input type="text" name="nombre" required><br>
+        <label>Descripción:</label><br>
+        <input type="text" name="descripcion" required><br>
+        <label>Precio:</label><br>
+        <input type="number" name="precio" required><br>
+        <label>Menú:</label><br>
+        <select name="menu_id">
+          <?php
+          $menus = mysqli_query($conexion, "SELECT * FROM `menu`");
+          while($m = mysqli_fetch_assoc($menus)){
+            echo "<option value='".$m['id menu']."'>".$m['tipo']."</option>";
+          }
+          ?>
+        </select><br>
+        <button type="submit">Agregar plato</button>
+      </form>
+    </details>
+
+    
+    <details>
+      <summary>Gestión de menús</summary>
+      <form method="post" action="editar_menu.php">
+        <input type="hidden" name="accion" value="agregar">
+        <label>Tipo:</label><br>
+        <input type="text" name="tipo" required><br>
+        <label>Estado:</label><br>
+        <input type="text" name="estado" required><br>
+        <button type="submit">Agregar menú</button>
+      </form>
+    </details>
+
+   
+    <details>
+      <summary>Lista de reservas</summary>
+      <table>
+        <tr><th>ID</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Cambiar</th></tr>
         <?php
-        $res = mysqli_query($conexion, "SELECT * FROM reserva ORDER BY fecha DESC LIMIT 10");
-        while ($row = mysqli_fetch_assoc($res)) {
-          echo "<p>Reserva #{$row['id reserva']} — {$row['fecha']} — Estado: {$row['estado']}</p>";
+        $reservas = mysqli_query($conexion, "SELECT * FROM `reserva`");
+        while($r = mysqli_fetch_assoc($reservas)){
+          echo "<tr>
+                  <td>".$r['id reserva']."</td>
+                  <td>".$r['fecha']."</td>
+                  <td>".$r['hora de inicio']."</td>
+                  <td>".$r['estado']."</td>
+                  <td>
+                    <form method='post' action='editar_reservas.php'>
+                      <input type='hidden' name='id' value='".$r['id reserva']."'>
+                      <select name='estado'>
+                        <option value='Pendiente'>Pendiente</option>
+                        <option value='Finalizada'>Finalizada</option>
+                        <option value='Cancelada'>Cancelada</option>
+                      </select>
+                      <button type='submit'>Actualizar</button>
+                    </form>
+                  </td>
+                </tr>";
         }
         ?>
-      </div>
-
-      <div class="admin-section">
-        <h3>Cambiar plato</h3>
-        <form method="POST" action="editar_plato.php">
-          <input type="number" name="id_plato" placeholder="ID Plato" required>
-          <input type="text" name="nombre" placeholder="Nuevo nombre">
-          <input type="text" name="descripcion" placeholder="Nueva descripción">
-          <input type="number" step="0.01" name="precio" placeholder="Nuevo precio">
-          <button type="submit">Actualizar</button>
-        </form>
-      </div>
-
-      <div class="admin-section">
-        <h3>Cambiar menú</h3>
-        <form method="POST" action="editar_menu.php">
-          <input type="number" name="id_menu" placeholder="ID Menú" required>
-          <input type="text" name="tipo" placeholder="Nuevo tipo">
-          <button type="submit">Actualizar</button>
-        </form>
-      </div>
-
-      <div class="admin-section">
-        <h3>Información de usuarios</h3>
-        <?php
-        $res = mysqli_query($conexion, "SELECT * FROM usuario");
-        while ($row = mysqli_fetch_assoc($res)) {
-          echo "<p>{$row['id usuario']} — {$row['nombre']} — {$row['gmail']}</p>";
-        }
-        ?>
-      </div>
-
-    </section>
-  </main>
+      </table>
+    </details>
+  </section>
+</main>
 </body>
 </html>

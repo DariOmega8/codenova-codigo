@@ -16,8 +16,8 @@ if (isset($_POST['confirmar'])) {
      if ($row) {
          $id_cliente = $row['id cliente'];
 
-         $sqlReserva = "INSERT INTO reserva (`hora de inicio`, cantidad, fecha, `cliente_id cliente`, `cliente_usuario_id usuario`) 
-                        VALUES ('$hora', '$cantidad', '$fecha', '$id_cliente', '$id_usuario')";
+         $sqlReserva = "INSERT INTO reserva (`hora de inicio`, estado, cantidad, fecha, `cliente_id cliente`, `cliente_usuario_id usuario`) 
+                        VALUES ('$hora', '$estado', '$cantidad', '$fecha', '$id_cliente', '$id_usuario')";
          if (mysqli_query($conexion, $sqlReserva)) {
              echo " Reserva realizada correctamente";
              header("Location: inicio.php");
