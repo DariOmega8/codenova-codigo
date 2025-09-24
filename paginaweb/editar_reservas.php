@@ -2,15 +2,29 @@
 session_start();
 include "conexion.php";
 
+
+if (!isset($_SESSION['es_administrador']) || !$_SESSION['es_administrador']) {
+    header("Location: inicio.php");
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'];
-    $estado = $_POST['estado'];
+    $estado = mysqli_real_escape_string($conexion, $_POST['estado_reserva']);
 
-    $sql = "UPDATE reserva SET estado='$estado' WHERE `id reserva`=$id";
+    if(!is_numeric($id)) {
+        header("Location: administracion.php?error=ID inválido");
+        exit();
+    }
+
+    $sql = "UPDATE reserva SET estado = '$estado' WHERE `id reserva` = $id";
+    
     if (mysqli_query($conexion, $sql)) {
-        echo "Estado de la reserva actualizado.";
+        header("Location: administracion.php?mensaje=Estado de reserva actualizado");
+        exit();
     } else {
-        echo "Error: " . mysqli_error($conexion);
+        header("Location: administracion.php?error=Error al actualizar reserva");
+        exit();
     }
 }
 ?>
