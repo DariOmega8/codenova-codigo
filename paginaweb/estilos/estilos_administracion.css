@@ -245,3 +245,57 @@ details {
         font-weight: bold;
         font-size: 14px;
     }
+
+    .form-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .action-links {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 15px 0;
+    }
+
+    .action-link {
+        display: block;
+        background: #17a2b8;
+        color: white;
+        padding: 12px 20px;
+        text-decoration: none;
+        border-radius: 6px;
+        text-align: center;
+        transition: all 0.3s ease;
+        margin: 5px 0;
+    }
+
+    .action-link:hover {
+        background: #138496;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .action-link.promociones { background: #9b59b6; }
+    .action-link.promociones:hover { background: #8e44ad; }
+
+    .action-link.ventas { background: #e74c3c; }
+    .action-link.ventas:hover { background: #c0392b; }
+
+    .action-link.visitas { background: #3498db; }
+    .action-link.visitas:hover { background: #2980b9; }
+
+    .action-link.stock { background: #27ae60; }
+    .action-link.stock:hover { background: #219a52; }
+
+    /* Asegurar que los detalles tengan suficiente espacio */
+    details {
+        margin-bottom: 25px;
+        padding: 20px;
+    }
+
+    summary {
+        margin-bottom: 15px;
+        font-size: 1.2em;
+    }

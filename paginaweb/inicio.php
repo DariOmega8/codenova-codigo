@@ -23,7 +23,11 @@ session_start();
           <li><a href="inicio.php">Inicio</a></li>
           <li><a href="redes_pagos.php">Redes y pagos</a></li>
           <li><a href="reservas1.php">Reservas</a></li>
-          <li><a href="zona_staff.php">Mozos orden</a></li>
+          <?php
+          if (isset($_SESSION['es_empleado']) === true) {
+              echo '<li><a href="zona_staff.php">Mozos orden</a></li>';
+          }
+          ?>
           <li><a href="historia.php">Historia</a></li>
           <li><a href="menu.php">Menu</a></li>
            <?php 

@@ -30,9 +30,9 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
         <li><a href="inicio.php">Inicio</a></li>
         <li><a href="redes_pagos.php">Redes y pagos</a></li>
         <li><a href="reservas1.php">Reservas</a></li>
-        <li><a href="zona_staff.html">Mozos orden</a></li>
+        <li><a href="zona_staff.php">Mozos orden</a></li>
         <li><a href="historia.php">Historia</a></li>
-        <li><a href="logout.php">Cerrar Sesión (<?php echo $_SESSION['nombre']; ?>)</a></li>
+        <li><a href="cerrar_sesion.php">Cerrar Sesión (<?php echo $_SESSION['nombre']; ?>)</a></li>
       </ul>
     </nav>
   </header>
@@ -381,6 +381,70 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
         </div>
       </div>
     </details>
+ 
+    <details>
+      <summary>Gestión de Stock</summary>
+      <div class="form-container">
+        <p>Gestión completa del inventario del restaurante</p>
+        <div class="action-links">
+            <a href="gestion_stock.php" class="action-link stock">Ir a Gestión de Stock</a>
+        </div>
+      </div>
+    </details>
+
+   
+    <details>
+      <summary>Verificación de Reservas</summary>
+      <div class="form-container">
+        <p>Verificar reservas de clientes y asignar mesas</p>
+        <div class="action-links">
+            <a href="verificar_reserva.php" class="action-link">Ir a Verificación de Reservas</a>
+        </div>
+      </div>
+    </details>
+
+
+    <details>
+      <summary>Gestión de Promociones</summary>
+      <div class="form-container">
+        <p>Crear y administrar promociones para clientes</p>
+        <div class="action-links">
+            <a href="gestion_promociones.php" class="action-link promociones">Ir a Gestión de Promociones</a>
+        </div>
+      </div>
+    </details>
+
+
+    <details>
+      <summary>Estadísticas de Ventas</summary>
+      <div class="form-container">
+        <p>Reportes detallados de ventas y análisis de ingresos</p>
+        <div class="action-links">
+            <a href="estadisticas_ventas.php" class="action-link ventas">Ir a Estadísticas de Ventas</a>
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary>Estadísticas de Visitas</summary>
+      <div class="form-container">
+        <p>Analítica de tráfico y comportamiento de usuarios</p>
+        <div class="action-links">
+            <a href="estadisticas_visitas.php" class="action-link visitas">Ir a Estadísticas de Visitas</a>
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary>Gestión de Mesas</summary>
+      <div class="form-container">
+        <p>Crear y administrar las mesas del restaurante</p>
+        <div class="action-links">
+            <a href="gestion_mesas.php" class="action-link">Ir a Gestión de Mesas</a>
+        </div>
+      </div>
+    </details>
+
   </section>
 </main>
 </body>
