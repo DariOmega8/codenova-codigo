@@ -46,118 +46,66 @@ mysqli_query($conexion, $sql_registrar_visita);
     <title>Estadísticas de Visitas</title>
     <link rel="stylesheet" href="estilos/estilo_general.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .stats-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 20px; 
-            margin: 20px 0; 
-        }
-        .stat-card { 
-            background: white; 
-            padding: 25px; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            text-align: center;
-            border-left: 5px solid #3498db;
-        }
-        .stat-number { 
-            font-size: 2.5em; 
-            font-weight: bold; 
-            color: #2c3e50;
-            margin: 10px 0;
-        }
-        .stat-label { 
-            color: #7f8c8d; 
-            font-size: 1.1em;
-        }
-        .chart-container { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 10px; 
-            margin: 20px 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin: 20px 0;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        th, td { 
-            border: 1px solid #ddd; 
-            padding: 15px; 
-            text-align: left; 
-        }
-        th { 
-            background: #34495e; 
-            color: white;
-            font-weight: bold;
-        }
-        tr:nth-child(even) { background: #f8f9fa; }
-        .filters { 
-            background: #ecf0f1; 
-            padding: 20px; 
-            border-radius: 10px; 
-            margin: 20px 0;
-        }
-        .filter-group { margin: 15px 0; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; }
-        input, select { 
-            padding: 10px; 
-            border: 2px solid #bdc3c7;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .btn { 
-            padding: 12px 25px; 
-            background: #3498db; 
-            color: white; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer;
-            font-size: 16px;
-            margin: 5px;
-        }
-    </style>
 </head>
 <body>
-    <main class="principal">
+     <div class="contenedor-principal">
+        <!-- Header superior -->
         <header class="menu">
-            <nav>
+            <div class="logo">
+                <img src="estilos/imagenes/logo.jpeg" alt="La Chacra Gourmet" class="logo-img" onerror="this.style.display='none'">
+            </div>
+            <nav class="navegacion-principal">
                 <ul>
                     <li><a href="inicio.php">Inicio</a></li>
                     <li><a href="administracion.php">Panel Admin</a></li>
-                    <li><a href="logout.php">Cerrar Sesión</a></li>
+                    <li><a href="cerrar_sesion.php" class="btn-logout">Cerrar Sesión</a></li>
                 </ul>
             </nav>
         </header>
 
-        <section class="contenido">
-            <div class="container">
-                <h1> Estadísticas de Visitas</h1>
+        <!-- Contenido principal con sidebar -->
+        <div class="contenido-con-sidebar">
+            <!-- Sidebar de estadísticas de visitas -->
+            <aside class="sidebar">
+                <ul>
+                    <li><a href="#resumen-visitas">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Resumen de Visitas</span>
+                    </a></li>
+                    <li><a href="#evolucion-visitas">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Evolución de Visitas</span>
+                    </a></li>
+                    <li><a href="#detalle-mensual">
+                        <i class="fas fa-table"></i>
+                        <span>Detalle Mensual</span>
+                    </a></li>
+                </ul>
+            </aside>
 
-             
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">📈 Total de Visitas</div>
-                        <div class="stat-number"><?php echo number_format($total_visitas); ?></div>
-                        <div style="color: #27ae60; font-size: 0.9em;"><?php echo number_format($total_personas); ?> personas total</div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-label">📅 Visitas Hoy</div>
-                        <div class="stat-number"><?php echo $visitas_hoy; ?></div>
-                        <div style="color: #e74c3c; font-size: 0.9em;"><?php echo $personas_hoy; ?> personas hoy</div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-label">👥 Promedio Diario</div>
-                        <div class="stat-number">
+            <!-- Contenido principal -->
+            <main class="contenido-principal">
+                <section class="banner-admin">
+                    <h1>Estadísticas de Visitas</h1>
+                </section>
+
+                <!-- Resumen de Visitas -->
+                <section id="resumen-visitas" class="seccion-admin">
+                    <h2>Resumen de Visitas</h2>
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <h3>Total de Visitas</h3>
+                            <div class="stat-number"><?php echo number_format($total_visitas); ?></div>
+                            <p><?php echo number_format($total_personas); ?> personas total</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Visitas Hoy</h3>
+                            <div class="stat-number"><?php echo $visitas_hoy; ?></div>
+                            <p><?php echo $personas_hoy; ?> personas hoy</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Promedio Diario</h3>
+                            <div class="stat-number">
                             <?php 
                            
                             $sql_primer_dia = "SELECT MIN(DATE(`fecha hora`)) as primer_dia FROM `registro de visita`";
@@ -171,27 +119,34 @@ mysqli_query($conexion, $sql_registrar_visita);
                             echo number_format($total_visitas / $dias_totales, 1); 
                             ?>
                         </div>
-                        <div style="color: #9b59b6; font-size: 0.9em;">En <?php echo $dias_totales; ?> días</div>
+                            <p>En <?php echo $dias_totales; ?> días</p>
+                        </div>
+                </div>
+           </section>
+
+                <!-- Evolución de Visitas -->
+                <section id="evolucion-visitas" class="seccion-admin">
+                    <h2>Evolución de Visitas</h2>
+                    <div class="chart-container">
+                        <canvas id="visitasChart" width="400" height="200"></canvas>
                     </div>
-                </div>
+                </section>
 
-               
-                <div class="chart-container">
-                    <h2>Visitas Mensuales</h2>
-                    <canvas id="visitasChart" width="400" height="200"></canvas>
-                </div>
-
-             
-                <div class="chart-container">
+                <!-- Detalle Mensual -->
+                <section id="detalle-mensual" class="seccion-admin">
                     <h2>Detalle Mensual</h2>
-                    <table>
-                        <tr>
-                            <th>Mes/Año</th>
-                            <th>Total Visitas</th>
-                            <th>Total Personas</th>
-                            <th>Promedio Diario</th>
-                            <th>Tendencia</th>
-                        </tr>
+                    <div class="tabla-container">
+                        <table class="tabla-admin">
+                            <thead>
+                                <tr>
+                                    <th>Mes/Año</th>
+                                    <th>Total Visitas</th>
+                                    <th>Total Personas</th>
+                                    <th>Promedio Diario</th>
+                                    <th>Tendencia</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                         <?php 
                         $meses_anteriores = [];
                         while($mes = mysqli_fetch_assoc($visitas_mensuales)) {
@@ -203,7 +158,6 @@ mysqli_query($conexion, $sql_registrar_visita);
                             $dias_mes = cal_days_in_month(CAL_GREGORIAN, $mes['mes'], $mes['año']);
                             $promedio_diario = $mes['total_visitas'] / $dias_mes;
                             
-                        
                             $tendencia = '➡️';
                             if ($index < count($meses_anteriores) - 1) {
                                 $mes_anterior = $meses_anteriores[$index + 1];
@@ -215,20 +169,30 @@ mysqli_query($conexion, $sql_registrar_visita);
                             }
                         ?>
                             <tr>
-                                <td><strong><?php echo $nombre_mes; ?></strong></td>
-                                <td><?php echo $mes['total_visitas']; ?></td>
-                                <td><?php echo $mes['total_personas']; ?></td>
+                                <td><?php echo $nombre_mes; ?></td>
+                                <td><?php echo number_format($mes['total_visitas']); ?></td>
+                                <td><?php echo number_format($mes['total_personas']); ?></td>
                                 <td><?php echo number_format($promedio_diario, 1); ?></td>
-                                <td style="text-align: center;"><?php echo $tendencia; ?></td>
+                                <td><?php echo $tendencia; ?></td>
                             </tr>
                         <?php endforeach; ?>
-                    </table>
-                </div>
-            </div>
-        </section>
-    </main>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+        </div>
 
-    <script>
+         <!-- Footer -->
+    <footer>
+      <div class="footer-texto">LA CHACRA GOURMET - PANEL ADMINISTRATIVO</div>
+      <div class="footer-buttons">
+        <a href="inicio.php">Volver al Inicio</a>
+        <a href="cerrar_sesion.php">Cerrar Sesión</a>
+      </div>
+    </footer>
+  </div>
+        <script>
      
         const meses = [
             <?php 

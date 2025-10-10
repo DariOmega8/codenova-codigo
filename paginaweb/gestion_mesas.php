@@ -51,173 +51,154 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_mesa'])) {
 $mesas = mysqli_query($conexion, "SELECT * FROM mesa ORDER BY numero");
 ?>
 
-<!DOCTYPE html>
 <html>
 <head>
     <title>Gestión de Mesas</title>
     <link rel="stylesheet" href="estilos/estilo_general.css">
-    <style>
-        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
-        .mensaje { background: #d4edda; color: #155724; padding: 15px; margin: 15px 0; border-radius: 8px; }
-        .error { background: #f8d7da; color: #721c24; padding: 15px; margin: 15px 0; border-radius: 8px; }
-        .card { 
-            background: white; 
-            padding: 25px; 
-            border-radius: 10px; 
-            margin: 20px 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .form-group { margin: 15px 0; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; }
-        input, select { 
-            padding: 12px; 
-            width: 100%; 
-            max-width: 300px; 
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-        }
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin: 20px 0;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        th, td { 
-            border: 1px solid #ddd; 
-            padding: 12px; 
-            text-align: center; 
-        }
-        th { 
-            background: #34495e; 
-            color: white;
-            font-weight: bold;
-        }
-        tr:nth-child(even) { background: #f8f9fa; }
-        .btn { 
-            padding: 12px 25px; 
-            color: white; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer;
-            font-size: 16px;
-            margin: 5px;
-        }
-        .btn-success { background: #27ae60; }
-        .btn-danger { background: #e74c3c; }
-        .btn-info { background: #3498db; }
-        
-        .estado-disponible { color: #27ae60; font-weight: bold; }
-        .estado-ocupada { color: #e74c3c; font-weight: bold; }
-        .estado-reservada { color: #f39c12; font-weight: bold; }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <main class="principal">
+     <div class="contenedor-principal">
+        <!-- Header superior -->
         <header class="menu">
-            <nav>
+            <div class="logo">
+                <img src="estilos/imagenes/logo.jpeg" alt="La Chacra Gourmet" class="logo-img" onerror="this.style.display='none'">
+            </div>
+            <nav class="navegacion-principal">
                 <ul>
                     <li><a href="inicio.php">Inicio</a></li>
                     <li><a href="administracion.php">Panel Admin</a></li>
-                    <li><a href="logout.php">Cerrar Sesión</a></li>
+                    <li><a href="cerrar_sesion.php" class="btn-logout">Cerrar Sesión</a></li>
                 </ul>
             </nav>
         </header>
 
-        <section class="contenido">
-            <div class="container">
-                <h1> Gestión de Mesas</h1>
+        <!-- Contenido principal con sidebar -->
+        <div class="contenido-con-sidebar">
+            <!-- Sidebar de gestión de mesas -->
+            <aside class="sidebar">
+                <ul>
+                    <li><a href="#crear-mesa">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Crear Mesa</span>
+                    </a></li>
+                    <li><a href="#listado-mesas">
+                        <i class="fas fa-list"></i>
+                        <span>Listado de Mesas</span>
+                    </a></li>
+                    <li><a href="#estadisticas-mesas">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Estadísticas</span>
+                    </a></li>
+                </ul>
+            </aside>
 
+            <!-- Contenido principal -->
+            <main class="contenido-principal">
+                <section class="banner-admin">
+                    <h1>Gestión de Mesas</h1>
+                </section>
+
+                <!-- Mensajes -->
                 <?php if (isset($mensaje)): ?>
-                    <div class="mensaje"><?php echo $mensaje; ?></div>
+                    <div class="mensaje-exito"><?php echo $mensaje; ?></div>
                 <?php endif; ?>
                 
                 <?php if (isset($error)): ?>
-                    <div class="error"><?php echo $error; ?></div>
+                    <div class="mensaje-error"><?php echo $error; ?></div>
                 <?php endif; ?>
 
-               
-                <div class="card">
-                    <h2> Crear Nueva Mesa</h2>
-                    <form method="POST">
-                        <div class="form-group">
-                            <label>Número de Mesa:</label>
-                            <input type="number" name="numero" min="1" required placeholder="Ej: 1, 2, 3...">
+                <!-- Crear Mesa -->
+                <section id="crear-mesa" class="seccion-admin">
+                    <h2>Crear Nueva Mesa</h2>
+                    <div class="formulario-container">
+                        <div class="formulario-seccion">
+                            <form method="POST" class="formulario-admin">
+                                <div class="fila-formulario">
+                                    <div class="grupo-formulario">
+                                        <label>Número de Mesa:</label>
+                                        <input type="number" name="numero" min="1" required placeholder="Ej: 1, 2, 3...">
+                                    </div>
+                                    <div class="grupo-formulario">
+                                        <label>Capacidad (personas):</label>
+                                        <input type="number" name="capacidad" min="1" max="20" required placeholder="Ej: 2, 4, 6...">
+                                    </div>
+                                </div>
+                                <button type="submit" name="crear_mesa" class="btn-admin">Crear Mesa</button>
+                            </form>
                         </div>
-                        
-                        <div class="form-group">
-                            <label>Capacidad (personas):</label>
-                            <input type="number" name="capacidad" min="1" max="20" required placeholder="Ej: 2, 4, 6...">
-                        </div>
-                        
-                        <button type="submit" name="crear_mesa" class="btn btn-success">Crear Mesa</button>
-                    </form>
-                </div>
+                    </div>
+                </section>
 
-              
-                <div class="card">
+                <!-- Listado de Mesas -->
+                <section id="listado-mesas" class="seccion-admin">
                     <h2>Mesas del Restaurante</h2>
-                    
                     <?php if (mysqli_num_rows($mesas) > 0): ?>
-                        <table>
-                            <tr>
-                                <th>ID</th>
-                                <th>Número</th>
-                                <th>Capacidad</th>
-                                <th>Estado</th>
-                                <th>Fecha Asignación</th>
-                                <th>Acciones</th>
-                            </tr>
-                            <?php while($mesa = mysqli_fetch_assoc($mesas)): 
-                                $clase_estado = 'estado-' . $mesa['estado'];
-                            ?>
-                                <tr>
-                                    <td>#<?php echo $mesa['id mesa']; ?></td>
-                                    <td><strong>Mesa <?php echo $mesa['numero']; ?></strong></td>
-                                    <td>👥 <?php echo $mesa['capacidad']; ?> personas</td>
-                                    <td class="<?php echo $clase_estado; ?>">
-                                        <?php 
-                                        $icono = '';
-                                        switch($mesa['estado']) {
-                                            case 'disponible': $icono = '✅'; break;
-                                            case 'ocupada': $icono = '🟡'; break;
-                                            case 'reservada': $icono = '🔵'; break;
-                                        }
-                                        echo $icono . ' ' . ucfirst($mesa['estado']);
-                                        ?>
-                                    </td>
-                                    <td><?php echo $mesa['fecha de asignacion']; ?></td>
-                                    <td>
-                                        <?php if ($mesa['estado'] == 'disponible'): ?>
-                                            <form method="POST" style="display: inline;">
-                                                <input type="hidden" name="mesa_id" value="<?php echo $mesa['id mesa']; ?>">
-                                                <button type="submit" name="eliminar_mesa" class="btn btn-danger" 
-                                                        onclick="return confirm('¿Estás seguro de eliminar la Mesa <?php echo $mesa['numero']; ?>?')">
-                                                    Eliminar
-                                                </button>
-                                            </form>
-                                        <?php else: ?>
-                                            <span style="color: #7f8c8d;">No se puede eliminar (en uso)</span>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                            <?php endwhile; ?>
-                        </table>
-                    <?php else: ?>
-                        <div style="text-align: center; padding: 30px; color: #7f8c8d;">
-                            <p>No hay mesas creadas aún.</p>
-                            <p>Crea la primera mesa usando el formulario superior.</p>
+                        <div class="tabla-container">
+                            <table class="tabla-admin">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Número</th>
+                                        <th>Capacidad</th>
+                                        <th>Estado</th>
+                                        <th>Fecha Asignación</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php 
+                                    // Reiniciar el puntero del resultado para poder iterar nuevamente
+                                    mysqli_data_seek($mesas, 0);
+                                    while($mesa = mysqli_fetch_assoc($mesas)): 
+                                        $clase_estado = 'estado-' . $mesa['estado'];
+                                    ?>
+                                        <tr>
+                                            <td>#<?php echo $mesa['id mesa']; ?></td>
+                                            <td><strong>Mesa <?php echo $mesa['numero']; ?></strong></td>
+                                            <td>👥 <?php echo $mesa['capacidad']; ?> personas</td>
+                                            <td class="<?php echo $clase_estado; ?>">
+                                                <?php 
+                                                $icono = '';
+                                                switch($mesa['estado']) {
+                                                    case 'disponible': $icono = '✅'; break;
+                                                    case 'ocupada': $icono = '🟡'; break;
+                                                    case 'reservada': $icono = '🔵'; break;
+                                                }
+                                                echo $icono . ' ' . ucfirst($mesa['estado']);
+                                                ?>
+                                            </td>
+                                            <td><?php echo $mesa['fecha de asignacion']; ?></td>
+                                            <td>
+                                                <?php if ($mesa['estado'] == 'disponible'): ?>
+                                                    <form method="POST" class="form-acciones">
+                                                        <input type="hidden" name="mesa_id" value="<?php echo $mesa['id mesa']; ?>">
+                                                        <button type="submit" name="eliminar_mesa" class="btn-eliminar" 
+                                                                onclick="return confirm('¿Estás seguro de eliminar la Mesa <?php echo $mesa['numero']; ?>?')">
+                                                            Eliminar
+                                                        </button>
+                                                    </form>
+                                                <?php else: ?>
+                                                    <span style="color: #7f8c8d;">No se puede eliminar (en uso)</span>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                </tbody>
+                            </table>
                         </div>
+                    <?php else: ?>
+                        <p style="text-align: center; color: #7f8c8d; padding: 20px;">
+                            No hay mesas creadas aún. Crea la primera mesa usando el formulario superior.
+                        </p>
                     <?php endif; ?>
-                </div>
+                </section>
 
-                <div class="card">
+                 <!-- Estadísticas de Mesas -->
+                <section id="estadisticas-mesas" class="seccion-admin">
                     <h2>Estadísticas de Mesas</h2>
                     <?php
-                
+                    // Reiniciar consulta para estadísticas
                     $sql_stats = "SELECT 
                         COUNT(*) as total_mesas,
                         SUM(CASE WHEN estado = 'disponible' THEN 1 ELSE 0 END) as disponibles,
@@ -226,37 +207,92 @@ $mesas = mysqli_query($conexion, "SELECT * FROM mesa ORDER BY numero");
                         SUM(capacidad) as capacidad_total
                     FROM mesa";
                     
-                    $stats = mysqli_fetch_assoc(mysqli_query($conexion, $sql_stats));
+                    $result_stats = mysqli_query($conexion, $sql_stats);
+                    $stats = mysqli_fetch_assoc($result_stats);
                     ?>
                     
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                        <div style="text-align: center; padding: 15px; background: #e8f4f8; border-radius: 8px;">
-                            <div style="font-size: 2em; font-weight: bold;"><?php echo $stats['total_mesas']; ?></div>
-                            <div>Total Mesas</div>
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <h3>Total Mesas</h3>
+                            <div class="stat-number"><?php echo $stats['total_mesas']; ?></div>
                         </div>
-                        
-                        <div style="text-align: center; padding: 15px; background: #d4edda; border-radius: 8px;">
-                            <div style="font-size: 2em; font-weight: bold; color: #27ae60;"><?php echo $stats['disponibles']; ?></div>
-                            <div>Disponibles</div>
+                        <div class="stat-card">
+                            <h3>Disponibles</h3>
+                            <div class="stat-number" style="color: #27ae60;"><?php echo $stats['disponibles']; ?></div>
                         </div>
-                        
-                        <div style="text-align: center; padding: 15px; background: #fff3cd; border-radius: 8px;">
-                            <div style="font-size: 2em; font-weight: bold; color: #f39c12;"><?php echo $stats['reservadas']; ?></div>
-                            <div>Reservadas</div>
+                        <div class="stat-card">
+                            <h3>Reservadas</h3>
+                            <div class="stat-number" style="color: #f39c12;"><?php echo $stats['reservadas']; ?></div>
                         </div>
-                        
-                        <div style="text-align: center; padding: 15px; background: #f8d7da; border-radius: 8px;">
-                            <div style="font-size: 2em; font-weight: bold; color: #e74c3c;"><?php echo $stats['ocupadas']; ?></div>
-                            <div>Ocupadas</div>
+                        <div class="stat-card">
+                            <h3>Ocupadas</h3>
+                            <div class="stat-number" style="color: #e74c3c;"><?php echo $stats['ocupadas']; ?></div>
                         </div>
                     </div>
-                    
                     <div style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
                         <strong>Capacidad total del restaurante:</strong> <?php echo $stats['capacidad_total']; ?> personas
                     </div>
-                </div>
-            </div>
-        </section>
-    </main>
+                </section>
+            </main>
+        </div>
+
+         <!-- Footer -->
+    <footer>
+      <div class="footer-texto">LA CHACRA GOURMET - PANEL ADMINISTRATIVO</div>
+      <div class="footer-buttons">
+        <a href="inicio.php">Volver al Inicio</a>
+        <a href="cerrar_sesion.php">Cerrar Sesión</a>
+      </div>
+    </footer>
+  </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    
+    <script>
+        // Script para navegación suave entre secciones
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navegación del sidebar
+            const sidebarLinks = document.querySelectorAll('.sidebar a');
+            const sections = document.querySelectorAll('.seccion-admin');
+            
+            // Mostrar solo la primera sección al cargar
+            if (sections.length > 0) {
+                sections.forEach((section, index) => {
+                    section.style.display = index === 0 ? 'block' : 'none';
+                });
+            }
+            
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    
+                    if (targetSection) {
+                        // Ocultar todas las secciones
+                        sections.forEach(section => {
+                            section.style.display = 'none';
+                        });
+                        
+                        // Mostrar la sección objetivo
+                        targetSection.style.display = 'block';
+                        
+                        // Scroll suave
+                        targetSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // Manejo de imágenes
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                img.addEventListener('error', function() {
+                    console.log('Imagen no encontrada:', this.src);
+                });
+                img.addEventListener('load', function() {
+                    this.classList.add('loaded');
+                });
+            });
+        });
+    </script>
 </body>
 </html>

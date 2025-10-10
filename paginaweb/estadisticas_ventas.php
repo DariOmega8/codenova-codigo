@@ -87,195 +87,193 @@ $platos_populares = mysqli_query($conexion, $sql_platos_populares);
     <title>Estadísticas de Ventas</title>
     <link rel="stylesheet" href="estilos/estilo_general.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .stats-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-            gap: 20px; 
-            margin: 20px 0; 
-        }
-        .stat-card { 
-            background: white; 
-            padding: 25px; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            text-align: center;
-            border-left: 5px solid #e74c3c;
-        }
-        .stat-number { 
-            font-size: 2em; 
-            font-weight: bold; 
-            color: #2c3e50;
-            margin: 10px 0;
-        }
-        .filters { 
-            background: #ecf0f1; 
-            padding: 20px; 
-            border-radius: 10px; 
-            margin: 20px 0;
-        }
-        .filter-group { 
-            display: inline-block; 
-            margin: 0 15px 15px 0; 
-        }
-        .chart-container { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 10px; 
-            margin: 20px 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin: 20px 0;
-        }
-        th, td { 
-            border: 1px solid #ddd; 
-            padding: 12px; 
-            text-align: left; 
-        }
-        th { 
-            background: #34495e; 
-            color: white;
-        }
-        .btn { 
-            padding: 10px 20px; 
-            background: #3498db; 
-            color: white; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
-    <main class="principal">
+     <div class="contenedor-principal">
+        <!-- Header superior -->
         <header class="menu">
-            <nav>
+            <div class="logo">
+                <img src="estilos/imagenes/logo.jpeg" alt="La Chacra Gourmet" class="logo-img" onerror="this.style.display='none'">
+            </div>
+            <nav class="navegacion-principal">
                 <ul>
                     <li><a href="inicio.php">Inicio</a></li>
                     <li><a href="administracion.php">Panel Admin</a></li>
-                    <li><a href="logout.php">Cerrar Sesión</a></li>
+                    <li><a href="cerrar_sesion.php" class="btn-logout">Cerrar Sesión</a></li>
                 </ul>
             </nav>
         </header>
 
-        <section class="contenido">
-            <div class="container">
-                <h1>Estadísticas de Ventas</h1>
+        <!-- Contenido principal con sidebar -->
+        <div class="contenido-con-sidebar">
+            <!-- Sidebar de estadísticas de ventas -->
+            <aside class="sidebar">
+                <ul>
+                    <li><a href="#resumen-ventas">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Resumen de Ventas</span>
+                    </a></li>
+                    <li><a href="#evolucion-ventas">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Evolución de Ventas</span>
+                    </a></li>
+                    <li><a href="#detalle-ventas">
+                        <i class="fas fa-table"></i>
+                        <span>Detalle de Ventas</span>
+                    </a></li>
+                    <li><a href="#platos-populares">
+                        <i class="fas fa-utensils"></i>
+                        <span>Platos Populares</span>
+                    </a></li>
+                </ul>
+            </aside>
 
-               
-                <div class="filters">
-                    <form method="POST">
-                        <div class="filter-group">
-                            <label>Fecha Inicio:</label>
-                            <input type="date" name="fecha_inicio" value="<?php echo $fecha_inicio; ?>">
-                        </div>
-                        <div class="filter-group">
-                            <label>Fecha Fin:</label>
-                            <input type="date" name="fecha_fin" value="<?php echo $fecha_fin; ?>">
-                        </div>
-                        <div class="filter-group">
-                            <label>Tipo Reporte:</label>
-                            <select name="tipo_reporte">
-                                <option value="diario" <?php echo $tipo_reporte=='diario'?'selected':''; ?>>Diario</option>
-                                <option value="mensual" <?php echo $tipo_reporte=='mensual'?'selected':''; ?>>Mensual</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <br>
-                            <button type="submit" class="btn"> Generar Reporte</button>
-                        </div>
-                    </form>
-                </div>
+            <!-- Contenido principal -->
+            <main class="contenido-principal">
+                <section class="banner-admin">
+                    <h1>Estadísticas de Ventas</h1>
+                </section>
 
-             
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div> Total Pedidos</div>
-                        <div class="stat-number"><?php echo $estadisticas['total_pedidos'] ?? 0; ?></div>
-                        <div>Período seleccionado</div>
-                    </div>
-                    <div class="stat-card">
-                        <div> Total Ventas</div>
-                        <div class="stat-number">$<?php echo number_format($estadisticas['total_ventas'] ?? 0, 2); ?></div>
-                        <div>Ingresos totales</div>
-                    </div>
-                    <div class="stat-card">
-                        <div> Promedio por Pedido</div>
-                        <div class="stat-number">$<?php echo number_format($estadisticas['promedio_venta'] ?? 0, 2); ?></div>
-                        <div>Ticket promedio</div>
-                    </div>
-                </div>
-
-               
-                <div class="chart-container">
-                    <h2> Evolución de Ventas</h2>
-                    <canvas id="ventasChart" width="400" height="200"></canvas>
-                </div>
-
-              
-                <div class="chart-container">
-                    <h2>Detalle de Ventas por <?php echo $tipo_reporte == 'diario' ? 'Día' : 'Mes'; ?></h2>
-                    <table>
-                        <tr>
-                            <th><?php echo $tipo_reporte == 'diario' ? 'Fecha' : 'Mes/Año'; ?></th>
-                            <th>Total Pedidos</th>
-                            <th>Total Ventas</th>
-                            <th>Promedio por Pedido</th>
-                        </tr>
-                        <?php while($venta = mysqli_fetch_assoc($ventas_periodo)): ?>
-                            <tr>
-                                <td>
-                                    <?php 
-                                    if ($tipo_reporte == 'diario') {
-                                        echo $venta['fecha'];
-                                    } else {
-                                        echo date('F Y', mktime(0, 0, 0, $venta['mes'], 1, $venta['año']));
-                                    }
-                                    ?>
-                                </td>
-                                <td><?php echo $venta['total_pedidos']; ?></td>
-                                <td>$<?php echo number_format($venta['total_ventas'], 2); ?></td>
-                                <td>$<?php echo number_format($venta['total_ventas'] / max($venta['total_pedidos'], 1), 2); ?></td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </table>
-                </div>
-
-               
-                <div class="chart-container">
-                    <h2> Platos Más Populares</h2>
-                    <table>
-                        <tr>
-                            <th>Plato</th>
-                            <th>Precio</th>
-                            <th>Veces Vendido</th>
-                            <th>Total Generado</th>
-                            <th>Popularidad</th>
-                        </tr>
-                        <?php while($plato = mysqli_fetch_assoc($platos_populares)): 
-                            $popularidad = min(100, ($plato['veces_vendido'] / max($estadisticas['total_pedidos'], 1)) * 100);
-                        ?>
-                            <tr>
-                                <td><strong><?php echo $plato['nombre']; ?></strong></td>
-                                <td>$<?php echo number_format($plato['precio'], 2); ?></td>
-                                <td><?php echo $plato['veces_vendido']; ?></td>
-                                <td>$<?php echo number_format($plato['total_ventas'], 2); ?></td>
-                                <td>
-                                    <div style="background: #3498db; height: 20px; width: <?php echo $popularidad; ?>%;border-radius: 10px; color: white; text-align: center; font-size: 12px;">
-                                        <?php echo number_format($popularidad, 1); ?>%
+                <!-- Filtros -->
+                <section class="seccion-admin">
+                    <h2>Filtros del Reporte</h2>
+                    <div class="formulario-container">
+                        <div class="formulario-seccion">
+                            <form method="POST" class="formulario-admin">
+                                <div class="fila-formulario">
+                                    <div class="grupo-formulario">
+                                        <label>Fecha Inicio:</label>
+                                        <input type="date" name="fecha_inicio" value="<?php echo $fecha_inicio; ?>">
                                     </div>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </table>
-                </div>
-            </div>
-        </section>
-    </main>
+                                    <div class="grupo-formulario">
+                                        <label>Fecha Fin:</label>
+                                        <input type="date" name="fecha_fin" value="<?php echo $fecha_fin; ?>">
+                                    </div>
+                                    <div class="grupo-formulario">
+                                        <label>Tipo Reporte:</label>
+                                        <select name="tipo_reporte">
+                                            <option value="diario" <?php echo $tipo_reporte=='diario'?'selected':''; ?>>Diario</option>
+                                            <option value="mensual" <?php echo $tipo_reporte=='mensual'?'selected':''; ?>>Mensual</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-admin">Generar Reporte</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Resumen de Ventas -->
+                <section id="resumen-ventas" class="seccion-admin">
+                    <h2>Resumen de Ventas</h2>
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <h3>Total Pedidos</h3>
+                            <div class="stat-number"><?php echo $estadisticas['total_pedidos'] ?? 0; ?></div>
+                            <p>Período seleccionado</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Total Ventas</h3>
+                            <div class="stat-number">$<?php echo number_format($estadisticas['total_ventas'] ?? 0, 2); ?></div>
+                            <p>Ingresos totales</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Promedio por Pedido</h3>
+                            <div class="stat-number">$<?php echo number_format($estadisticas['promedio_venta'] ?? 0, 2); ?></div>
+                            <p>Ticket promedio</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Evolución de Ventas -->
+                <section id="evolucion-ventas" class="seccion-admin">
+                    <h2>Evolución de Ventas</h2>
+                    <div class="chart-container">
+                        <canvas id="ventasChart" width="400" height="200"></canvas>
+                    </div>
+                </section>
+
+                <!-- Detalle de Ventas -->
+                <section id="detalle-ventas" class="seccion-admin">
+                    <h2>Detalle de Ventas por <?php echo $tipo_reporte == 'diario' ? 'Día' : 'Mes'; ?></h2>
+                    <div class="tabla-container">
+                        <table class="tabla-admin">
+                            <thead>
+                                <tr>
+                                    <th><?php echo $tipo_reporte == 'diario' ? 'Fecha' : 'Mes/Año'; ?></th>
+                                    <th>Total Pedidos</th>
+                                    <th>Total Ventas</th>
+                                    <th>Promedio por Pedido</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while($venta = mysqli_fetch_assoc($ventas_periodo)): ?>
+                                    <tr>
+                                        <td>
+                                            <?php 
+                                            if ($tipo_reporte == 'diario') {
+                                                echo $venta['fecha'];
+                                            } else {
+                                                echo date('F Y', mktime(0, 0, 0, $venta['mes'], 1, $venta['año']));
+                                            }
+                                            ?>
+                                        </td>
+                                        <td><?php echo $venta['total_pedidos']; ?></td>
+                                        <td>$<?php echo number_format($venta['total_ventas'], 2); ?></td>
+                                        <td>$<?php echo number_format($venta['total_ventas'] / max($venta['total_pedidos'], 1), 2); ?></td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Platos Populares -->
+                <section id="platos-populares" class="seccion-admin">
+                    <h2>Platos Más Populares</h2>
+                    <div class="tabla-container">
+                        <table class="tabla-admin">
+                            <thead>
+                                <tr>
+                                    <th>Plato</th>
+                                    <th>Precio</th>
+                                    <th>Veces Vendido</th>
+                                    <th>Total Generado</th>
+                                    <th>Popularidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while($plato = mysqli_fetch_assoc($platos_populares)): 
+                                    $popularidad = min(100, ($plato['veces_vendido'] / max($estadisticas['total_pedidos'], 1)) * 100);
+                                ?>
+                                    <tr>
+                                        <td><strong><?php echo $plato['nombre']; ?></strong></td>
+                                        <td class="precio">$<?php echo number_format($plato['precio'], 2); ?></td>
+                                        <td><?php echo $plato['veces_vendido']; ?></td>
+                                        <td class="precio">$<?php echo number_format($plato['total_ventas'], 2); ?></td>
+                                        <td>
+                                            <div style="background: #3498db; height: 20px; width: <?php echo $popularidad; ?>%;border-radius: 10px; color: white; text-align: center; font-size: 12px;">
+                                                <?php echo number_format($popularidad, 1); ?>%
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+         <!-- Footer -->
+    <footer>
+      <div class="footer-texto">LA CHACRA GOURMET - PANEL ADMINISTRATIVO</div>
+      <div class="footer-buttons">
+        <a href="inicio.php">Volver al Inicio</a>
+        <a href="cerrar_sesion.php">Cerrar Sesión</a>
+      </div>
+    </footer>
+  </div>
 
     <script>
  

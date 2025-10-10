@@ -15,7 +15,6 @@ img {
   max-width: 100%;
   overflow-x: hidden;
 }
-
 /* Móviles (320px - 576px) */
 @media (max-width: 576px) {
  

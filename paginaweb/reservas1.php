@@ -11,39 +11,33 @@ if (!isset($_SESSION['id_usuario'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reservas</title>
+  <title>Reservas - La Chacra Gourmet</title>
   <link rel="stylesheet" href="estilos/estilo_general.css">
-  <link rel="stylesheet" href="estilos/reservas.css">
-    <link rel="stylesheet" href="estilos/reponsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-
-<main class="principal">
+  <div class="contenedor-principal">
+    <!-- Header -->
     <header class="menu">
-        <nav>
-            <ul>
-                <li><a href="inicio.php">Inicio</a></li>
-                <li><a href="redes_pagos.php">Redes y pagos</a></li>
-                <li><a href="reservas1.php">Reservas</a></li>
-                <li><a href="zona_staff.php">Mozos orden</a></li>
-                <li><a href="historia.php">Historia</a></li>
-                <li><a href="menu.php">Menu</a></li>
-           <?php 
-            if (isset($_SESSION['es_administrador']) && $_SESSION['es_administrador'] === true) {
-                echo '<li><a href="administracion.php">Panel Admin</a></li>';
-            }
-            ?>
-            </ul>
-        </nav>
-    </header>
-
-    <section class="contenido">
-        <header class="barra-busqueda">
-            <input type="text" placeholder="Buscar...">
-            <button><i class="fa-solid fa-magnifying-glass"></i></button>
-    </header>
-
-      <header class="botones-sesion">
+      <div class="logo">
+        <img src="estilos/imagenes/logo.jpeg" alt="La Chacra Gourmet" class="logo-img" onerror="this.style.display='none'">
+      </div>
+      <nav class="navegacion-principal">
+        <ul>
+          <li><a href="inicio.php">Inicio</a></li>
+          <li><a href="redes_pagos.php">Redes y pagos</a></li>
+          <li><a href="reservas1.php">Reservas</a></li>
+          <li><a href="zona_staff.php">Mozos orden</a></li>
+          <li><a href="historia.php">Historia</a></li>
+          <li><a href="menu.php">Menu</a></li>
+          <?php 
+          if (isset($_SESSION['es_administrador']) && $_SESSION['es_administrador'] === true) {
+            echo '<li><a href="administracion.php">Panel Admin</a></li>';
+          }
+          ?>
+        </ul>
+      </nav>
+      <div class="botones-sesion">
         <?php if (isset($_SESSION['id_usuario'])): ?>
           <span class="bienvenida">Bienvenido <?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?></span>
           <a href="cerrar_sesion.php" class="btn-logout" role="button">Cerrar sesión</a>
@@ -51,30 +45,51 @@ if (!isset($_SESSION['id_usuario'])) {
           <a href="iniciar_sesion.html" class="btn-login" role="button">Iniciar sesión</a>
           <a href="registrarse_cliente.html" class="btn-register" role="button">Registrarse</a>
         <?php endif; ?>
-        </header>
-   
+      </div>
+    </header>
 
-        <form class="formulario" action="reservas.php" method="POST">
-            <h2>Reserva</h2>
+    <!-- Contenido Principal -->
+    <main class="contenido-principal">
+      <section class="banner-admin">
+        <h1>Reservas</h1>
+      </section>
 
-            <label for="cantidad">Cantidad de personas</label>
-            <input type="number" name="personas" placeholder="Número de personas" required>
+      <section class="seccion-admin">
+        <form class="formulario-admin" action="reservas.php" method="POST">
+          <h2>Realizar Reserva</h2>
+
+          <div class="fila-formulario">
+            <div class="grupo-formulario">
+              <label for="cantidad">Cantidad de personas</label>
+              <input type="number" name="personas" placeholder="Número de personas" required min="1" max="20">
+            </div>
             
-            <label for="hora">Hora de inicio</label>
-            <input type="time" name="hora" required>
-            
+            <div class="grupo-formulario">
+              <label for="hora">Hora de inicio</label>
+              <input type="time" name="hora" required>
+            </div>
+          </div>
+
+          <div class="grupo-formulario">
             <label for="fecha">Fecha</label>
             <input type="date" name="fecha" required>
+          </div>
 
-            <button type="submit" name="confirmar" class="confirmar-reserva">Confirmar</button>
+          <button type="submit" name="confirmar" class="btn-admin">Confirmar Reserva</button>
         </form>
-    </section>
-</main>
+      </section>
+    </main>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <!-- Footer -->
+    <footer>
+      <div class="footer-texto">LA CHACRA GOURMET - RESERVAS</div>
+      <div class="footer-buttons">
+        <a href="inicio.php" class="btn-enlace">Volver al Inicio</a>
+        <a href="menu.php" class="btn-enlace">Ver Menú</a>
+      </div>
+    </footer>
+  </div>
 
-
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </body>
 </html>
