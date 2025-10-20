@@ -38,34 +38,35 @@ session_start();
       <aside class="sidebar">
         <ul>
           <li><a href="zona_staff.php">
-            <img src="estilos/imagenes/entrante.png" alt="Entradas" class="sidebar-icon" onerror="this.style.display='none'">
+            
             <span>zona staff</span>
           </a></li>
           <li><a href="administracion.php">
-            <img src="estilos/imagenes/comida.png" alt="Plato Principal" class="sidebar-icon" onerror="this.style.display='none'">
+            
             <span>zona administrativa</span>
           </a></li>
           <li><a href="inicio.php">
-            <img src="estilos/imagenes/comida1.jpeg" alt="Especialidades" class="sidebar-icon" onerror="this.style.display='none'">
+            
             <span>Inicio</span>
           </a></li>
           <li><a href="#">
-            <img src="estilos/imagenes/comida4.jpeg" alt="Extras" class="sidebar-icon" onerror="this.style.display='none'">
+            
             <span>Extras</span>
           </a></li>
           <li><a href="#">
-            <img src="estilos/imagenes/postres.png" alt="Postres" class="sidebar-icon" onerror="this.style.display='none'">
+            
             <span>Postres</span>
           </a></li>
           <li><a href="#">
-            <img src="estilos/imagenes/bebida.png" alt="Bebidas" class="sidebar-icon" onerror="this.style.display='none'">
+            
             <span>Bebidas</span>
           </a></li>
           <li><a href="#">
-            <img src="estilos/imagenes/balatto.png" alt="Comanda" class="sidebar-icon" onerror="this.style.display='none'">
+            
             <span>Comanda</span>
           </a></li>
         </ul>
+      </aside>
       </aside>
 
       <!-- Contenido principal -->
@@ -100,7 +101,7 @@ session_start();
           <h2>Platos Estrella</h2>
           <div class="contenedor-platos">
             <article class="plato">
-              <img src="estilos/imagenes/comida1.jpeg" alt="Plato estrella 1" onerror="this.src='estilos/imagenes/milanesa.jpg'">
+              <img src="estilos/imagenes/comida.png" alt="Plato estrella 1"  onerror="this.src='estilos/imagenes/balatro.png'">
               <div class="plato-info">
                 <h3>Milanesa a la Napolitana</h3>
                 <h4>Clásica y deliciosa</h4>
@@ -109,7 +110,7 @@ session_start();
             </article>
 
             <article class="plato">
-              <img src="estilos/imagenes/comida2.jpeg" alt="Plato estrella 2" onerror="this.src='estilos/imagenes/ñoquis.png'">
+              <img src="estilos/imagenes/comida.png" alt="Plato estrella 2" onerror="this.src='estilos/imagenes/balatro.png'">
               <div class="plato-info">
                  <h3>Ñoquis de la Casa</h3>
                 <h4>Frescos y artesanales</h4>
@@ -118,7 +119,7 @@ session_start();
             </article>
 
             <article class="plato">
-              <img src="estilos/imagenes/comida3.jpeg" alt="Plato estrella 3" onerror="this.src='estilos/imagenes/milanesa.jpg'">
+              <img src="estilos/imagenes/comida2.jpeg" alt="Plato estrella 3" onerror="this.src='estilos/imagenes/milanesa.jpg'">
               <div class="plato-info">
                 <h3>Especialidad del Chef</h3>
                 <h4>Sabores únicos</h4>

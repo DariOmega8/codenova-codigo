@@ -26,21 +26,21 @@ function liberarMesasAntiguas($conexion) {
 liberarMesasAntiguas($conexion);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['mesa'])) {
-    $mesa_numero = $_POST['mesa'];
+    $mesa_id = $_POST['mesa']; // Este es el id de la mesa, no el número
     $plato_principal = $_POST['pedido'] ?? '';
     $bebida = $_POST['bebida'] ?? '';
     $postre = $_POST['postre'] ?? '';
     $extra = $_POST['extra'] ?? '';
     $exclusiones = $_POST['exclusiones'] ?? '';
     
-    // CONSULTA CORREGIDA - Buscar por número de mesa
+    // CONSULTA CORREGIDA - Buscar por id de mesa
     $sql_mesa = "SELECT m.`id mesa`, chm.`cliente_id cliente`, chm.`cliente_usuario_id usuario`, 
                         u.nombre as cliente_nombre
                  FROM mesa m 
                  LEFT JOIN cliente_has_mesa chm ON m.`id mesa` = chm.`mesa_id mesa`
                  LEFT JOIN cliente c ON chm.`cliente_id cliente` = c.`id cliente` 
                  LEFT JOIN usuario u ON c.`usuario_id usuario` = u.`id usuario`
-                 WHERE m.numero = $mesa_numero AND m.estado = 'ocupada'";
+                 WHERE m.`id mesa` = $mesa_id AND m.estado = 'ocupada'";
     
     $resultado_mesa = mysqli_query($conexion, $sql_mesa);
     
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['mesa'])) {
                     }
                 }
                 
-                $mensaje = "Pedido #$pedido_id creado correctamente para Mesa $mesa_numero ($platos_agregados platos agregados)";
+                $mensaje = "Pedido #$pedido_id creado correctamente para Mesa $mesa_id ($platos_agregados platos agregados)";
             } else {
                 $error = "Error al relacionar pedido con mesa: " . mysqli_error($conexion);
             }
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['mesa'])) {
             $error = "Error al crear pedido: " . mysqli_error($conexion);
         }
     } else {
-        $error = "Mesa $mesa_numero no encontrada o no está ocupada. Consulta SQL: " . $sql_mesa;
+        $error = "Mesa con ID $mesa_id no encontrada o no está ocupada.";
     }
 }
 
@@ -110,15 +110,6 @@ $mesas_ocupadas = mysqli_query($conexion, "
     AND m.`fecha de asignacion` >= DATE_SUB(NOW(), INTERVAL 6 HOUR)
     ORDER BY m.numero
 ");
-
-// DEBUG: Verificar si hay mesas ocupadas
-$debug_info = "";
-if (!$mesas_ocupadas) {
-    $debug_info = "Error en consulta: " . mysqli_error($conexion);
-} else {
-    $num_mesas = mysqli_num_rows($mesas_ocupadas);
-    $debug_info = "Mesas ocupadas encontradas: " . $num_mesas;
-}
 ?>
 
 <!DOCTYPE html>
@@ -182,32 +173,26 @@ if (!$mesas_ocupadas) {
       <?php endif; ?>
 
       <section class="seccion-admin">
-        <h2>Tomar Pedido</h2>
-        <form class="formulario-admin" method="POST">
-          <div class="grupo-formulario">
-            <label for="mesa">Mesa</label>
-            <select id="mesa" name="mesa" required>
-              <option value="">Seleccionar mesa...</option>
-              <?php 
-              if ($mesas_ocupadas && mysqli_num_rows($mesas_ocupadas) > 0) {
-                mysqli_data_seek($mesas_ocupadas, 0);
-                while($mesa = mysqli_fetch_assoc($mesas_ocupadas)): 
-                  $tiempo = $mesa['tiempo_ocupada'];
-                  $horas = explode(':', $tiempo)[0];
-                  $minutos = explode(':', $tiempo)[1];
-                  $cliente_nombre = $mesa['cliente_nombre'] ?: 'Cliente no identificado';
-              ?>
-                <option value="<?php echo $mesa['numero']; ?>">
-                  Mesa <?php echo $mesa['numero']; ?> - <?php echo $cliente_nombre; ?>
-                </option>
-              <?php 
-                endwhile;
-              } else {
-                echo '<option value="" disabled>No hay mesas ocupadas</option>';
-              }
-              ?>
-            </select>
-          </div>
+               <h2>Tomar Pedido</h2>
+                 <form class="formulario-admin" method="POST">
+                   <div class="grupo-formulario">
+                       <label for="mesa">Mesa</label>
+                          <select id="mesa" name="mesa" required>
+                             <option value="">Seleccionar mesa...</option>
+                         <?php
+                               $sql_mesas_all = "SELECT * FROM mesa ORDER BY numero";
+                                $mesas_all_result = mysqli_query($conexion, $sql_mesas_all);
+                              if ($mesas_all_result && mysqli_num_rows($mesas_all_result) > 0) {
+                              while ($m = mysqli_fetch_assoc($mesas_all_result)) {
+                             $display = 'Mesa ' . htmlspecialchars($m['numero']) . ' - ' . htmlspecialchars($m['estado']);
+                             echo '<option value="' . intval($m['id mesa']) . '">' . $display . '</option>';
+                                }
+                           } else {
+                                 echo '<option value="">No hay mesas registradas</option>';
+                             }
+                             ?>
+                    </select>
+              </div>
 
           <div class="fila-formulario">
             <div class="grupo-formulario">
