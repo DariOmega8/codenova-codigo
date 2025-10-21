@@ -12,18 +12,6 @@ if (!$_SESSION['es_empleado'] && !$_SESSION['es_administrador']) {
     exit();
 }
 
-// FUNCIÓN PARA LIBERAR MESAS AUTOMÁTICAMENTE DESPUÉS DE 6 HORAS
-function liberarMesasAntiguas($conexion) {
-    $sql_liberar = "UPDATE mesa 
-                   SET estado = 'disponible' 
-                   WHERE estado = 'ocupada' 
-                   AND `fecha de asignacion` < DATE_SUB(NOW(), INTERVAL 6 HOUR)";
-    
-    mysqli_query($conexion, $sql_liberar);
-}
-
-// Ejecutar la limpieza automática
-liberarMesasAntiguas($conexion);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['mesa'])) {
     $mesa_id = $_POST['mesa']; // Este es el id de la mesa, no el número
