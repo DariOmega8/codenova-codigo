@@ -7,7 +7,6 @@ if (!isset($_SESSION['es_administrador']) || !$_SESSION['es_administrador']) {
     exit();
 }
 
-
 $sql_visitas_totales = "SELECT COUNT(*) as total, SUM(cantidad) as total_personas FROM `registro de visita`";
 $resultado_total = mysqli_query($conexion, $sql_visitas_totales);
 $visitas_totales = mysqli_fetch_assoc($resultado_total);
@@ -15,12 +14,12 @@ $total_visitas = $visitas_totales['total'];
 $total_personas = $visitas_totales['total_personas'];
 
 $sql_visitas_mes = "SELECT 
-    YEAR(`fecha hora`) as año,
-    MONTH(`fecha hora`) as mes,
+    YEAR(fecha_hora) as año,
+    MONTH(fecha_hora) as mes,
     COUNT(*) as total_visitas,
     SUM(cantidad) as total_personas
     FROM `registro de visita` 
-    GROUP BY YEAR(`fecha hora`), MONTH(`fecha hora`)
+    GROUP BY YEAR(fecha_hora), MONTH(fecha_hora)
     ORDER BY año DESC, mes DESC
     LIMIT 12";
 
@@ -29,15 +28,12 @@ $visitas_mensuales = mysqli_query($conexion, $sql_visitas_mes);
 $hoy = date('Y-m-d');
 $sql_visitas_hoy = "SELECT COUNT(*) as hoy, SUM(cantidad) as personas_hoy 
                    FROM `registro de visita` 
-                   WHERE DATE(`fecha hora`) = '$hoy'";
+                   WHERE DATE(fecha_hora) = '$hoy'";
 $resultado_hoy = mysqli_query($conexion, $sql_visitas_hoy);
 $visitas_hoy_data = mysqli_fetch_assoc($resultado_hoy);
 $visitas_hoy = $visitas_hoy_data['hoy'];
 $personas_hoy = $visitas_hoy_data['personas_hoy'];
 
-$sql_registrar_visita = "INSERT INTO `registro de visita` (`fecha hora`, `cantidad`) 
-                        VALUES (NOW(), 1)";
-mysqli_query($conexion, $sql_registrar_visita);
 ?>
 
 <!DOCTYPE html>
@@ -107,8 +103,8 @@ mysqli_query($conexion, $sql_registrar_visita);
                             <h3>Promedio Diario</h3>
                             <div class="stat-number">
                             <?php 
-                           
-                            $sql_primer_dia = "SELECT MIN(DATE(`fecha hora`)) as primer_dia FROM `registro de visita`";
+                            // Calcular el promedio diario desde el primer día de registro
+                            $sql_primer_dia = "SELECT MIN(DATE(fecha_hora)) as primer_dia FROM `registro de visita`";
                             $resultado_primer_dia = mysqli_query($conexion, $sql_primer_dia);
                             $primer_dia_data = mysqli_fetch_assoc($resultado_primer_dia);
                             $primer_dia = new DateTime($primer_dia_data['primer_dia']);
@@ -193,7 +189,7 @@ mysqli_query($conexion, $sql_registrar_visita);
     </footer>
   </div>
         <script>
-     
+        // Datos para el gráfico
         const meses = [
             <?php 
             foreach(array_reverse($meses_anteriores) as $mes) {
@@ -210,7 +206,7 @@ mysqli_query($conexion, $sql_registrar_visita);
             ?>
         ];
 
-       
+        // Crear gráfico
         const ctx = document.getElementById('visitasChart').getContext('2d');
         const visitasChart = new Chart(ctx, {
             type: 'line',

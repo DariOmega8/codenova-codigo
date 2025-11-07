@@ -7,6 +7,9 @@ if (!isset($_SESSION['es_administrador']) || !$_SESSION['es_administrador']) {
     exit();
 }
 
+// Obtener el admin_id del usuario actual
+$admin_id = $_SESSION['admin_id'] ?? null;
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['agregar_producto'])) {
     $nombre = mysqli_real_escape_string($conexion, $_POST['nombre']);
     $cantidad = $_POST['cantidad'];
@@ -14,19 +17,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['agregar_producto'])) {
     $tipo = mysqli_real_escape_string($conexion, $_POST['tipo']);
     $unidad_medida = mysqli_real_escape_string($conexion, $_POST['unidad_medida']);
     
-    $sql_stock = "INSERT INTO stock (`unidad de medida`, `cantidad total`, `ultima actualizacion`) 
+    // Primero insertar en stock
+    $sql_stock = "INSERT INTO stock (unidad_medida, cantidad_total, ultima_actu) 
                  VALUES ('$unidad_medida', $cantidad, NOW())";
     
     if (mysqli_query($conexion, $sql_stock)) {
         $stock_id = mysqli_insert_id($conexion);
         
-        $sql_producto = "INSERT INTO producto (cantidad, nombre, precio, `tipo de producto`, `stock_id stock`) 
-                        VALUES ($cantidad, '$nombre', $precio, '$tipo', $stock_id)";
+        // Luego insertar en producto con referencia al admin
+        $sql_producto = "INSERT INTO producto (cantidad, nombre, precio, tipo, admin_admin_id, stock_stock_id) 
+                        VALUES ($cantidad, '$nombre', $precio, '$tipo', $admin_id, $stock_id)";
         
         if (mysqli_query($conexion, $sql_producto)) {
             $mensaje = "Producto agregado correctamente al stock";
         } else {
             $error = "Error al agregar producto: " . mysqli_error($conexion);
+            // Revertir la inserción en stock si falla producto
+            mysqli_query($conexion, "DELETE FROM stock WHERE stock_id = $stock_id");
         }
     } else {
         $error = "Error al crear registro de stock: " . mysqli_error($conexion);
@@ -39,15 +46,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['actualizar_stock'])) {
     $tipo_movimiento = $_POST['tipo_movimiento'];
     $descripcion = mysqli_real_escape_string($conexion, $_POST['descripcion']);
     
-    $sql_info_producto = "SELECT p.cantidad, p.`stock_id stock` 
+    // Consulta actualizada para obtener información del producto
+    $sql_info_producto = "SELECT p.cantidad, p.stock_stock_id 
                          FROM producto p 
-                         WHERE p.`id producto` = $producto_id";
+                         WHERE p.producto_id = $producto_id";
     $resultado_info = mysqli_query($conexion, $sql_info_producto);
     
     if ($resultado_info && mysqli_num_rows($resultado_info) > 0) {
         $producto_info = mysqli_fetch_assoc($resultado_info);
         $cantidad_actual = $producto_info['cantidad'];
-        $stock_id = $producto_info['stock_id stock'];
+        $stock_id = $producto_info['stock_stock_id'];
         
         if ($tipo_movimiento == 'entrada') {
             $nueva_cantidad = $cantidad_actual + $cantidad_movimiento;
@@ -60,38 +68,45 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['actualizar_stock'])) {
         if ($nueva_cantidad < 0) {
             $error = "Error: La cantidad no puede ser negativa";
         } else {
-            $sql_actualizar = "UPDATE producto SET cantidad = $nueva_cantidad WHERE `id producto` = $producto_id";
+            // Actualizar producto
+            $sql_actualizar = "UPDATE producto SET cantidad = $nueva_cantidad WHERE producto_id = $producto_id";
             
             if (mysqli_query($conexion, $sql_actualizar)) {
+                // Actualizar stock
                 $sql_stock = "UPDATE stock 
-                             SET `cantidad total` = $nueva_cantidad, 
-                                 `ultima actualizacion` = NOW() 
-                             WHERE `id stock` = $stock_id";
+                             SET cantidad_total = $nueva_cantidad, 
+                                 ultima_actu = NOW() 
+                             WHERE stock_id = $stock_id";
                 mysqli_query($conexion, $sql_stock);
                 
-                $sql_historial = "INSERT INTO historial (`descripcion`, `tipo de movimiento`, `cantidad`, `fecha`, `stock_id stock`) 
-                                 VALUES ('$descripcion', '$tipo_movimiento', $cantidad_movimiento, NOW(), $stock_id)";
+                // Insertar en historial (con referencia al admin)
+                $sql_historial = "INSERT INTO historial (descripcion, tipo_movimiento, cantidad, fecha, `stock_id stock`, admin_admin_id) 
+                                 VALUES ('$descripcion', '$tipo_movimiento', $cantidad_movimiento, NOW(), $stock_id, $admin_id)";
                 mysqli_query($conexion, $sql_historial);
                 
-                $mensaje = "stock actualizado correctamente (De $cantidad_actual a $nueva_cantidad)";
+                $mensaje = "Stock actualizado correctamente (De $cantidad_actual a $nueva_cantidad)";
             } else {
                 $error = "Error al actualizar stock: " . mysqli_error($conexion);
             }
         }
+    } else {
+        $error = "Producto no encontrado";
     }
 }
 
+// Consulta de productos actualizada
 $productos = mysqli_query($conexion, "
-    SELECT p.*, s.`unidad de medida`, s.`ultima actualizacion`
+    SELECT p.*, s.unidad_medida, s.ultima_actu
     FROM producto p 
-    JOIN stock s ON p.`stock_id stock` = s.`id stock`
-    ORDER BY p.`tipo de producto`, p.nombre
+    JOIN stock s ON p.stock_stock_id = s.stock_id
+    ORDER BY p.tipo, p.nombre
 ");
 
+// Estadísticas por tipo actualizada
 $stats_tipos = mysqli_query($conexion, "
-    SELECT `tipo de producto`, COUNT(*) as total, SUM(cantidad) as cantidad_total
+    SELECT tipo, COUNT(*) as total, SUM(cantidad) as cantidad_total
     FROM producto 
-    GROUP BY `tipo de producto`
+    GROUP BY tipo
 ");
 ?>
 
@@ -166,7 +181,7 @@ $stats_tipos = mysqli_query($conexion, "
                         <?php while($stat = mysqli_fetch_assoc($stats_tipos)): 
                             $icono = '';
                             $color = '';
-                            switch($stat['tipo de producto']) {
+                            switch($stat['tipo']) { // Cambiado de 'tipo de producto' a 'tipo'
                                 case 'bebida': $icono = '🥤'; $color = '#3498db'; break;
                                 case 'alimento': $icono = '🍎'; $color = '#e74c3c'; break;
                                 case 'limpieza': $icono = '🧹'; $color = '#9b59b6'; break;
@@ -174,7 +189,7 @@ $stats_tipos = mysqli_query($conexion, "
                             }
                         ?>
                             <div class="stat-card" style="border-left: 4px solid <?php echo $color; ?>;">
-                                <h3><?php echo $icono; ?> <?php echo ucfirst($stat['tipo de producto']); ?></h3>
+                                <h3><?php echo $icono; ?> <?php echo ucfirst($stat['tipo']); ?></h3>
                                 <p><strong>Productos:</strong> <?php echo $stat['total']; ?></p>
                                 <p><strong>Stock total:</strong> <?php echo $stat['cantidad_total']; ?> unidades</p>
                             </div>
@@ -245,13 +260,13 @@ $stats_tipos = mysqli_query($conexion, "
                             </thead>
                             <tbody>
                                 <?php while($producto = mysqli_fetch_assoc($productos)): 
-                                    $clase_tipo = 'tipo-' . $producto['tipo de producto'];
+                                    $clase_tipo = 'tipo-' . $producto['tipo']; // Cambiado de 'tipo de producto' a 'tipo'
                                     $clase_stock = '';
                                     if ($producto['cantidad'] < 10) $clase_stock = 'critico-stock';
                                     elseif ($producto['cantidad'] < 25) $clase_stock = 'bajo-stock';
                                 ?>
                                     <tr class="<?php echo $clase_tipo . ' ' . $clase_stock; ?>">
-                                        <td><?php echo $producto['id producto']; ?></td>
+                                        <td><?php echo $producto['producto_id']; ?></td> <!-- Cambiado de 'id producto' a 'producto_id' -->
                                         <td><strong><?php echo $producto['nombre']; ?></strong></td>
                                         <td>
                                             <span style="font-weight: bold; color: <?php echo $producto['cantidad'] < 10 ? '#e74c3c' : ($producto['cantidad'] < 25 ? '#f39c12' : '#27ae60'); ?>">
@@ -262,20 +277,20 @@ $stats_tipos = mysqli_query($conexion, "
                                         <td>
                                             <?php 
                                             $icono = '';
-                                            switch($producto['tipo de producto']) {
+                                            switch($producto['tipo']) { // Cambiado de 'tipo de producto' a 'tipo'
                                                 case 'bebida': $icono = '🥤'; break;
                                                 case 'alimento': $icono = '🍎'; break;
                                                 case 'limpieza': $icono = '🧹'; break;
                                                 case 'utensilio': $icono = '🔪'; break;
                                             }
-                                            echo $icono . ' ' . ucfirst($producto['tipo de producto']); 
+                                            echo $icono . ' ' . ucfirst($producto['tipo']); 
                                             ?>
                                         </td>
-                                        <td><?php echo $producto['unidad de medida']; ?></td>
-                                        <td><?php echo $producto['ultima actualizacion']; ?></td>
+                                        <td><?php echo $producto['unidad_medida']; ?></td> <!-- Cambiado de 'unidad de medida' a 'unidad_medida' -->
+                                        <td><?php echo $producto['ultima_actu']; ?></td> <!-- Cambiado de 'ultima actualizacion' a 'ultima_actu' -->
                                         <td>
                                             <form method="POST" class="form-acciones">
-                                                <input type="hidden" name="producto_id" value="<?php echo $producto['id producto']; ?>">
+                                                <input type="hidden" name="producto_id" value="<?php echo $producto['producto_id']; ?>"> <!-- Cambiado de 'id producto' a 'producto_id' -->
                                                 <input type="number" name="cantidad_movimiento" placeholder="Cantidad" required min="0">
                                                 <select name="tipo_movimiento" required>
                                                     <option value="entrada">📥 Entrada</option>
@@ -297,11 +312,12 @@ $stats_tipos = mysqli_query($conexion, "
                 <section id="historial-movimientos" class="seccion-admin">
                     <h2>Historial de Movimientos</h2>
                     <?php
+                    // Consulta de historial actualizada
                     $historial = mysqli_query($conexion, "
                         SELECT h.*, p.nombre as producto_nombre 
                         FROM historial h 
-                        JOIN producto p ON h.`stock_id stock` = p.`stock_id stock`
-                        ORDER BY h.`fecha` DESC 
+                        JOIN producto p ON h.`stock_id stock` = p.stock_stock_id
+                        ORDER BY h.fecha DESC 
                         LIMIT 20
                     ");
                     ?>
@@ -319,7 +335,7 @@ $stats_tipos = mysqli_query($conexion, "
                             <tbody>
                                 <?php while($movimiento = mysqli_fetch_assoc($historial)): 
                                     $color_tipo = '';
-                                    switch($movimiento['tipo de movimiento']) {
+                                    switch($movimiento['tipo_movimiento']) { // Cambiado de 'tipo de movimiento' a 'tipo_movimiento'
                                         case 'entrada': $color_tipo = '#27ae60'; break;
                                         case 'salida': $color_tipo = '#e74c3c'; break;
                                         case 'ajuste': $color_tipo = '#f39c12'; break;
@@ -330,7 +346,7 @@ $stats_tipos = mysqli_query($conexion, "
                                         <td><?php echo $movimiento['producto_nombre']; ?></td>
                                         <td><?php echo $movimiento['descripcion']; ?></td>
                                         <td style="color: <?php echo $color_tipo; ?>;">
-                                            <?php echo ucfirst($movimiento['tipo de movimiento']); ?>
+                                            <?php echo ucfirst($movimiento['tipo_movimiento']); ?>
                                         </td>
                                         <td><?php echo $movimiento['cantidad']; ?></td>
                                     </tr>

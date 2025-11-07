@@ -35,22 +35,20 @@ if (!isset($_SESSION['id_usuario'])) {
             echo '<li><a href="administracion.php">Panel Admin</a></li>';
           }
           ?>
+          <?php if (isset($_SESSION['id_usuario'])): ?>
+            <li><a href="cerrar_sesion.php" class="btn-logout">Cerrar Sesión (<?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?>)</a></li>
+          <?php else: ?>
+            <li><a href="iniciar_sesion.html" class="btn-login">Iniciar sesión</a></li>
+            <li><a href="registrarse_cliente.html" class="btn-register">Registrarse</a></li>
+          <?php endif; ?>
         </ul>
       </nav>
-      <div class="botones-sesion">
-        <?php if (isset($_SESSION['id_usuario'])): ?>
-          <span class="bienvenida">Bienvenido <?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?></span>
-          <a href="cerrar_sesion.php" class="btn-logout" role="button">Cerrar sesión</a>
-        <?php else: ?>
-          <a href="iniciar_sesion.html" class="btn-login" role="button">Iniciar sesión</a>
-          <a href="registrarse_cliente.html" class="btn-register" role="button">Registrarse</a>
-        <?php endif; ?>
-      </div>
     </header>
 
     <!-- Contenido Principal -->
     <main class="contenido-principal">
-      <section class="banner-admin">
+      <!-- CAMBIO: banner-reservas en lugar de banner-admin -->
+      <section class="banner-reservas">
         <h1>Reservas</h1>
       </section>
 
@@ -70,12 +68,21 @@ if (!isset($_SESSION['id_usuario'])) {
             </div>
           </div>
 
-          <div class="grupo-formulario">
-            <label for="fecha">Fecha</label>
-            <input type="date" name="fecha" required>
+          <div class="fila-formulario">
+            <div class="grupo-formulario">
+              <label for="fecha">Fecha</label>
+              <input type="date" name="fecha" required>
+            </div>
+
+            <!-- NUEVO CAMPO DESCRIPCIÓN CON ESTILOS APLICADOS -->
+            <div class="grupo-formulario">
+              <label for="descripcion">Descripción (opcional)</label>
+              <textarea name="descripcion" placeholder="Comentarios adicionales..." rows="3"></textarea>
+            </div>
           </div>
 
-          <button type="submit" name="confirmar" class="btn-admin">Confirmar Reserva</button>
+          <!-- CAMBIO: btn-reserva en lugar de btn-admin -->
+          <button type="submit" name="confirmar" class="btn-reserva">Confirmar Reserva</button>
         </form>
       </section>
     </main>

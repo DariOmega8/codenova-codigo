@@ -31,17 +31,14 @@ include 'conexion.php';
             echo '<li><a href="administracion.php">Panel Admin</a></li>';
           }
           ?>
+          <?php if (isset($_SESSION['id_usuario'])): ?>
+            <li><a href="cerrar_sesion.php" class="btn-logout">Cerrar Sesión (<?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?>)</a></li>
+          <?php else: ?>
+            <li><a href="iniciar_sesion.html" class="btn-login">Iniciar sesión</a></li>
+            <li><a href="registrarse_cliente.html" class="btn-register">Registrarse</a></li>
+          <?php endif; ?>
         </ul>
       </nav>
-      <div class="botones-sesion">
-        <?php if (isset($_SESSION['id_usuario'])): ?>
-          <span class="bienvenida">Bienvenido <?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?></span>
-          <a href="cerrar_sesion.php" class="btn-logout" role="button">Cerrar sesión</a>
-        <?php else: ?>
-          <a href="iniciar_sesion.html" class="btn-login" role="button">Iniciar sesión</a>
-          <a href="registrarse_cliente.html" class="btn-register" role="button">Registrarse</a>
-        <?php endif; ?>
-      </div>
     </header>
 
     <!-- Contenido Principal -->
@@ -51,7 +48,8 @@ include 'conexion.php';
       </section>
 
       <?php
-      $sqlCat = "SELECT `id menu` AS id_menu, tipo FROM `menu`";
+      // Consulta para menús disponibles
+      $sqlCat = "SELECT id_menu, tipo FROM menu WHERE estado = 'disponible'";
       $resCat = mysqli_query($conexion, $sqlCat);
       if (!$resCat) {
         echo "<div class='mensaje-error'>Error al leer categorías: " . mysqli_error($conexion) . "</div>";
@@ -61,8 +59,9 @@ include 'conexion.php';
           echo "<section class='seccion-admin'>";
           echo "<h2>" . htmlspecialchars($cat['tipo']) . "</h2>";
 
-          $sqlPlatos = "SELECT p.`id platos` AS id_plato, p.nombre, p.descripcion, p.precio
-                        FROM `platos` p
+          // Consulta CORREGIDA: usando el nombre correcto de la columna `menu_id menu`
+          $sqlPlatos = "SELECT p.plato_id, p.nombre, p.descripcion, p.precio, p.imagen
+                        FROM plato p
                         WHERE p.`menu_id menu` = $id_menu";
           $resPlatos = mysqli_query($conexion, $sqlPlatos);
 
@@ -71,17 +70,19 @@ include 'conexion.php';
           } else {
             echo "<div class='contenedor-platos'>";
             while ($plato = mysqli_fetch_assoc($resPlatos)) {
-              $id_plato = isset($plato['id_plato']) ? $plato['id_plato'] : 0;
+              $id_plato = isset($plato['plato_id']) ? $plato['plato_id'] : 0;
               $nombre = isset($plato['nombre']) ? $plato['nombre'] : 'Sin nombre';
               $descripcion = isset($plato['descripcion']) ? $plato['descripcion'] : '';
               $descripcion_corta = mb_strlen($descripcion) > 120 ? mb_substr($descripcion,0,120) . '...' : $descripcion;
-              $precio = isset($plato['precio']) ? $plato['precio'] : '---';
+              $precio = isset($plato['precio']) ? number_format($plato['precio'], 2) : '---';
 
               $imagen_default = "estilos/imagenes/balatro.png";
               $img = $imagen_default;
              
+              // Manejo de imagen BLOB
               if (isset($plato['imagen']) && !empty($plato['imagen'])) {
-                $img = $plato['imagen'];
+                // Si es un BLOB, convertirlo a base64
+                $img = 'data:image/jpeg;base64,' . base64_encode($plato['imagen']);
               }
 
               echo "<article class='plato'>";
@@ -116,4 +117,3 @@ include 'conexion.php';
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </body>
 </html>
-

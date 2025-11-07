@@ -10,12 +10,12 @@ if (!isset($_SESSION['es_empleado']) && !isset($_SESSION['es_administrador'])) {
     exit();
 }
 
-// FUNCIÓN PARA LIBERAR MESAS AUTOMÁTICAMENTE DESPUÉS DE 6 HORAS (SOLO LIMPIEZA)
+// FUNCIÓN PARA LIBERAR MESAS AUTOMÁTICAMENTE DESPUÉS DE 6 HORAS
 function liberarMesasAntiguas($conexion) {
     $sql_liberar = "UPDATE mesa 
                    SET estado = 'disponible' 
                    WHERE estado = 'ocupada' 
-                   AND `fecha de asignacion` < DATE_SUB(NOW(), INTERVAL 6 HOUR)";
+                   AND fecha_asig < DATE_SUB(NOW(), INTERVAL 6 HOUR)";
     
     mysqli_query($conexion, $sql_liberar);
 }
@@ -30,22 +30,24 @@ $mesas_disponibles = [];
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['buscar_cliente'])) {
     $email = mysqli_real_escape_string($conexion, $_POST['email']);
     
-    $sql_cliente = "SELECT u.`id usuario`, u.nombre, u.gmail, c.`id cliente`
+    // CONSULTA ACTUALIZADA - Nuevo esquema
+    $sql_cliente = "SELECT u.id_usuario, u.nombre, u.gmail, c.cliente_id
                     FROM usuario u 
-                    JOIN cliente c ON u.`id usuario` = c.`usuario_id usuario`
+                    JOIN cliente c ON u.id_usuario = c.usuario_id_usuario
                     WHERE u.gmail = '$email'";
     
     $resultado = mysqli_query($conexion, $sql_cliente);
     
     if ($resultado && mysqli_num_rows($resultado) > 0) {
         $cliente = mysqli_fetch_assoc($resultado);
-        $cliente_id = $cliente['id cliente'];
+        $cliente_id = $cliente['cliente_id'];
         
         $hoy = date('Y-m-d');
+        // CONSULTA ACTUALIZADA - Nuevo esquema
         $sql_reservas = "SELECT * FROM reserva 
-                        WHERE `cliente_id cliente` = $cliente_id 
+                        WHERE cliente_cliente_id = $cliente_id 
                         AND fecha = '$hoy' 
-                        AND estado = 'Pendiente'";
+                        AND estado = 'pendiente'";
         
         $reservas_result = mysqli_query($conexion, $sql_reservas);
         if ($reservas_result) {
@@ -54,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['buscar_cliente'])) {
         
         if (count($reservas) > 0) {
             $cantidad_personas = $reservas[0]['cantidad'];
+            // CONSULTA ACTUALIZADA - Nuevo esquema
             $sql_mesas = "SELECT * FROM mesa 
                          WHERE estado = 'disponible' 
                          AND capacidad >= $cantidad_personas
@@ -77,48 +80,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_mesa'])) {
     mysqli_begin_transaction($conexion);
     
     try {
-        // 1. Actualizar el estado de la reserva
-        $sql_actualizar_reserva = "UPDATE reserva SET estado = 'confirmada' WHERE `id reserva` = $reserva_id";
+        // 1. Actualizar el estado de la reserva - NUEVO ESQUEMA
+        $sql_actualizar_reserva = "UPDATE reserva SET estado = 'confirmada' WHERE id_reserva = $reserva_id";
         if (!mysqli_query($conexion, $sql_actualizar_reserva)) {
             throw new Exception("Error al actualizar reserva: " . mysqli_error($conexion));
         }
         
-        // 2. Actualizar el estado de la mesa a 'ocupada'
+        // 2. Actualizar el estado de la mesa a 'ocupada' - NUEVO ESQUEMA
         $sql_actualizar_mesa = "UPDATE mesa 
                                SET estado = 'ocupada', 
-                                   `fecha de asignacion` = NOW()
-                               WHERE `id mesa` = $mesa_id";
+                                   fecha_asig = NOW()
+                               WHERE mesa_id = $mesa_id";
         if (!mysqli_query($conexion, $sql_actualizar_mesa)) {
             throw new Exception("Error al actualizar mesa: " . mysqli_error($conexion));
         }
         
-        // 3. OBTENER EL usuario_id DEL CLIENTE
-        $sql_usuario_cliente = "SELECT `usuario_id usuario` FROM cliente WHERE `id cliente` = $cliente_id";
-        $result_usuario = mysqli_query($conexion, $sql_usuario_cliente);
-        if (!$result_usuario) {
-            throw new Exception("Error en la consulta para obtener usuario_id: " . mysqli_error($conexion));
-        }
-        if (mysqli_num_rows($result_usuario) == 0) {
-            throw new Exception("No se encontró el cliente con ID: $cliente_id");
-        }
-        $cliente_data = mysqli_fetch_assoc($result_usuario);
-        $cliente_usuario_id = $cliente_data['usuario_id usuario']; // Asegúrate de que el nombre de la columna es correcto
-        
-        // 4. ELIMINAR CUALQUIER RELACIÓN EXISTENTE PARA ESTA MESA
-        $sql_eliminar_relacion = "DELETE FROM cliente_has_mesa WHERE `mesa_id mesa` = $mesa_id";
+        // 3. ELIMINAR CUALQUIER RELACIÓN EXISTENTE PARA ESTA MESA - NUEVO ESQUEMA
+        $sql_eliminar_relacion = "DELETE FROM mesa_cliente WHERE mesa_mesa_id = $mesa_id";
         if (!mysqli_query($conexion, $sql_eliminar_relacion)) {
             throw new Exception("Error al eliminar relación anterior: " . mysqli_error($conexion));
         }
         
-        // 5. Insertar la NUEVA relación en cliente_has_mesa
-        $sql_relacion_mesa = "INSERT INTO cliente_has_mesa (`cliente_id cliente`, `cliente_usuario_id usuario`, `mesa_id mesa`)
-                             VALUES ($cliente_id, $cliente_usuario_id, $mesa_id)";
+        // 4. Insertar la NUEVA relación en mesa_cliente - NUEVO ESQUEMA
+        $sql_relacion_mesa = "INSERT INTO mesa_cliente (mesa_mesa_id, cliente_cliente_id)
+                             VALUES ($mesa_id, $cliente_id)";
         if (!mysqli_query($conexion, $sql_relacion_mesa)) {
             throw new Exception("Error al crear nueva relación mesa-cliente: " . mysqli_error($conexion));
         }
         
-        // 6. Registrar la visita
-        $sql_visita = "INSERT INTO `registro de visita` (`fecha hora`, `cantidad`) 
+        // 5. Registrar la visita - NUEVO ESQUEMA
+        $sql_visita = "INSERT INTO `registro de visita` (fecha_hora, cantidad) 
                       VALUES (NOW(), 1)";
         if (!mysqli_query($conexion, $sql_visita)) {
             throw new Exception("Error al registrar visita: " . mysqli_error($conexion));
@@ -192,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_mesa'])) {
           <div class="informacion" style="margin-top: 30px;">
             <h2>👤 Cliente: <?php echo $cliente['nombre']; ?></h2>
             <p><strong>Email:</strong> <?php echo $cliente['gmail']; ?></p>
-            <p><strong>ID Cliente:</strong> <?php echo $cliente['id cliente']; ?></p>
+            <p><strong>ID Cliente:</strong> <?php echo $cliente['cliente_id']; ?></p>
           </div>
           
           <?php if (count($reservas) > 0): ?>
@@ -212,9 +203,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_mesa'])) {
                   <tbody>
                     <?php foreach ($reservas as $reserva): ?>
                       <tr>
-                        <td><strong>#<?php echo $reserva['id reserva']; ?></strong></td>
+                        <td><strong>#<?php echo $reserva['id_reserva']; ?></strong></td>
                         <td><?php echo $reserva['fecha']; ?></td>
-                        <td><?php echo $reserva['hora de inicio']; ?></td>
+                        <td><?php echo $reserva['hora_inicio']; ?></td>
                         <td>
                           <span class="etiqueta etiqueta-pendiente">
                             👥 <?php echo $reserva['cantidad']; ?> personas
@@ -223,12 +214,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_mesa'])) {
                         <td>
                           <?php if (count($mesas_disponibles) > 0): ?>
                             <form method="POST" class="form-acciones">
-                              <input type="hidden" name="reserva_id" value="<?php echo $reserva['id reserva']; ?>">
-                              <input type="hidden" name="cliente_id" value="<?php echo $cliente['id cliente']; ?>">
+                              <input type="hidden" name="reserva_id" value="<?php echo $reserva['id_reserva']; ?>">
+                              <input type="hidden" name="cliente_id" value="<?php echo $cliente['cliente_id']; ?>">
                               <select name="mesa_id" required>
                                 <option value="">Seleccionar mesa...</option>
                                 <?php foreach ($mesas_disponibles as $mesa): ?>
-                                  <option value="<?php echo $mesa['id mesa']; ?>">
+                                  <option value="<?php echo $mesa['mesa_id']; ?>">
                                     🪑 Mesa <?php echo $mesa['numero']; ?> 
                                     (Capacidad: <?php echo $mesa['capacidad']; ?> personas)
                                   </option>

@@ -7,7 +7,7 @@ if (!isset($_SESSION['es_administrador']) || !$_SESSION['es_administrador']) {
     exit();
 }
 
-
+// Crear nueva promoción
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['crear_promocion'])) {
     $titulo = mysqli_real_escape_string($conexion, $_POST['titulo']);
     $descripcion = mysqli_real_escape_string($conexion, $_POST['descripcion']);
@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['crear_promocion'])) {
     $duracion = $_POST['duracion'];
     $estado = 'activa';
 
+    // Consulta actualizada
     $sql = "INSERT INTO promocion (titulo, descripcion, tipo, condiciones, duracion, estado) 
             VALUES ('$titulo', '$descripcion', '$tipo', '$condiciones', '$duracion', '$estado')";
 
@@ -26,73 +27,69 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['crear_promocion'])) {
     }
 }
 
-
+// Asignar promoción a cliente
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_promocion'])) {
     $cliente_id = $_POST['cliente_id'];
     $promocion_id = $_POST['promocion_id'];
 
-   
-    $sql_cliente_info = "SELECT `usuario_id usuario` FROM cliente WHERE `id cliente` = $cliente_id";
-    $resultado_cliente_info = mysqli_query($conexion, $sql_cliente_info);
+    // Consulta actualizada - nueva tabla promo_cliente
+    $sql_verificar = "SELECT * FROM promo_cliente 
+                     WHERE cliente_cliente_id = $cliente_id 
+                     AND promocion_promocion_id = $promocion_id";
     
-    if ($resultado_cliente_info && mysqli_num_rows($resultado_cliente_info) > 0) {
-        $cliente_info = mysqli_fetch_assoc($resultado_cliente_info);
-        $usuario_id = $cliente_info['usuario_id usuario'];
+    if (mysqli_num_rows(mysqli_query($conexion, $sql_verificar)) == 0) {
+        // Consulta actualizada - solo cliente_id y promocion_id
+        $sql = "INSERT INTO promo_cliente (cliente_cliente_id, promocion_promocion_id) 
+                VALUES ($cliente_id, $promocion_id)";
 
-       
-        $sql_verificar = "SELECT * FROM cliente_has_promocion 
-                         WHERE `cliente_id cliente` = $cliente_id 
-                         AND `promocion_id promocion` = $promocion_id";
-        
-        if (mysqli_num_rows(mysqli_query($conexion, $sql_verificar)) == 0) {
-          
-            $sql = "INSERT INTO cliente_has_promocion (`cliente_id cliente`, `cliente_usuario_id usuario`, `promocion_id promocion`) 
-                    VALUES ($cliente_id, $usuario_id, $promocion_id)";
-
-            if (mysqli_query($conexion, $sql)) {
-                $mensaje = "Promoción asignada al cliente correctamente";
-            } else {
-                $error = "Error al asignar promoción: " . mysqli_error($conexion);
-            }
+        if (mysqli_query($conexion, $sql)) {
+            $mensaje = "Promoción asignada al cliente correctamente";
         } else {
-            $error = "El cliente ya tiene esta promoción asignada";
+            $error = "Error al asignar promoción: " . mysqli_error($conexion);
         }
     } else {
-        $error = " No se pudo obtener la información completa del cliente";
+        $error = "El cliente ya tiene esta promoción asignada";
     }
 }
 
+// Cambiar estado de promoción
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['cambiar_estado'])) {
     $promocion_id = $_POST['promocion_id'];
     $estado = $_POST['estado'];
 
-    $sql = "UPDATE promocion SET estado = '$estado' WHERE `id promocion` = $promocion_id";
+    // Consulta actualizada
+    $sql = "UPDATE promocion SET estado = '$estado' WHERE promocion_id = $promocion_id";
     mysqli_query($conexion, $sql);
-    $mensaje = " Estado de promoción actualizado";
+    $mensaje = "Estado de promoción actualizado";
 }
 
-
-$promociones = mysqli_query($conexion, "SELECT * FROM promocion ORDER BY estado, `id promocion` DESC");
-
+// Consultas actualizadas
+$promociones = mysqli_query($conexion, "SELECT * FROM promocion ORDER BY estado, promocion_id DESC");
 
 $clientes = mysqli_query($conexion, "
-    SELECT c.`id cliente`, u.nombre, u.gmail 
+    SELECT c.cliente_id, u.nombre, u.gmail 
     FROM cliente c 
-    JOIN usuario u ON c.`usuario_id usuario` = u.`id usuario`
+    JOIN usuario u ON c.usuario_id_usuario = u.id_usuario
     ORDER BY u.nombre
 ");
 
-
+// Consulta actualizada para incluir cálculo de expiración
 $promociones_asignadas = mysqli_query($conexion, "
-    SELECT cp.*, u.nombre as cliente_nombre, p.titulo as promocion_titulo
-    FROM cliente_has_promocion cp
-    JOIN cliente c ON cp.`cliente_id cliente` = c.`id cliente`
-    JOIN usuario u ON c.`usuario_id usuario` = u.`id usuario`
-    JOIN promocion p ON cp.`promocion_id promocion` = p.`id promocion`
-    ORDER BY cp.`promocion_id promocion`
+    SELECT 
+        cp.*, 
+        u.nombre as cliente_nombre, 
+        p.titulo as promocion_titulo, 
+        p.tipo,
+        p.duracion,
+        p.estado,
+        DATE_ADD(NOW(), INTERVAL p.duracion DAY) as fecha_expiracion,
+        DATEDIFF(DATE_ADD(NOW(), INTERVAL p.duracion DAY), NOW()) as dias_restantes
+    FROM promo_cliente cp
+    JOIN cliente c ON cp.cliente_cliente_id = c.cliente_id
+    JOIN usuario u ON c.usuario_id_usuario = u.id_usuario
+    JOIN promocion p ON cp.promocion_promocion_id = p.promocion_id
+    ORDER BY dias_restantes ASC
 ");
-?>
-
 ?>
 
 <!DOCTYPE html>
@@ -168,17 +165,18 @@ $promociones_asignadas = mysqli_query($conexion, "
                                 <div class="fila-formulario">
                                     <div class="grupo-formulario">
                                         <label>Título de la Promoción:</label>
-                                        <input type="text" name="titulo" required placeholder="Ej: 2x1 en Postres" maxlength="15">
+                                        <input type="text" name="titulo" required placeholder="Ej: 2x1 en Postres" maxlength="30">
                                     </div>
                                     <div class="grupo-formulario">
                                         <label>Duración (días):</label>
                                         <input type="number" name="duracion" required min="1" placeholder="30">
+                                        <small style="color: #666; font-size: 12px;">La promoción expirará después de estos días</small>
                                     </div>
                                 </div>
                                 
                                 <div class="grupo-formulario">
                                     <label>Descripción:</label>
-                                    <textarea name="descripcion" required placeholder="Describe los beneficios de la promoción" maxlength="50"></textarea>
+                                    <textarea name="descripcion" required placeholder="Describe los beneficios de la promoción" maxlength="100" rows="3"></textarea>
                                 </div>
                                 
                                 <div class="fila-formulario">
@@ -188,8 +186,7 @@ $promociones_asignadas = mysqli_query($conexion, "
                                             <option value="descuento">💰 Descuento</option>
                                             <option value="2x1">2️⃣✖️1️⃣ 2x1</option>
                                             <option value="combo">🍽️ Combo</option>
-                                            <option value="regalo">🎁 Regalo</option>
-                                            <option value="earlybird">🐦 Early Bird</option>
+                                            <option value="cumpleaños">🎂 Cumpleaños</option>
                                         </select>
                                     </div>
                                     <div class="grupo-formulario">
@@ -216,7 +213,7 @@ $promociones_asignadas = mysqli_query($conexion, "
                                         <select name="cliente_id" required>
                                             <option value="">Seleccionar cliente...</option>
                                             <?php while($cliente = mysqli_fetch_assoc($clientes)): ?>
-                                                <option value="<?php echo $cliente['id cliente']; ?>">
+                                                <option value="<?php echo $cliente['cliente_id']; ?>">
                                                     <?php echo $cliente['nombre']; ?> (<?php echo $cliente['gmail']; ?>)
                                                 </option>
                                             <?php endwhile; ?>
@@ -231,8 +228,8 @@ $promociones_asignadas = mysqli_query($conexion, "
                                             while($promocion = mysqli_fetch_assoc($promociones)): 
                                                 if ($promocion['estado'] == 'activa'):
                                             ?>
-                                                <option value="<?php echo $promocion['id promocion']; ?>">
-                                                    <?php echo $promocion['titulo']; ?> - <?php echo $promocion['tipo']; ?>
+                                                <option value="<?php echo $promocion['promocion_id']; ?>">
+                                                    <?php echo $promocion['titulo']; ?> - <?php echo $promocion['tipo']; ?> (<?php echo $promocion['duracion']; ?> días)
                                                 </option>
                                             <?php 
                                                 endif;
@@ -272,7 +269,7 @@ $promociones_asignadas = mysqli_query($conexion, "
                                     $badge_class = $promocion['estado'] == 'activa' ? 'badge-activa' : 'badge-inactiva';
                                 ?>
                                     <tr>
-                                        <td>#<?php echo $promocion['id promocion']; ?></td>
+                                        <td>#<?php echo $promocion['promocion_id']; ?></td>
                                         <td><strong><?php echo $promocion['titulo']; ?></strong></td>
                                         <td><?php echo $promocion['descripcion']; ?></td>
                                         <td>
@@ -282,8 +279,7 @@ $promociones_asignadas = mysqli_query($conexion, "
                                                 case 'descuento': $icono = '💰'; break;
                                                 case '2x1': $icono = '2️⃣✖️1️⃣'; break;
                                                 case 'combo': $icono = '🍽️'; break;
-                                                case 'regalo': $icono = '🎁'; break;
-                                                case 'earlybird': $icono = '🐦'; break;
+                                                case 'cumpleaños': $icono = '🎂'; break;
                                             }
                                             echo $icono . ' ' . $promocion['tipo']; 
                                             ?>
@@ -293,7 +289,7 @@ $promociones_asignadas = mysqli_query($conexion, "
                                         <td><span class="<?php echo $badge_class; ?>"><?php echo ucfirst($promocion['estado']); ?></span></td>
                                         <td>
                                             <form method="POST" class="form-acciones">
-                                                <input type="hidden" name="promocion_id" value="<?php echo $promocion['id promocion']; ?>">
+                                                <input type="hidden" name="promocion_id" value="<?php echo $promocion['promocion_id']; ?>">
                                                 <select name="estado" onchange="this.form.submit()">
                                                     <option value="activa" <?php echo $promocion['estado']=='activa'?'selected':''; ?>>Activar</option>
                                                     <option value="inactiva" <?php echo $promocion['estado']=='inactiva'?'selected':''; ?>>Desactivar</option>
@@ -319,28 +315,56 @@ $promociones_asignadas = mysqli_query($conexion, "
                                         <th>Cliente</th>
                                         <th>Promoción</th>
                                         <th>Tipo</th>
-                                        <th>Fecha Asignación</th>
+                                        <th>Duración Total</th>
+                                        <th>Días Restantes</th>
+                                        <th>Estado</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php while($asignacion = mysqli_fetch_assoc($promociones_asignadas)): ?>
+                                    <?php while($asignacion = mysqli_fetch_assoc($promociones_asignadas)): 
+                                        $dias_restantes = $asignacion['dias_restantes'];
+                                        $estado_promocion = '';
+                                        $badge_class = '';
+                                        
+                                        if ($dias_restantes > 7) {
+                                            $estado_promocion = 'Vigente';
+                                            $badge_class = 'badge-activa';
+                                        } elseif ($dias_restantes > 0) {
+                                            $estado_promocion = 'Por vencer';
+                                            $badge_class = 'badge-advertencia';
+                                        } else {
+                                            $estado_promocion = 'Expirada';
+                                            $badge_class = 'badge-inactiva';
+                                        }
+                                    ?>
                                         <tr>
                                             <td>👤 <?php echo $asignacion['cliente_nombre']; ?></td>
                                             <td>🎁 <?php echo $asignacion['promocion_titulo']; ?></td>
                                             <td>
                                                 <?php 
                                                 $icono = '';
-                                                switch(explode(' ', $asignacion['promocion_titulo'])[0]) {
+                                                switch($asignacion['tipo']) {
+                                                    case 'descuento': $icono = '💰'; break;
                                                     case '2x1': $icono = '2️⃣✖️1️⃣'; break;
-                                                    case 'Descuento': $icono = '💰'; break;
-                                                    case 'Combo': $icono = '🍽️'; break;
-                                                    case 'Regalo': $icono = '🎁'; break;
-                                                    default: $icono = '🎯';
+                                                    case 'combo': $icono = '🍽️'; break;
+                                                    case 'cumpleaños': $icono = '🎂'; break;
                                                 }
-                                                echo $icono;
+                                                echo $icono . ' ' . $asignacion['tipo'];
                                                 ?>
                                             </td>
-                                            <td><?php echo date('d/m/Y'); ?></td>
+                                            <td><?php echo $asignacion['duracion']; ?> días</td>
+                                            <td>
+                                                <?php if ($dias_restantes > 0): ?>
+                                                    <span style="color: #27ae60; font-weight: bold;">
+                                                        <?php echo $dias_restantes; ?> días
+                                                    </span>
+                                                <?php else: ?>
+                                                    <span style="color: #e74c3c; font-weight: bold;">
+                                                        Expirada
+                                                    </span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td><span class="<?php echo $badge_class; ?>"><?php echo $estado_promocion; ?></span></td>
                                         </tr>
                                     <?php endwhile; ?>
                                 </tbody>

@@ -1,53 +1,59 @@
 <?php
-
 include 'conexion.php';
 session_start();
 
 if (isset($_POST['submit'])) {
     if (
-        empty($_POST['gmail']) || empty($_POST['contraseña']) || empty($_POST['nombre'])
-    || empty($_POST['fecha_nacimiento']) || empty($_POST['nacionalidad']) || empty($_POST['telefono'])
+        empty($_POST['gmail']) || empty($_POST['contraseña']) || empty($_POST['nombre']) 
+        || empty($_POST['apellido']) || empty($_POST['fecha_nacimiento']) 
+        || empty($_POST['nacionalidad']) || empty($_POST['telefono'])
     ) {
-        echo " Complete todos los campos";
+        echo "Complete todos los campos";
     } else {
         $gmail = $_POST['gmail'];
         $contrasena = $_POST['contraseña']; 
         $nombre = $_POST['nombre'];
+        $apellido = $_POST['apellido'];
         $fecha_nacimiento = $_POST['fecha_nacimiento'];
         $nacionalidad = $_POST['nacionalidad'];
         $telefono = $_POST['telefono'];
+        $preferencias = isset($_POST['preferencias']) ? $_POST['preferencias'] : '';
 
-       
-        $sqlUsuario = "INSERT INTO usuario (nombre, `fecha de nacimiento`, gmail, contraseña) 
-                       VALUES ('$nombre', '$fecha_nacimiento', '$gmail', '$contrasena')";
+        $sqlUsuario = "INSERT INTO usuario (nombre, apellido, fecha_nac, gmail, contraseña, fecha_registro, nacionalidad) 
+                       VALUES ('$nombre', '$apellido', '$fecha_nacimiento', '$gmail', '$contrasena', NOW(), '$nacionalidad')";
+        
         if (mysqli_query($conexion, $sqlUsuario)) {
             $id_usuario = mysqli_insert_id($conexion);
           
-
-            $sqlCliente = "INSERT INTO cliente (nacionalidad, `usuario_id usuario`) 
-                           VALUES ('$nacionalidad', '$id_usuario')";
+            $sqlCliente = "INSERT INTO cliente (preferencias, usuario_id_usuario) 
+                           VALUES ('$preferencias', '$id_usuario')";
+            
             if (mysqli_query($conexion, $sqlCliente)) {
                 $id_cliente = mysqli_insert_id($conexion);
                 $_SESSION['id_cliente'] = $id_cliente;
 
+                $sqlTelefono = "INSERT INTO telefono (telefono, cliente_cliente_id) 
+                                VALUES ('$telefono', '$id_cliente')";
                 
-                $sqlTelefono = "INSERT INTO telefono (telefono, `cliente_id cliente`, `cliente_usuario_id usuario`) 
-                                VALUES ('$telefono', '$id_cliente', '$id_usuario')";
                 if (mysqli_query($conexion, $sqlTelefono)) {
                     $_SESSION['id_usuario'] = $id_usuario;
-                    echo " Registro exitoso";
+                    $_SESSION['nombre'] = $nombre;
+                    $_SESSION['apellido'] = $apellido;
+                    $_SESSION['nacionalidad'] = $nacionalidad;
+                    $_SESSION['es_cliente'] = true;
+                    
+                    echo "Registro exitoso";
                     header("Location: inicio.php");
                     exit;
                 } else {
-                    echo " Error teléfono: " . mysqli_error($conexion);
+                    echo "Error al registrar teléfono: " . mysqli_error($conexion);
                 }
             } else {
-                echo " Error cliente: " . mysqli_error($conexion);
+                echo "Error al registrar cliente: " . mysqli_error($conexion);
             }
         } else {
-            echo " Error usuario: " . mysqli_error($conexion);
+            echo "Error al registrar usuario: " . mysqli_error($conexion);
         }
     }
 }
-
 ?>

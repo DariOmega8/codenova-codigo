@@ -30,17 +30,14 @@ session_start();
             echo '<li><a href="administracion.php">Panel Admin</a></li>';
           }
           ?>
+          <?php if (isset($_SESSION['id_usuario'])): ?>
+            <li><a href="cerrar_sesion.php" class="btn-logout">Cerrar Sesión (<?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?>)</a></li>
+          <?php else: ?>
+            <li><a href="iniciar_sesion.html" class="btn-login">Iniciar sesión</a></li>
+            <li><a href="registrarse_cliente.html" class="btn-register">Registrarse</a></li>
+          <?php endif; ?>
         </ul>
       </nav>
-      <div class="botones-sesion">
-        <?php if (isset($_SESSION['id_usuario'])): ?>
-          <span class="bienvenida">Bienvenido <?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?></span>
-          <a href="cerrar_sesion.php" class="btn-logout" role="button">Cerrar sesión</a>
-        <?php else: ?>
-          <a href="iniciar_sesion.html" class="btn-login" role="button">Iniciar sesión</a>
-          <a href="registrarse_cliente.html" class="btn-register" role="button">Registrarse</a>
-        <?php endif; ?>
-      </div>
     </header>
 
     <!-- Contenido Principal -->

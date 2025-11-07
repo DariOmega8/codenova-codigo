@@ -9,10 +9,11 @@ if (!isset($_GET['id'])) {
 
 $id_plato = intval($_GET['id']);
 
-$sql = "SELECT p.`id platos` AS id_plato, p.nombre, p.descripcion, p.precio, m.tipo AS categoria
-        FROM `platos` p
-        INNER JOIN `menu` m ON p.`menu_id menu` = m.`id menu`
-        WHERE p.`id platos` = $id_plato";
+// Consulta CORREGIDA: usando el nombre correcto de la columna `menu_id menu`
+$sql = "SELECT p.plato_id, p.nombre, p.descripcion, p.precio, p.imagen, m.tipo AS categoria
+        FROM plato p
+        INNER JOIN menu m ON p.`menu_id menu` = m.id_menu
+        WHERE p.plato_id = $id_plato";
 
 $res = mysqli_query($conexion, $sql);
 
@@ -29,7 +30,12 @@ if (mysqli_num_rows($res) == 0) {
 $plato = mysqli_fetch_assoc($res);
 
 $imagen_default = "estilos/imagenes/balatro.png";
-$img = isset($plato['imagen']) && !empty($plato['imagen']) ? $plato['imagen'] : $imagen_default;
+// Manejo de imagen BLOB
+if (isset($plato['imagen']) && !empty($plato['imagen'])) {
+    $img = 'data:image/jpeg;base64,' . base64_encode($plato['imagen']);
+} else {
+    $img = $imagen_default;
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -43,7 +49,7 @@ $img = isset($plato['imagen']) && !empty($plato['imagen']) ? $plato['imagen'] : 
 <body>
   <div class="contenedor-principal">
     <!-- Header -->
-    <header class="menu">
+   <header class="menu">
       <div class="logo">
         <img src="estilos/imagenes/logo.jpeg" alt="La Chacra Gourmet" class="logo-img" onerror="this.style.display='none'">
       </div>
@@ -55,17 +61,19 @@ $img = isset($plato['imagen']) && !empty($plato['imagen']) ? $plato['imagen'] : 
           <li><a href="zona_staff.php">Mozos orden</a></li>
           <li><a href="historia.php">Historia</a></li>
           <li><a href="menu.php">Menu</a></li>
+          <?php 
+          if (isset($_SESSION['es_administrador']) && $_SESSION['es_administrador'] === true) {
+            echo '<li><a href="administracion.php">Panel Admin</a></li>';
+          }
+          ?>
+          <?php if (isset($_SESSION['id_usuario'])): ?>
+            <li><a href="cerrar_sesion.php" class="btn-logout">Cerrar Sesión (<?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?>)</a></li>
+          <?php else: ?>
+            <li><a href="iniciar_sesion.html" class="btn-login">Iniciar sesión</a></li>
+            <li><a href="registrarse_cliente.html" class="btn-register">Registrarse</a></li>
+          <?php endif; ?>
         </ul>
       </nav>
-      <div class="botones-sesion">
-        <?php if (isset($_SESSION['id_usuario'])): ?>
-          <span class="bienvenida">Bienvenido <?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?></span>
-          <a href="cerrar_sesion.php" class="btn-logout" role="button">Cerrar sesión</a>
-        <?php else: ?>
-          <a href="iniciar_sesion.html" class="btn-login" role="button">Iniciar sesión</a>
-          <a href="registrarse_cliente.html" class="btn-register" role="button">Registrarse</a>
-        <?php endif; ?>
-      </div>
     </header>
 
     <!-- Contenido Principal -->
@@ -81,7 +89,7 @@ $img = isset($plato['imagen']) && !empty($plato['imagen']) ? $plato['imagen'] : 
           </div>
           <div class="plato-info">
             <p><strong>Categoría:</strong> <?php echo htmlspecialchars($plato['categoria']); ?></p>
-            <p><strong>Precio:</strong> <span class="precio">$<?php echo htmlspecialchars($plato['precio']); ?></span></p>
+            <p><strong>Precio:</strong> <span class="precio">$<?php echo number_format($plato['precio'], 2); ?></span></p>
             <div class="descripcion-completa">
               <h3>Descripción:</h3>
               <p><?php echo nl2br(htmlspecialchars($plato['descripcion'])); ?></p>

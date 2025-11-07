@@ -31,12 +31,12 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
           <li><a href="inicio.php">Inicio</a></li>
           <li><a href="redes_pagos.php">Redes y pagos</a></li>
           <li><a href="reservas1.php">Reservas</a></li>
-          <?php if (isset($_SESSION['es_empleado']) === true): ?>
+          <?php if (isset($_SESSION['es_empleado']) && $_SESSION['es_empleado'] === true): ?>
             <li><a href="zona_staff.php">Mozos orden</a></li>
           <?php endif; ?>
           <li><a href="historia.php">Historia</a></li>
           <li><a href="menu.php">Menu</a></li>
-          <li><a href="cerrar_sesion.php" class="btn-logout">Cerrar Sesión (<?php echo $_SESSION['nombre']; ?>)</a></li>
+          <li><a href="cerrar_sesion.php" class="btn-logout">Cerrar Sesión (<?php echo htmlspecialchars($_SESSION['nombre']); ?>)</a></li>
         </ul>
       </nav>
     </header>
@@ -93,11 +93,11 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
 
         <!-- Mensajes -->
         <?php if ($mensaje): ?>
-          <div class="mensaje-exito"><?php echo $mensaje; ?></div>
+          <div class="mensaje-exito"><?php echo htmlspecialchars($mensaje); ?></div>
         <?php endif; ?>
         
         <?php if ($error): ?>
-          <div class="mensaje-error"><?php echo $error; ?></div>
+          <div class="mensaje-error"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
 
         <!-- Gestión de Usuarios -->
@@ -111,12 +111,23 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
               <form action="crear_usuarios.php" method="post" class="formulario-admin">
                 <div class="fila-formulario">
                   <div class="grupo-formulario">
-                    <label>Nombre completo:</label>
-                    <input type="text" name="nombre" required placeholder="Ej: Juan Pérez">
+                    <label>Nombre:</label>
+                    <input type="text" name="nombre" required placeholder="Ej: Juan">
                   </div>
                   <div class="grupo-formulario">
+                    <label>Apellido:</label>
+                    <input type="text" name="apellido" required placeholder="Ej: Pérez">
+                  </div>
+                </div>
+
+                <div class="fila-formulario">
+                  <div class="grupo-formulario">
                     <label>Fecha de nacimiento:</label>
-                    <input type="date" name="fecha" required>
+                    <input type="date" name="fecha_nac" required>
+                  </div>
+                  <div class="grupo-formulario">
+                    <label>Nacionalidad:</label>
+                    <input type="text" name="nacionalidad" required placeholder="Ej: Peruana">
                   </div>
                 </div>
                 
@@ -133,11 +144,17 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                 
                 <div class="grupo-formulario">
                   <label>Tipo de Usuario:</label>
-                  <select name="tipo" required>
+                  <select name="tipo" required id="tipo-usuario">
                     <option value="">Seleccionar tipo...</option>
                     <option value="empleado">Empleado</option>
                     <option value="administrador">Administrador</option>
                   </select>
+                </div>
+
+                <!-- Campo adicional para empleados -->
+                <div id="campo-salario" class="grupo-formulario" style="display: none;">
+                  <label>Salario ($):</label>
+                  <input type="number" name="salario" step="0.01" min="0" placeholder="Ej: 1500.00" required>
                 </div>
                 
                 <button type="submit" class="btn-admin">Crear Usuario</button>
@@ -153,6 +170,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                     <tr>
                       <th>ID</th>
                       <th>Nombre</th>
+                      <th>Apellido</th>
                       <th>Email</th>
                       <th>Tipo</th>
                       <th>Estado</th>
@@ -161,31 +179,34 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                   </thead>
                   <tbody>
                     <?php
+                    // Consulta para administradores
                     $admins = mysqli_query($conexion, "
-                        SELECT u.`id usuario`, u.nombre, u.gmail, 'Activo' as estado,
+                        SELECT u.id_usuario, u.nombre, u.apellido, u.gmail, 'Activo' as estado,
                                'administrador' as tipo
                         FROM usuario u 
-                        JOIN administrador a ON u.`id usuario` = a.`usuario_id usuario`
+                        JOIN admin a ON u.id_usuario = a.usuario_id_usuario
                     ");
                     
+                    // Consulta para empleados
                     $empleados = mysqli_query($conexion, "
-                        SELECT u.`id usuario`, u.nombre, u.gmail, e.estado,
+                        SELECT u.id_usuario, u.nombre, u.apellido, u.gmail, e.estado,
                                'empleado' as tipo
                         FROM usuario u 
-                        JOIN empleado e ON u.`id usuario` = e.`usuario_id usuario`
+                        JOIN empleado e ON u.id_usuario = e.usuario_id_usuario
                     ");
                     
                     while($admin = mysqli_fetch_assoc($admins)){
                       echo "<tr>
-                              <td>".$admin['id usuario']."</td>
-                              <td><strong>".$admin['nombre']."</strong></td>
-                              <td>".$admin['gmail']."</td>
+                              <td>".$admin['id_usuario']."</td>
+                              <td><strong>".htmlspecialchars($admin['nombre'])."</strong></td>
+                              <td>".htmlspecialchars($admin['apellido'])."</td>
+                              <td>".htmlspecialchars($admin['gmail'])."</td>
                               <td><span class='etiqueta etiqueta-admin'>Administrador</span></td>
                               <td><span class='etiqueta etiqueta-activo'>".$admin['estado']."</span></td>
                               <td>
                                 <form action='crear_usuarios.php' method='post' class='form-acciones'>
                                   <input type='hidden' name='accion' value='eliminar_usuario'>
-                                  <input type='hidden' name='id' value='".$admin['id usuario']."'>
+                                  <input type='hidden' name='id' value='".$admin['id_usuario']."'>
                                   <input type='hidden' name='tipo' value='administrador'>
                                   <button type='submit' class='btn-eliminar'>Eliminar</button>
                                 </form>
@@ -196,15 +217,16 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                     while($emp = mysqli_fetch_assoc($empleados)){
                       $estado_clase = $emp['estado'] == 'activo' ? 'etiqueta-activo' : 'etiqueta-inactivo';
                       echo "<tr>
-                              <td>".$emp['id usuario']."</td>
-                              <td><strong>".$emp['nombre']."</strong></td>
-                              <td>".$emp['gmail']."</td>
+                              <td>".$emp['id_usuario']."</td>
+                              <td><strong>".htmlspecialchars($emp['nombre'])."</strong></td>
+                              <td>".htmlspecialchars($emp['apellido'])."</td>
+                              <td>".htmlspecialchars($emp['gmail'])."</td>
                               <td><span class='etiqueta etiqueta-empleado'>Empleado</span></td>
                               <td><span class='etiqueta ".$estado_clase."'>".ucfirst($emp['estado'])."</span></td>
                               <td>
                                 <form action='crear_usuarios.php' method='post' class='form-acciones'>
                                   <input type='hidden' name='accion' value='eliminar_usuario'>
-                                  <input type='hidden' name='id' value='".$emp['id usuario']."'>
+                                  <input type='hidden' name='id' value='".$emp['id_usuario']."'>
                                   <input type='hidden' name='tipo' value='empleado'>
                                   <button type='submit' class='btn-eliminar'>Eliminar</button>
                                 </form>
@@ -227,7 +249,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
             <!-- Agregar Nuevo Plato -->
             <div class="formulario-seccion">
               <h3>Agregar Nuevo Plato</h3>
-              <form action="editar_platos.php" method="post" class="formulario-admin">
+              <form action="editar_platos.php" method="post" enctype="multipart/form-data" class="formulario-admin">
                 <input type="hidden" name="accion" value="agregar_plato">
                 
                 <div class="fila-formulario">
@@ -243,20 +265,27 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                 
                 <div class="grupo-formulario">
                   <label>Descripción del plato:</label>
-                  <input type="text" name="descripcion" required placeholder="Ej: Plato tradicional peruano">
+                  <textarea name="descripcion" required placeholder="Ej: Plato tradicional peruano" rows="3"></textarea>
                 </div>
-                
-                <div class="grupo-formulario">
-                  <label>Menú al que pertenece:</label>
-                  <select name="menu_id" required>
-                    <option value="">Seleccionar menú...</option>
-                    <?php
-                    $menus = mysqli_query($conexion, "SELECT * FROM `menu` WHERE estado = 'activo'");
-                    while($m = mysqli_fetch_assoc($menus)){
-                      echo "<option value='".$m['id menu']."'>".$m['tipo']."</option>";
-                    }
-                    ?>
-                  </select>
+
+                <div class="fila-formulario">
+                  <div class="grupo-formulario">
+                    <label>Menú al que pertenece:</label>
+                    <select name="menu_id_menu" required>
+                      <option value="">Seleccionar menú...</option>
+                      <?php
+                      // Consulta para menús disponibles
+                      $menus = mysqli_query($conexion, "SELECT * FROM menu WHERE estado = 'disponible'");
+                      while($m = mysqli_fetch_assoc($menus)){
+                        echo "<option value='".$m['id_menu']."'>".$m['tipo']."</option>";
+                      }
+                      ?>
+                    </select>
+                  </div>
+                  <div class="grupo-formulario">
+                    <label>Imagen del plato:</label>
+                    <input type="file" name="imagen" accept="image/*" required>
+                  </div>
                 </div>
                 
                 <button type="submit" class="btn-admin">Agregar Plato</button>
@@ -280,26 +309,27 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                   </thead>
                   <tbody>
                     <?php
-                    $platos = mysqli_query($conexion, "SELECT p.*, m.tipo as menu_tipo FROM platos p JOIN menu m ON p.`menu_id menu` = m.`id menu`");
+                    // Consulta CORREGIDA: usando el nombre correcto de la columna `menu_id menu`
+                    $platos = mysqli_query($conexion, "SELECT p.*, m.tipo as menu_tipo FROM plato p JOIN menu m ON p.`menu_id menu` = m.id_menu");
                     while($p = mysqli_fetch_assoc($platos)){
                       echo "<tr>
-                              <td>".$p['id platos']."</td>
-                              <td><strong>".$p['nombre']."</strong></td>
-                              <td>".$p['descripcion']."</td>
+                              <td>".$p['plato_id']."</td>
+                              <td><strong>".htmlspecialchars($p['nombre'])."</strong></td>
+                              <td>".htmlspecialchars($p['descripcion'])."</td>
                               <td class='precio'>$".number_format($p['precio'], 2)."</td>
-                              <td>".$p['menu_tipo']."</td>
+                              <td>".htmlspecialchars($p['menu_tipo'])."</td>
                               <td>
                                 <div class='acciones-tabla'>
                                   <form action='editar_platos.php' method='post' class='form-acciones'>
                                     <input type='hidden' name='accion' value='editar_plato'>
-                                    <input type='hidden' name='id' value='".$p['id platos']."'>
-                                    <input type='text' name='nombre' value='".$p['nombre']."' required>
+                                    <input type='hidden' name='id' value='".$p['plato_id']."'>
+                                    <input type='text' name='nombre' value='".htmlspecialchars($p['nombre'])."' required>
                                     <input type='number' name='precio' value='".$p['precio']."' step='0.01' required>
                                     <button type='submit' class='btn-editar'>Editar</button>
                                   </form>
                                   <form action='editar_platos.php' method='post' class='form-acciones'>
                                     <input type='hidden' name='accion' value='eliminar_plato'>
-                                    <input type='hidden' name='id' value='".$p['id platos']."'>
+                                    <input type='hidden' name='id' value='".$p['plato_id']."'>
                                     <button type='submit' class='btn-eliminar'>Eliminar</button>
                                   </form>
                                 </div>
@@ -333,8 +363,8 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                   <div class="grupo-formulario">
                     <label>Estado del Menú:</label>
                     <select name="estado" required>
-                      <option value="activo">Activo</option>
-                      <option value="inactivo">Inactivo</option>
+                      <option value="disponible">Disponible</option>
+                      <option value="no_disponible">No Disponible</option>
                     </select>
                   </div>
                 </div>
@@ -358,28 +388,29 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                   </thead>
                   <tbody>
                     <?php
+                    // Consulta para menús
                     $menus_lista = mysqli_query($conexion, "SELECT * FROM menu");
                     while($m = mysqli_fetch_assoc($menus_lista)){
-                      $estado_clase = $m['estado'] == 'activo' ? 'etiqueta-activo' : 'etiqueta-inactivo';
+                      $estado_clase = $m['estado'] == 'disponible' ? 'etiqueta-activo' : 'etiqueta-inactivo';
                       echo "<tr>
-                              <td>".$m['id menu']."</td>
-                              <td><strong>".$m['tipo']."</strong></td>
+                              <td>".$m['id_menu']."</td>
+                              <td><strong>".htmlspecialchars($m['tipo'])."</strong></td>
                               <td><span class='etiqueta ".$estado_clase."'>".ucfirst($m['estado'])."</span></td>
                               <td>
                                 <div class='acciones-tabla'>
                                   <form action='editar_menu.php' method='post' class='form-acciones'>
                                     <input type='hidden' name='accion' value='editar_menu'>
-                                    <input type='hidden' name='id' value='".$m['id menu']."'>
-                                    <input type='text' name='tipo' value='".$m['tipo']."' required>
+                                    <input type='hidden' name='id' value='".$m['id_menu']."'>
+                                    <input type='text' name='tipo' value='".htmlspecialchars($m['tipo'])."' required>
                                     <select name='estado'>
-                                      <option value='activo' ".($m['estado']=='activo'?'selected':'').">Activo</option>
-                                      <option value='inactivo' ".($m['estado']=='inactivo'?'selected':'').">Inactivo</option>
+                                      <option value='disponible' ".($m['estado']=='disponible'?'selected':'').">Disponible</option>
+                                      <option value='no_disponible' ".($m['estado']=='no_disponible'?'selected':'').">No Disponible</option>
                                     </select>
                                     <button type='submit' class='btn-editar'>Editar</button>
                                   </form>
                                   <form action='editar_menu.php' method='post' class='form-acciones'>
                                     <input type='hidden' name='accion' value='eliminar_menu'>
-                                    <input type='hidden' name='id' value='".$m['id menu']."'>
+                                    <input type='hidden' name='id' value='".$m['id_menu']."'>
                                     <button type='submit' class='btn-eliminar'>Eliminar</button>
                                   </form>
                                 </div>
@@ -415,30 +446,31 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                   </thead>
                   <tbody>
                     <?php
-                    $reservas = mysqli_query($conexion, "SELECT * FROM `reserva` ORDER BY fecha DESC, `hora de inicio` DESC");
+                    // Consulta para reservas
+                    $reservas = mysqli_query($conexion, "SELECT * FROM reserva ORDER BY fecha DESC, hora_inicio DESC");
                     while($r = mysqli_fetch_assoc($reservas)){
                       $estado_clase = '';
                       switch($r['estado']) {
-                        case 'Pendiente': $estado_clase = 'etiqueta-pendiente'; break;
-                        case 'Confirmada': $estado_clase = 'etiqueta-confirmada'; break;
-                        case 'Cancelada': $estado_clase = 'etiqueta-cancelada'; break;
-                        case 'Finalizada': $estado_clase = 'etiqueta-finalizada'; break;
+                        case 'pendiente': $estado_clase = 'etiqueta-pendiente'; break;
+                        case 'confirmada': $estado_clase = 'etiqueta-confirmada'; break;
+                        case 'cancelada': $estado_clase = 'etiqueta-cancelada'; break;
+                        case 'completada': $estado_clase = 'etiqueta-finalizada'; break;
                       }
                       
                       echo "<tr>
-                              <td>".$r['id reserva']."</td>
+                              <td>".$r['id_reserva']."</td>
                               <td><strong>".$r['fecha']."</strong></td>
-                              <td>".$r['hora de inicio']."</td>
+                              <td>".$r['hora_inicio']."</td>
                               <td>".$r['cantidad']." personas</td>
-                              <td><span class='etiqueta ".$estado_clase."'>".$r['estado']."</span></td>
+                              <td><span class='etiqueta ".$estado_clase."'>".ucfirst($r['estado'])."</span></td>
                               <td>
                                 <form action='editar_reservas.php' method='post' class='form-acciones'>
-                                  <input type='hidden' name='id' value='".$r['id reserva']."'>
+                                  <input type='hidden' name='id' value='".$r['id_reserva']."'>
                                   <select name='estado_reserva'>
-                                    <option value='Pendiente' ".($r['estado']=='Pendiente'?'selected':'').">Pendiente</option>
-                                    <option value='Confirmada' ".($r['estado']=='Confirmada'?'selected':'').">Confirmada</option>
-                                    <option value='Cancelada' ".($r['estado']=='Cancelada'?'selected':'').">Cancelada</option>
-                                    <option value='Finalizada' ".($r['estado']=='Finalizada'?'selected':'').">Finalizada</option>
+                                    <option value='pendiente' ".($r['estado']=='pendiente'?'selected':'').">Pendiente</option>
+                                    <option value='confirmada' ".($r['estado']=='confirmada'?'selected':'').">Confirmada</option>
+                                    <option value='cancelada' ".($r['estado']=='cancelada'?'selected':'').">Cancelada</option>
+                                    <option value='completada' ".($r['estado']=='completada'?'selected':'').">Completada</option>
                                   </select>
                                   <button type='submit' class='btn-editar'>Actualizar</button>
                                 </form>
@@ -530,6 +562,22 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
       if (sections.length > 0) {
         sections.forEach((section, index) => {
           section.style.display = index === 0 ? 'block' : 'none';
+        });
+      }
+
+      // Mostrar/ocultar campo de salario según tipo de usuario
+      const tipoSelect = document.getElementById('tipo-usuario');
+      const campoSalario = document.getElementById('campo-salario');
+      
+      if (tipoSelect && campoSalario) {
+        tipoSelect.addEventListener('change', function() {
+          if (this.value === 'empleado') {
+            campoSalario.style.display = 'block';
+            campoSalario.querySelector('input').required = true;
+          } else {
+            campoSalario.style.display = 'none';
+            campoSalario.querySelector('input').required = false;
+          }
         });
       }
     });

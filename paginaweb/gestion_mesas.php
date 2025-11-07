@@ -11,13 +11,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['crear_mesa'])) {
     $numero = $_POST['numero'];
     $capacidad = $_POST['capacidad'];
     
+    // Consulta actualizada
     $sql_verificar = "SELECT * FROM mesa WHERE numero = $numero";
     $resultado = mysqli_query($conexion, $sql_verificar);
     
     if (mysqli_num_rows($resultado) > 0) {
         $error = "Ya existe una mesa con el número $numero";
     } else {
-        $sql = "INSERT INTO mesa (numero, capacidad, estado, `fecha de asignacion`) 
+        // Consulta actualizada
+        $sql = "INSERT INTO mesa (numero, capacidad, estado, fecha_asig) 
                 VALUES ($numero, $capacidad, 'disponible', CURDATE())";
         
         if (mysqli_query($conexion, $sql)) {
@@ -28,17 +30,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['crear_mesa'])) {
     }
 }
 
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_mesa'])) {
     $mesa_id = $_POST['mesa_id'];
     
-    $sql_verificar = "SELECT * FROM mesa WHERE `id mesa` = $mesa_id AND estado != 'disponible'";
+    // Consulta actualizada
+    $sql_verificar = "SELECT * FROM mesa WHERE mesa_id = $mesa_id AND estado != 'disponible'";
     $resultado = mysqli_query($conexion, $sql_verificar);
     
     if (mysqli_num_rows($resultado) > 0) {
-        $error = " No se puede eliminar la mesa porque está en uso";
+        $error = "No se puede eliminar la mesa porque está en uso";
     } else {
-        $sql = "DELETE FROM mesa WHERE `id mesa` = $mesa_id";
+        // Consulta actualizada
+        $sql = "DELETE FROM mesa WHERE mesa_id = $mesa_id";
         
         if (mysqli_query($conexion, $sql)) {
             $mensaje = "Mesa eliminada correctamente";
@@ -48,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_mesa'])) {
     }
 }
 
+// Consulta actualizada
 $mesas = mysqli_query($conexion, "SELECT * FROM mesa ORDER BY numero");
 ?>
 
@@ -154,7 +158,7 @@ $mesas = mysqli_query($conexion, "SELECT * FROM mesa ORDER BY numero");
                                         $clase_estado = 'estado-' . $mesa['estado'];
                                     ?>
                                         <tr>
-                                            <td>#<?php echo $mesa['id mesa']; ?></td>
+                                            <td>#<?php echo $mesa['mesa_id']; ?></td>
                                             <td><strong>Mesa <?php echo $mesa['numero']; ?></strong></td>
                                             <td>👥 <?php echo $mesa['capacidad']; ?> personas</td>
                                             <td class="<?php echo $clase_estado; ?>">
@@ -164,15 +168,16 @@ $mesas = mysqli_query($conexion, "SELECT * FROM mesa ORDER BY numero");
                                                     case 'disponible': $icono = '✅'; break;
                                                     case 'ocupada': $icono = '🟡'; break;
                                                     case 'reservada': $icono = '🔵'; break;
+                                                    case 'mantenimiento': $icono = '🔴'; break;
                                                 }
                                                 echo $icono . ' ' . ucfirst($mesa['estado']);
                                                 ?>
                                             </td>
-                                            <td><?php echo $mesa['fecha de asignacion']; ?></td>
+                                            <td><?php echo $mesa['fecha_asig']; ?></td>
                                             <td>
                                                 <?php if ($mesa['estado'] == 'disponible'): ?>
                                                     <form method="POST" class="form-acciones">
-                                                        <input type="hidden" name="mesa_id" value="<?php echo $mesa['id mesa']; ?>">
+                                                        <input type="hidden" name="mesa_id" value="<?php echo $mesa['mesa_id']; ?>">
                                                         <button type="submit" name="eliminar_mesa" class="btn-eliminar" 
                                                                 onclick="return confirm('¿Estás seguro de eliminar la Mesa <?php echo $mesa['numero']; ?>?')">
                                                             Eliminar
@@ -198,12 +203,13 @@ $mesas = mysqli_query($conexion, "SELECT * FROM mesa ORDER BY numero");
                 <section id="estadisticas-mesas" class="seccion-admin">
                     <h2>Estadísticas de Mesas</h2>
                     <?php
-                    // Reiniciar consulta para estadísticas
+                    // Consulta actualizada para estadísticas
                     $sql_stats = "SELECT 
                         COUNT(*) as total_mesas,
                         SUM(CASE WHEN estado = 'disponible' THEN 1 ELSE 0 END) as disponibles,
                         SUM(CASE WHEN estado = 'ocupada' THEN 1 ELSE 0 END) as ocupadas,
                         SUM(CASE WHEN estado = 'reservada' THEN 1 ELSE 0 END) as reservadas,
+                        SUM(CASE WHEN estado = 'mantenimiento' THEN 1 ELSE 0 END) as mantenimiento,
                         SUM(capacidad) as capacidad_total
                     FROM mesa";
                     
@@ -227,6 +233,10 @@ $mesas = mysqli_query($conexion, "SELECT * FROM mesa ORDER BY numero");
                         <div class="stat-card">
                             <h3>Ocupadas</h3>
                             <div class="stat-number" style="color: #e74c3c;"><?php echo $stats['ocupadas']; ?></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Mantenimiento</h3>
+                            <div class="stat-number" style="color: #95a5a6;"><?php echo $stats['mantenimiento']; ?></div>
                         </div>
                     </div>
                     <div style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;">

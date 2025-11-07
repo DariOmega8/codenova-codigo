@@ -7,8 +7,8 @@ session_start();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Redes y Pagos - La Chacra Gourmet</title>
-  <link rel="stylesheet" href="estilos/estilo_general.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="estilos/estilo_general.css?v=<?php echo time(); ?>">
+  <script src="https://kit.fontawesome.com/69a3421d9e.js" crossorigin="anonymous"></script>
 </head>
 <body>
   <div class="contenedor-principal">
@@ -30,17 +30,14 @@ session_start();
             echo '<li><a href="administracion.php">Panel Admin</a></li>';
           }
           ?>
+          <?php if (isset($_SESSION['id_usuario'])): ?>
+            <li><a href="cerrar_sesion.php" class="btn-logout">Cerrar Sesión (<?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?>)</a></li>
+          <?php else: ?>
+            <li><a href="iniciar_sesion.html" class="btn-login">Iniciar sesión</a></li>
+            <li><a href="registrarse_cliente.html" class="btn-register">Registrarse</a></li>
+          <?php endif; ?>
         </ul>
       </nav>
-      <div class="botones-sesion">
-        <?php if (isset($_SESSION['id_usuario'])): ?>
-          <span class="bienvenida">Bienvenido <?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?></span>
-          <a href="cerrar_sesion.php" class="btn-logout" role="button">Cerrar sesión</a>
-        <?php else: ?>
-          <a href="iniciar_sesion.html" class="btn-login" role="button">Iniciar sesión</a>
-          <a href="registrarse_cliente.html" class="btn-register" role="button">Registrarse</a>
-        <?php endif; ?>
-      </div>
     </header>
 
     <!-- Contenido Principal -->

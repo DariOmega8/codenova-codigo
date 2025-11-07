@@ -42,11 +42,20 @@ body {
   box-shadow: 0 2px 10px rgba(0,0,0,0.2);
   position: relative;
   z-index: 1000;
+  overflow: hidden;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 .logo-img {
-  height: 50px;
+  height: 45px;
   width: auto;
+  max-height: 60px;
+  object-fit: contain;
   border-radius: 5px;
   transition: transform 0.3s ease;
 }
@@ -58,7 +67,7 @@ body {
 .navegacion-principal ul {
   list-style: none;
   display: flex;
-  gap: 15px;
+  gap: 10px;
   align-items: center;
 }
 
@@ -75,13 +84,13 @@ body {
 }
 
 /* Botones normales del header */
-.navegacion-principal ul li a:not(.btn-login):not(.btn-register):not(.btn-logout) {
+.navegacion-principal ul li a:not(.btn-login):not(.btn-register):not(.btn-logout):not(.btn-admin-header):not(.btn-staff-header) {
   background-color: #4CAF50;
   color: white;
   border: 1px solid #2E7D32;
 }
 
-.navegacion-principal ul li a:not(.btn-login):not(.btn-register):not(.btn-logout):hover {
+.navegacion-principal ul li a:not(.btn-login):not(.btn-register):not(.btn-logout):not(.btn-admin-header):not(.btn-staff-header):hover {
   background-color: #43A047;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
@@ -116,6 +125,33 @@ body {
 
 .btn-logout:hover {
   background-color: #D32F2F;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Botones especiales para header */
+.btn-admin-header {
+  background-color: #4CAF50;
+  color: white;
+  border: 1px solid #2E7D32;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.btn-admin-header:hover {
+  background-color: #43A047;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-staff-header {
+  background-color: #4CAF50;
+  color: white;
+  border: 1px solid #2E7D32;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.btn-staff-header:hover {
+  background-color: #43A047;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
@@ -173,10 +209,12 @@ body {
 }
 
 .sidebar-icon {
-  width: 26px;
-  height: 26px;
-  object-fit: contain;
-  border-radius: 4px;
+  width: 20px;
+  height: 20px;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* =========================================================
@@ -197,7 +235,6 @@ body {
    ========================================================= */
 
 .banner {
-  background-color: #2E86AB;
   background-image: url('imagenes/imagen-local.jpeg');
   background-size: cover;
   background-position: center;
@@ -297,7 +334,7 @@ body {
 }
 
 /* =========================================================
-   PLATOS ESTRELLA
+   PLATOS ESTRELLA - SOLUCIÓN SIMPLE Y DIRECTA
    ========================================================= */
 
 .platos-estrella {
@@ -365,16 +402,24 @@ body {
   box-shadow: 0 12px 25px rgba(0,0,0,0.3);
 }
 
-.plato img {
+/* SOLUCIÓN DEFINITIVA PARA IMÁGENES DE PLATOS */
+.plato-imagen-container {
   width: 100%;
   height: 220px;
-  object-fit: cover;
+  overflow: hidden;
   border-bottom: 3px solid #2E86AB;
+}
+
+.plato-imagen-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
   transition: transform 0.4s ease;
 }
 
-.plato:hover img {
-  transform: scale(1.05);
+.plato:hover .plato-imagen-container img {
+  transform: scale(1.1);
 }
 
 .plato-info {
@@ -403,8 +448,27 @@ body {
   line-height: 1.5;
 }
 
+/* Indicador de popularidad */
+.plato-popularidad {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  padding: 5px 10px;
+  background: linear-gradient(135deg, #FF9800, #F57C00);
+  color: white;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  justify-content: center;
+}
+
+.plato-popularidad i {
+  font-size: 0.9rem;
+}
+
 /* =========================================================
-   UBICACIÓN
+   UBICACIÓN - SOLUCIÓN SIMPLE
    ========================================================= */
 
 .ubicacion {
@@ -448,17 +512,27 @@ body {
   font-size: 1.1rem;
 }
 
-.ubicacion img {
-  width: 100%;
-  max-width: 550px;
+/* Mapa - SOLUCIÓN SIMPLE */
+.mapa-container {
+  display: inline-block;
   border-radius: 15px;
+  overflow: hidden;
   border: 4px solid #2E86AB;
   box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-  transition: transform 0.3s ease;
+  max-width: 550px;
+  width: 100%;
+  transition: all 0.3s ease;
 }
 
-.ubicacion img:hover {
-  transform: scale(1.02);
+.mapa-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.mapa-imagen {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 /* =========================================================
@@ -726,6 +800,183 @@ tr:nth-child(even) {
 }
 
 /* =========================================================
+   ESTILOS PARA ZONA_STAFF.PHP - MOZOS
+   ========================================================= */
+
+/* Contenedor para el botón de verificar reserva */
+.verificar-reserva-container {
+  text-align: center;
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Categorías de platos en el formulario de pedidos */
+.categoria-platos {
+  margin-bottom: 25px;
+  padding: 20px;
+  border: 3px solid #2E86AB;
+  border-radius: 15px;
+  background: #E6F2FF;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.categoria-platos h3 {
+  color: #1A3A5F;
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-align: center;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.categoria-platos h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background-color: #2E86AB;
+  border-radius: 2px;
+}
+
+/* Fila individual de plato */
+.fila-plato {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+  align-items: flex-end;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #2E86AB;
+  flex-wrap: nowrap;
+}
+
+.fila-plato .grupo-formulario {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Botones de agregar y remover */
+.btn-agregar {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 15px auto;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  display: block;
+  width: auto;
+  min-width: 200px;
+  font-size: 1rem;
+}
+
+.btn-agregar:hover {
+  background: #43A047;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-remover {
+  background: #F44336;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.btn-remover:hover {
+  background: #D32F2F;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Resumen total del pedido */
+.resumen-total {
+  background: #2E86AB;
+  color: white;
+  padding: 20px;
+  border-radius: 15px;
+  margin: 25px 0;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  border: 3px solid #1A3A5F;
+}
+
+/* Precio en las opciones de platos */
+.plato-precio {
+  color: #4CAF50;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+/* Selects personalizados */
+.select-plato {
+  padding: 10px 15px;
+  border: 2px solid #2E86AB;
+  border-radius: 10px;
+  background-color: #E6F2FF;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  width: 100%;
+  height: 42px;
+}
+
+.select-plato:focus {
+  outline: none;
+  border-color: #1A3A5F;
+  box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.3);
+}
+
+/* Inputs de cantidad en las filas de platos */
+.fila-plato input[type="number"] {
+  padding: 10px 15px;
+  border: 2px solid #2E86AB;
+  border-radius: 10px;
+  background-color: #E6F2FF;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  width: 100%;
+  height: 42px;
+}
+
+.fila-plato input[type="number"]:focus {
+  outline: none;
+  border-color: #1A3A5F;
+  box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.3);
+}
+
+/* Mejorar la visualización de las opciones del select */
+.select-plato option {
+  padding: 10px;
+  background: white;
+  color: #1A3A5F;
+}
+
+/* =========================================================
    ESTILOS PARA ADMINISTRACIÓN
    ========================================================= */
 
@@ -780,6 +1031,15 @@ tr:nth-child(even) {
   text-align: center;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   border-left: 5px solid #D32F2F;
+}
+
+.badge-advertencia {
+    background-color: #f39c12;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
 }
 
 /* Secciones de administración */
@@ -1030,18 +1290,197 @@ tr:nth-child(even) {
 }
 
 /* =========================================================
-   RESPONSIVE DESIGN
+   ESTILOS ADICIONALES PARA VALIDACIÓN
    ========================================================= */
 
-@media (max-width: 1024px) {
-  .banner h1 {
-    font-size: 2.4rem;
-  }
-  
-  .plato {
-    width: 280px;
-  }
+.duplicado-warning {
+    color: #F44336;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    font-weight: 500;
+    display: block;
 }
+
+.error-validacion {
+    background-color: #F44336;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: left;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-left: 5px solid #D32F2F;
+}
+
+.error-validacion ul {
+    margin: 10px 0 0 20px;
+    padding: 0;
+}
+
+.error-validacion li {
+    margin-bottom: 5px;
+}
+
+/* =========================================================
+   ESTILOS ESPECÍFICOS PARA RESERVAS
+   ========================================================= */
+
+/* Banner para reservas */
+.banner-reservas {
+  background-image: url('imagenes/imagen-local.jpeg');
+  background-size: cover;
+  background-position: center;
+  height: 250px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.banner-reservas::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 15px;
+}
+
+.banner-reservas h1 {
+  color: white;
+  font-size: 2.5rem;
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
+  max-width: 80%;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+  line-height: 1.3;
+}
+
+/* Estilos para el textarea de descripción en reservas */
+.grupo-formulario textarea {
+  padding: 12px 15px;
+  border: 2px solid #2E86AB;
+  border-radius: 10px;
+  background-color: #E6F2FF;
+  font-size: 1rem;
+  font-family: 'Poppins', Arial, sans-serif;
+  transition: all 0.3s ease;
+  width: 100%;
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.5;
+}
+
+.grupo-formulario textarea:focus {
+  outline: none;
+  border-color: #1A3A5F;
+  box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.3);
+  background-color: white;
+}
+
+.grupo-formulario textarea::placeholder {
+  color: #7A9BBA;
+  font-style: italic;
+}
+
+/* Botón específico para reservas */
+.btn-reserva {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btn-reserva:hover {
+  background-color: #43A047;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+
+/* =========================================================
+   CORRECCIONES ESPECÍFICAS PARA MENU.PHP Y PLATO.PHP
+   ========================================================= */
+
+/* Para menu.php - Imágenes que cubren todo el contenedor */
+.contenedor-platos .plato a img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  border-bottom: 3px solid #2E86AB;
+}
+
+/* Para plato.php - Centrar la imagen */
+.detalle-plato {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.plato-imagen {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.plato-imagen img {
+  width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+  border: 3px solid #2E86AB;
+}
+
+.plato-info {
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+}
+
+.descripcion-completa {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: rgba(46, 134, 171, 0.1);
+  border-radius: 10px;
+  border-left: 4px solid #2E86AB;
+}
+
+.descripcion-completa h3 {
+  color: #2E86AB;
+  margin-bottom: 15px;
+  font-size: 1.4rem;
+}
+
+.descripcion-completa p {
+  line-height: 1.7;
+  color: #1A3A5F;
+  font-size: 1.05rem;
+  text-align: left;
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN
+   ========================================================= */
 
 @media (max-width: 768px) {
   .menu {
@@ -1051,14 +1490,9 @@ tr:nth-child(even) {
     gap: 15px;
   }
   
-  .logo-img {
-    height: 45px;
-  }
-  
   .navegacion-principal ul {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
   }
   
   .contenido-con-sidebar {
@@ -1069,40 +1503,15 @@ tr:nth-child(even) {
     width: 100%;
     min-height: auto;
     position: static;
-    padding: 15px 0;
-    order: 2;
   }
   
   .sidebar ul {
     flex-direction: row;
     overflow-x: auto;
-    padding: 0 15px;
-    gap: 10px;
-  }
-  
-  .sidebar ul li {
-    flex-shrink: 0;
-  }
-  
-  .sidebar ul li a {
-    padding: 10px 12px;
-    white-space: nowrap;
-    flex-direction: column;
-    gap: 6px;
-    text-align: center;
-    font-size: 0.85rem;
-    min-width: 100px;
-  }
-  
-  .sidebar-icon {
-    width: 22px;
-    height: 22px;
   }
   
   .contenido-principal {
-    order: 1;
     padding: 20px;
-    gap: 25px;
   }
   
   .banner {
@@ -1111,25 +1520,11 @@ tr:nth-child(even) {
   
   .banner h1 {
     font-size: 1.8rem;
-    max-width: 90%;
-  }
-  
-  .informacion, .platos-estrella, .ubicacion {
-    padding: 25px;
-  }
-  
-  .informacion h2, .platos-estrella h2 {
-    font-size: 1.8rem;
-  }
-  
-  .ubicacion h2 {
-    font-size: 1.6rem;
   }
   
   .contenedor-platos {
     flex-direction: column;
     align-items: center;
-    gap: 20px;
   }
   
   .plato {
@@ -1149,17 +1544,8 @@ tr:nth-child(even) {
     display: flex;
     gap: 10px;
     justify-content: center;
-    flex-wrap: wrap;
   }
-  
-  .social-icons {
-    justify-content: center;
-  }
-  
-  .footer-texto {
-    order: -1;
-  }
-  
+
   /* Responsive para gestión de stock */
   .stats-container {
     flex-direction: column;
@@ -1182,83 +1568,52 @@ tr:nth-child(even) {
   .form-acciones select {
     max-width: none;
   }
-}
 
-@media (max-width: 480px) {
-  .navegacion-principal ul {
+  /* Responsive para zona staff */
+  .fila-plato {
     flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-remover {
+    align-self: center;
+    margin-top: 10px;
     width: 100%;
   }
-  
-  .navegacion-principal ul li {
-    width: 100%;
+
+  /* Responsive para reservas */
+  .banner-reservas {
+    height: 200px;
   }
-  
-  .navegacion-principal ul li a {
-    display: block;
-    text-align: center;
-    width: 100%;
+
+  .banner-reservas h1 {
+    font-size: 2rem;
   }
-  
-  .sidebar ul {
-    flex-direction: column;
+
+  .btn-reserva {
+    padding: 12px 25px;
+    font-size: 1rem;
   }
-  
-  .sidebar ul li a {
-    flex-direction: row;
-    text-align: left;
-    min-width: auto;
+
+  .grupo-formulario textarea {
+    min-height: 80px;
   }
-  
-  .banner {
-    height: 220px;
+
+  /* Responsive para plato.php */
+  .detalle-plato {
+    gap: 20px;
   }
-  
-  .banner h1 {
-    font-size: 1.5rem;
-  }
-  
-  .informacion, .platos-estrella, .ubicacion {
-    padding: 20px 15px;
-  }
-  
-  .informacion h2, .platos-estrella h2 {
-    font-size: 1.6rem;
-  }
-  
-  .ubicacion h2 {
-    font-size: 1.4rem;
-  }
-  
-  .plato {
+
+  .plato-imagen {
     max-width: 100%;
   }
-  
-  footer {
-    padding: 15px;
+
+  .plato-imagen img {
+    max-height: 300px;
   }
-  
-  .footer-buttons {
-    flex-direction: column;
-    width: 100%;
-  }
-  
-  .footer-buttons a {
-    margin: 5px 0;
-    width: 100%;
-  }
-  
-  /* Responsive para gestión de stock en móviles */
-  .container {
-    padding: 15px;
-  }
-  
-  table {
-    font-size: 0.8rem;
-  }
-  
-  th, td {
-    padding: 8px 6px;
+
+  .descripcion-completa p {
+    text-align: center;
   }
 }
 
@@ -1285,53 +1640,189 @@ tr:nth-child(even) {
   animation: fadeIn 0.8s ease-out;
 }
 
-/* Efecto de carga suave para imágenes */
-img {
-  transition: opacity 0.3s ease;
+
+/* =========================================================
+   ESTILOS ESPECÍFICOS PARA ADMINISTRACIÓN
+   ========================================================= */
+
+/* Botón de Eliminar - Estilo específico */
+.btn-eliminar {
+  background-color: #F44336 !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 16px !important;
+  border-radius: 6px !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+  white-space: nowrap !important;
+  margin: 2px !important;
 }
 
-img[src] {
-  opacity: 0;
+.btn-eliminar:hover {
+  background-color: #D32F2F !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
 }
 
-img.loaded {
-  opacity: 1;
+/* Input de selección de archivos - Estilo mejorado */
+input[type="file"] {
+  padding: 10px 15px !important;
+  border: 2px solid #2E86AB !important;
+  border-radius: 10px !important;
+  background-color: #E6F2FF !important;
+  font-size: 1rem !important;
+  font-family: 'Poppins', Arial, sans-serif !important;
+  transition: all 0.3s ease !important;
+  width: 100% !important;
+  cursor: pointer !important;
 }
 
-
-/* ===============================
-   FIX: Mostrar imágenes ocultas
-   =============================== */
-
-img {
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  width: auto !important;
-  height: auto !important;
-  max-width: 100% !important;
-  object-fit: contain !important;
+input[type="file"]:focus {
+  outline: none !important;
+  border-color: #1A3A5F !important;
+  box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.3) !important;
+  background-color: white !important;
 }
 
-/* Si alguna imagen se ve demasiado chica (como las del sidebar): */
-.sidebar-icon {
-  width: 60px !important;
-  height: 60px !important;
+/* Estilo personalizado para el input file */
+input[type="file"]::file-selector-button {
+  background-color: #4CAF50 !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 16px !important;
+  border-radius: 6px !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  margin-right: 15px !important;
 }
 
-/* Logo principal */
-.logo-img {
-  width: 120px !important;
-  height: auto !important;
-  display: block !important;
+input[type="file"]::file-selector-button:hover {
+  background-color: #43A047 !important;
+  transform: translateY(-1px) !important;
 }
 
-/* Evitar que overlays o fondos la tapen */
-header, .sidebar, .contenedor {
-  z-index: 1;
-  position: relative;
+/* Mejora para los formularios en tablas de administración */
+.acciones-tabla {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  align-items: flex-start !important;
 }
-img, .sidebar-icon {
-  z-index: 2;
-  position: relative;
+
+.acciones-tabla .form-acciones {
+  display: flex !important;
+  gap: 8px !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  width: 100% !important;
+}
+
+.acciones-tabla .form-acciones input[type="text"],
+.acciones-tabla .form-acciones input[type="number"],
+.acciones-tabla .form-acciones select {
+  padding: 6px 10px !important;
+  border: 1px solid #2E86AB !important;
+  border-radius: 5px !important;
+  background-color: #E6F2FF !important;
+  font-size: 0.8rem !important;
+  min-width: 80px !important;
+  max-width: 120px !important;
+}
+
+.acciones-tabla .form-acciones input[type="text"]:focus,
+.acciones-tabla .form-acciones input[type="number"]:focus,
+.acciones-tabla .form-acciones select:focus {
+  outline: none !important;
+  border-color: #1A3A5F !important;
+  box-shadow: 0 0 0 2px rgba(46, 134, 171, 0.3) !important;
+}
+
+/* Mejora para botones de editar en tablas */
+.btn-editar {
+  background-color: #2196F3 !important;
+  color: white !important;
+  border: none !important;
+  padding: 6px 12px !important;
+  border-radius: 5px !important;
+  font-size: 0.8rem !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  white-space: nowrap !important;
+  margin: 2px !important;
+}
+
+.btn-editar:hover {
+  background-color: #1976D2 !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Estilos para el campo de salario dinámico */
+#campo-salario {
+  transition: all 0.3s ease !important;
+}
+
+#campo-salario input {
+  padding: 10px 15px !important;
+  border: 2px solid #2E86AB !important;
+  border-radius: 10px !important;
+  background-color: #E6F2FF !important;
+  font-size: 1rem !important;
+  transition: all 0.3s ease !important;
+  width: 100% !important;
+}
+
+#campo-salario input:focus {
+  outline: none !important;
+  border-color: #1A3A5F !important;
+  box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.3) !important;
+  background-color: white !important;
+}
+
+/* Mejora visual para las tablas de administración */
+.tabla-admin td {
+  vertical-align: middle !important;
+}
+
+.tabla-admin .form-acciones {
+  display: flex !important;
+  gap: 5px !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+}
+
+/* Responsive para botones de administración */
+@media (max-width: 768px) {
+  .btn-eliminar, 
+  .btn-editar {
+    padding: 6px 10px !important;
+    font-size: 0.75rem !important;
+  }
+  
+  .acciones-tabla .form-acciones {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  
+  .acciones-tabla .form-acciones input[type="text"],
+  .acciones-tabla .form-acciones input[type="number"],
+  .acciones-tabla .form-acciones select {
+    max-width: none !important;
+    min-width: auto !important;
+  }
+  
+  input[type="file"] {
+    padding: 8px 12px !important;
+    font-size: 0.9rem !important;
+  }
+  
+  input[type="file"]::file-selector-button {
+    padding: 6px 12px !important;
+    font-size: 0.8rem !important;
+    margin-right: 10px !important;
+  }
 }
