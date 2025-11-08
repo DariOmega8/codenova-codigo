@@ -36,6 +36,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
           <?php endif; ?>
           <li><a href="historia.php">Historia</a></li>
           <li><a href="menu.php">Menu</a></li>
+          <li><a href="galeria.php">Galería</a></li>
           <li><a href="cerrar_sesion.php" class="btn-logout">Cerrar Sesión (<?php echo htmlspecialchars($_SESSION['nombre']); ?>)</a></li>
         </ul>
       </nav>

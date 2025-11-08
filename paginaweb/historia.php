@@ -22,9 +22,12 @@ session_start();
           <li><a href="inicio.php">Inicio</a></li>
           <li><a href="redes_pagos.php">Redes y pagos</a></li>
           <li><a href="reservas1.php">Reservas</a></li>
-          <li><a href="zona_staff.php">Mozos orden</a></li>
+          <?php if (isset($_SESSION['es_empleado']) && $_SESSION['es_empleado'] === true): ?>
+            <li><a href="zona_staff.php">Mozos orden</a></li>
+          <?php endif; ?>
           <li><a href="historia.php">Historia</a></li>
           <li><a href="menu.php">Menu</a></li>
+          <li><a href="galeria.php">Galería</a></li>
           <?php 
           if (isset($_SESSION['es_administrador']) && $_SESSION['es_administrador'] === true) {
             echo '<li><a href="administracion.php">Panel Admin</a></li>';

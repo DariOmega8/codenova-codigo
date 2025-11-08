@@ -42,6 +42,7 @@ if ($result_platos) {
         <ul>
           <li><a href="reservas1.php">Reservar</a></li>
           <li><a href="menu.php">Menu</a></li>
+          <li><a href="galeria.php">Galería</a></li>
           <?php if (isset($_SESSION['es_administrador']) && $_SESSION['es_administrador']): ?>
             <li><a href="administracion.php" class="btn-admin-header">Administración</a></li>
           <?php endif; ?>

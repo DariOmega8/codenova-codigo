@@ -9,7 +9,54 @@ if (!isset($_SESSION['es_administrador']) || !$_SESSION['es_administrador']) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
-    if (isset($_POST['tipo'])) {
+    // PRIMERO: Manejar eliminación de usuarios
+    if (isset($_POST['accion']) && $_POST['accion'] == 'eliminar_usuario') {
+        $id = intval($_POST['id']);
+        $tipo = $_POST['tipo'];
+        
+        // Verificar que no sea el propio administrador
+        if ($id == $_SESSION['id_usuario']) {
+            header("Location: administracion.php?error=No puedes eliminar tu propio usuario");
+            exit();
+        }
+        
+        // Iniciar transacción para mayor seguridad
+        mysqli_begin_transaction($conexion);
+        
+        try {
+            // Eliminar de la tabla específica primero
+            if ($tipo == 'administrador') {
+                $sql_eliminar = "DELETE FROM admin WHERE usuario_id_usuario = $id";
+            } elseif ($tipo == 'empleado') {
+                $sql_eliminar = "DELETE FROM empleado WHERE usuario_id_usuario = $id";
+            }
+            
+            if (!mysqli_query($conexion, $sql_eliminar)) {
+                throw new Exception("Error al eliminar de tabla específica: " . mysqli_error($conexion));
+            }
+            
+            // Luego eliminar de usuario
+            $sql = "DELETE FROM usuario WHERE id_usuario = $id";
+            
+            if (!mysqli_query($conexion, $sql)) {
+                throw new Exception("Error al eliminar usuario: " . mysqli_error($conexion));
+            }
+            
+            // Confirmar transacción
+            mysqli_commit($conexion);
+            header("Location: administracion.php?mensaje=Usuario eliminado correctamente");
+            exit();
+            
+        } catch (Exception $e) {
+            // Revertir en caso de error
+            mysqli_rollback($conexion);
+            header("Location: administracion.php?error=" . urlencode($e->getMessage()));
+            exit();
+        }
+    }
+    
+    // SEGUNDO: Manejar creación de usuarios (solo si no es eliminación)
+    if (isset($_POST['tipo']) && (!isset($_POST['accion']) || $_POST['accion'] != 'eliminar_usuario')) {
         // Datos del formulario
         $nombre = mysqli_real_escape_string($conexion, $_POST['nombre']);
         $apellido = mysqli_real_escape_string($conexion, $_POST['apellido']);
@@ -79,38 +126,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         } else {
             header("Location: administracion.php?error=Error al crear usuario: " . urlencode(mysqli_error($conexion)));
-            exit();
-        }
-    }
-    
-    // Código para eliminar usuario
-    if (isset($_POST['accion']) && $_POST['accion'] == 'eliminar_usuario') {
-        $id = intval($_POST['id']);
-        $tipo = $_POST['tipo'];
-        
-        // Verificar que no sea el propio administrador
-        if ($id == $_SESSION['id_usuario']) {
-            header("Location: administracion.php?error=No puedes eliminar tu propio usuario");
-            exit();
-        }
-        
-        // Eliminar de la tabla específica primero
-        if ($tipo == 'administrador') {
-            $sql_eliminar = "DELETE FROM admin WHERE usuario_id_usuario = $id";
-        } elseif ($tipo == 'empleado') {
-            $sql_eliminar = "DELETE FROM empleado WHERE usuario_id_usuario = $id";
-        }
-        
-        mysqli_query($conexion, $sql_eliminar);
-        
-        // Luego eliminar de usuario
-        $sql = "DELETE FROM usuario WHERE id_usuario = $id";
-        
-        if (mysqli_query($conexion, $sql)) {
-            header("Location: administracion.php?mensaje=Usuario eliminado correctamente");
-            exit();
-        } else {
-            header("Location: administracion.php?error=Error al eliminar usuario: " . urlencode(mysqli_error($conexion)));
             exit();
         }
     }
