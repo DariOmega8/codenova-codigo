@@ -1826,3 +1826,258 @@ input[type="file"]::file-selector-button:hover {
     margin-right: 10px !important;
   }
 }
+.carousel-img {
+      height: 600px;
+      object-fit: cover;
+    }
+
+    .galeria-card {
+      border: 2px solid #C98A5E;
+      border-radius: 10px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .galeria-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(201, 138, 94, 0.3);
+    }
+
+    .galeria-card .card-img-top {
+      height: 250px;
+      object-fit: cover;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .carousel-caption {
+      background: rgba(91, 58, 41, 0.8);
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      background-color: #C98A5E;
+      border-radius: 50%;
+      padding: 15px;
+    }
+
+    .carousel-indicators button {
+      background-color: #C98A5E;
+    }
+
+    .btn-primary {
+      background-color: #C98A5E;
+      border-color: #C98A5E;
+    }
+
+    .btn-primary:hover {
+      background-color: #B07A4E;
+      border-color: #B07A4E;
+    }
+
+    .btn-outline-primary {
+      color: #C98A5E;
+      border-color: #C98A5E;
+    }
+
+    .btn-outline-primary:hover {
+      background-color: #C98A5E;
+      border-color: #C98A5E;
+      color: white;
+    }
+
+    /* Asegurar que el header tenga un z-index alto */
+    .menu {
+      position: relative;
+      z-index: 1000;
+    }
+
+    /* Asegurar que el contenido principal no interfiera */
+    .contenido-principal {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Estilos mejorados para la sección de imagen */
+    .image-container {
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .object-fit-cover {
+      object-fit: cover;
+    }
+.carousel-img {
+      height: 600px;
+      object-fit: cover;
+    }
+
+    .galeria-card {
+      border: 2px solid #C98A5E;
+      border-radius: 10px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .galeria-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(201, 138, 94, 0.3);
+    }
+
+    .galeria-card .card-img-top {
+      height: 250px;
+      object-fit: cover;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .carousel-caption {
+      background: rgba(91, 58, 41, 0.8);
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      background-color: #C98A5E;
+      border-radius: 50%;
+      padding: 15px;
+    }
+
+    .carousel-indicators button {
+      background-color: #C98A5E;
+    }
+
+    .btn-primary {
+      background-color: #C98A5E;
+      border-color: #C98A5E;
+    }
+
+    .btn-primary:hover {
+      background-color: #B07A4E;
+      border-color: #B07A4E;
+    }
+
+    .btn-outline-primary {
+      color: #C98A5E;
+      border-color: #C98A5E;
+    }
+
+    .btn-outline-primary:hover {
+      background-color: #C98A5E;
+      border-color: #C98A5E;
+      color: white;
+    }
+
+    /* Asegurar que el header tenga un z-index alto */
+    .menu {
+      position: relative;
+      z-index: 1000;
+    }
+
+    /* Asegurar que el contenido principal no interfiera */
+    .contenido-principal {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Estilos mejorados para la sección de imagen */
+    .image-container {
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .object-fit-cover {
+      object-fit: cover;
+    }
+
+    @media (max-width: 768px) {
+      .carousel-img {
+        height: 400px;
+      }
+      
+      .carousel-caption h5 {
+        font-size: 1rem;
+      }
+      
+      .carousel-caption p {
+        font-size: 0.8rem;
+      }
+
+      .image-container {
+        min-height: 300px;
+        margin-top: 2rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .carousel-img {
+        height: 300px;
+      }
+    }
+.redes-sociales, .metodos-pago, .horario-atencion {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border: 2px solid #C98A5E;
+    }
+
+    .contacto-item, .pago-item, .horario-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .contacto-item:last-child, .pago-item:last-child, .horario-item:last-child {
+      border-bottom: none;
+    }
+
+    .contacto-item i, .pago-item i {
+      font-size: 1.5rem;
+      color: #C98A5E;
+      width: 30px;
+      text-align: center;
+    }
+
+    .contacto-item strong, .pago-item strong, .horario-item strong {
+      color: #5B3A29;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .contacto-item p, .pago-item p, .horario-item p {
+      color: #666;
+      margin: 0;
+    }
+
+    .horario-item {
+      justify-content: space-between;
+      padding: 12px 0;
+    }
+
+    .horario-item strong {
+      color: #5B3A29;
+    }
+
+    .horario-item p {
+      color: #C98A5E;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .contacto-item, .pago-item, .horario-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+      }
+
+      .horario-item {
+        flex-direction: row;
+        text-align: left;
+      }
+    }
