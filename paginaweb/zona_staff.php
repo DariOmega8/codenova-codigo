@@ -1,29 +1,34 @@
 <?php
+// Inicia la sesión para acceder a las variables de sesión del usuario
 session_start();
+// Incluye el archivo de conexión a la base de datos
 include "conexion.php";
 
+// Verifica si el usuario está autenticado, si no, redirige al login
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: iniciar_sesion.html");
     exit();
 }
 
+// Verifica que el usuario sea empleado o administrador
 if (!$_SESSION['es_empleado'] && !$_SESSION['es_administrador']) {
     header("Location: inicio.php?error=No tienes permisos para acceder a esta zona");
     exit();
 }
 
-// Cargar todos los platos para los selects
+// Cargar todos los platos para los selects del formulario
 $platos_query = mysqli_query($conexion, "SELECT plato_id, nombre, precio FROM plato ORDER BY nombre");
 $platos = [];
 while($plato = mysqli_fetch_assoc($platos_query)) {
     $platos[] = $plato;
 }
 
+// Procesar el formulario cuando se envía
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['mesa'])) {
     $mesa_id = $_POST['mesa'];
     $exclusiones = $_POST['exclusiones'] ?? '';
     
-    // CONSULTA ACTUALIZADA - Nuevo esquema
+    // CONSULTA ACTUALIZADA - Nuevo esquema de base de datos
     $sql_mesa = "SELECT m.mesa_id, mc.cliente_cliente_id, 
                         u.nombre as cliente_nombre
                  FROM mesa m 
@@ -34,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['mesa'])) {
     
     $resultado_mesa = mysqli_query($conexion, $sql_mesa);
     
+    // Si se encuentra la mesa ocupada
     if ($resultado_mesa && mysqli_num_rows($resultado_mesa) > 0) {
         $mesa_data = mysqli_fetch_assoc($resultado_mesa);
         $mesa_id = $mesa_data['mesa_id'];
@@ -177,8 +183,8 @@ $mesas_ocupadas = mysqli_query($conexion, "
 </head>
 <body>
   <div class="contenedor-principal">
-    <!-- Header -->
-       <header class="menu">
+    <!-- Header con navegación principal -->
+    <header class="menu">
       <div class="logo">
         <img src="estilos/imagenes/logo.jpeg" alt="La Chacra Gourmet" class="logo-img" onerror="this.style.display='none'">
       </div>
@@ -187,17 +193,20 @@ $mesas_ocupadas = mysqli_query($conexion, "
           <li><a href="inicio.php">Inicio</a></li>
           <li><a href="redes_pagos.php">Redes y pagos</a></li>
           <li><a href="reservas1.php">Reservas</a></li>
+          <!-- Muestra enlace para empleados solo si el usuario es empleado -->
           <?php if (isset($_SESSION['es_empleado']) && $_SESSION['es_empleado'] === true): ?>
             <li><a href="zona_staff.php">Mozos orden</a></li>
           <?php endif; ?>
           <li><a href="historia.php">Historia</a></li>
           <li><a href="menu.php">Menu</a></li>
           <li><a href="galeria.php">Galería</a></li>
+          <!-- Muestra panel de administración solo para administradores -->
           <?php 
           if (isset($_SESSION['es_administrador']) && $_SESSION['es_administrador'] === true) {
             echo '<li><a href="administracion.php">Panel Admin</a></li>';
           }
           ?>
+          <!-- Enlaces condicionales según el estado de autenticación -->
           <?php if (isset($_SESSION['id_usuario'])): ?>
             <li><a href="cerrar_sesion.php" class="btn-logout">Cerrar Sesión (<?php echo htmlspecialchars($_SESSION['nombre'] ?? ''); ?>)</a></li>
           <?php else: ?>
@@ -210,14 +219,17 @@ $mesas_ocupadas = mysqli_query($conexion, "
 
     <!-- Contenido Principal -->
     <main class="contenido-principal">
+      <!-- Banner de la página -->
       <section class="banner-admin">
         <h1>Zona de Mozos</h1>
       </section>
 
+      <!-- Enlace para verificar reservas -->
       <div class="verificar-reserva-container">
         <a href="verificar_reserva.php" class="btn-admin">🔍 Verificar Reserva</a>
       </div>
       
+      <!-- Mostrar mensajes de éxito o error -->
       <?php if (isset($mensaje)): ?>
         <div class="mensaje-exito"><?php echo $mensaje; ?></div>
       <?php endif; ?>
@@ -226,14 +238,17 @@ $mesas_ocupadas = mysqli_query($conexion, "
         <div class="mensaje-error"><?php echo $error; ?></div>
       <?php endif; ?>
 
+      <!-- Sección principal del formulario de pedidos -->
       <section class="seccion-admin">
         <h2>Tomar Pedido</h2>
         <form class="formulario-admin" method="POST" id="form-pedido">
+          <!-- Selección de mesa -->
           <div class="grupo-formulario">
             <label for="mesa">Mesa</label>
             <select id="mesa" name="mesa" required class="select-plato">
               <option value="">Seleccionar mesa...</option>
               <?php
+                // Consulta todas las mesas para el dropdown
                 $sql_mesas_all = "SELECT * FROM mesa ORDER BY numero";
                 $mesas_all_result = mysqli_query($conexion, $sql_mesas_all);
                 if ($mesas_all_result && mysqli_num_rows($mesas_all_result) > 0) {
@@ -248,10 +263,11 @@ $mesas_ocupadas = mysqli_query($conexion, "
             </select>
           </div>
 
-          <!-- Platos Principales -->
+          <!-- Sección de Platos Principales -->
           <div class="categoria-platos">
             <h3>Platos Principales</h3>
             <div id="platos-principales-container">
+              <!-- Fila inicial de plato principal -->
               <div class="fila-plato">
                 <div class="grupo-formulario">
                   <label>Plato Principal</label>
@@ -274,10 +290,11 @@ $mesas_ocupadas = mysqli_query($conexion, "
             <button type="button" class="btn-agregar" onclick="agregarPlato('principales')">+ Agregar Plato Principal</button>
           </div>
 
-          <!-- Bebidas -->
+          <!-- Sección de Bebidas -->
           <div class="categoria-platos">
             <h3>Bebidas</h3>
             <div id="bebidas-container">
+              <!-- Fila inicial de bebida -->
               <div class="fila-plato">
                 <div class="grupo-formulario">
                   <label>Bebida</label>
@@ -300,10 +317,11 @@ $mesas_ocupadas = mysqli_query($conexion, "
             <button type="button" class="btn-agregar" onclick="agregarPlato('bebidas')">+ Agregar Bebida</button>
           </div>
 
-          <!-- Postres -->
+          <!-- Sección de Postres -->
           <div class="categoria-platos">
             <h3>Postres</h3>
             <div id="postres-container">
+              <!-- Fila inicial de postre -->
               <div class="fila-plato">
                 <div class="grupo-formulario">
                   <label>Postre</label>
@@ -326,10 +344,11 @@ $mesas_ocupadas = mysqli_query($conexion, "
             <button type="button" class="btn-agregar" onclick="agregarPlato('postres')">+ Agregar Postre</button>
           </div>
 
-          <!-- Extras -->
+          <!-- Sección de Extras -->
           <div class="categoria-platos">
             <h3>Extras</h3>
             <div id="extras-container">
+              <!-- Fila inicial de extra -->
               <div class="fila-plato">
                 <div class="grupo-formulario">
                   <label>Extra</label>
@@ -352,11 +371,12 @@ $mesas_ocupadas = mysqli_query($conexion, "
             <button type="button" class="btn-agregar" onclick="agregarPlato('extras')">+ Agregar Extra</button>
           </div>
 
-          <!-- Resumen Total -->
+          <!-- Resumen Total del pedido -->
           <div class="resumen-total" id="resumen-total">
             Total del Pedido: $0.00
           </div>
 
+          <!-- Campo para exclusiones alimenticias -->
           <div class="grupo-formulario">
             <label for="exclusiones">Exclusiones (Alergias/Preferencias)</label>
             <input type="text" id="exclusiones" name="exclusiones" placeholder="Ej: Sin gluten, vegetariano, etc.">
@@ -366,9 +386,11 @@ $mesas_ocupadas = mysqli_query($conexion, "
         </form>
       </section>
 
+      <!-- Sección de Pedidos Activos -->
       <section class="seccion-admin">
         <h2>Pedidos Activos</h2>
         <?php
+        // Consulta para obtener pedidos activos
         $pedidos_activos = mysqli_query($conexion, "
           SELECT p.pedido_id, m.numero as mesa_numero, p.estado,
                  SUM(pd.precio_total) as total_pedido
@@ -405,6 +427,7 @@ $mesas_ocupadas = mysqli_query($conexion, "
                     </td>
                     <td class="precio">$<?php echo number_format($pedido['total_pedido'] ?? 0, 2); ?></td>
                     <td>
+                      <!-- Formulario para actualizar estado del pedido -->
                       <form method='POST' action='actualizar_pedido.php' class="form-acciones">
                         <input type='hidden' name='pedido_id' value='<?php echo $pedido['pedido_id']; ?>'>
                         <select name='nuevo_estado' onchange='this.form.submit()' class="select-plato">
@@ -436,8 +459,9 @@ $mesas_ocupadas = mysqli_query($conexion, "
     </footer>
   </div>
 
+ <!-- JavaScript para la gestión dinámica del formulario -->
  <script>
-    // Mapeo de tipos a IDs de contenedor
+    // Mapeo de tipos de platos a IDs de contenedor
     const contenedoresMap = {
         'principales': 'platos-principales-container',
         'bebidas': 'bebidas-container', 

@@ -1,18 +1,25 @@
+```php
 <?php
+// Iniciar sesión para acceder a las variables de sesión
 session_start();
+
+// Incluir archivo de conexión a la base de datos
 include "conexion.php";
 
+// Verificar si el usuario es administrador, si no, redirigir al inicio
 if (!isset($_SESSION['es_administrador']) || !$_SESSION['es_administrador']) {
     header("Location: inicio.php");
     exit();
 }
 
-// Configurar fechas por defecto
+// Configurar fechas por defecto para el reporte
+// Si no se especifican fechas, usar el primer día del mes actual hasta hoy
 $fecha_inicio = $_POST['fecha_inicio'] ?? date('Y-m-01');
 $fecha_fin = $_POST['fecha_fin'] ?? date('Y-m-d');
 $tipo_reporte = $_POST['tipo_reporte'] ?? 'diario';
 
-// Consulta corregida para ventas totales
+// Consulta para obtener estadísticas generales de ventas
+// Solo considerar pedidos con estado 'entregado' (corregido de 'entregado')
 $sql_ventas_totales = "
     SELECT 
         COUNT(*) as total_pedidos,
@@ -21,19 +28,23 @@ $sql_ventas_totales = "
     FROM pedido p
     LEFT JOIN pedido_detalle pd ON p.pedido_id = pd.pedido_pedido_id
     WHERE DATE(p.fecha_hora) BETWEEN '$fecha_inicio' AND '$fecha_fin'
-    AND p.estado = 'entregado'  -- CORREGIDO: era 'entregado' (con d)
+    AND p.estado = 'entregado'  -- Solo pedidos entregados
 ";
 
+// Ejecutar consulta de ventas totales
 $result_ventas = mysqli_query($conexion, $sql_ventas_totales);
 if (!$result_ventas) {
+    // Si hay error en la consulta, mostrar mensaje y establecer valores por defecto
     echo "Error en consulta: " . mysqli_error($conexion);
     $estadisticas = ['total_pedidos' => 0, 'total_ventas' => 0, 'promedio_venta' => 0];
 } else {
+    // Obtener resultados de la consulta
     $estadisticas = mysqli_fetch_assoc($result_ventas);
 }
 
-// Consulta corregida para ventas por período
+// Consulta para ventas por período (diario o mensual)
 if ($tipo_reporte == 'diario') {
+    // Agrupar ventas por día
     $sql_ventas_periodo = "
         SELECT 
             DATE(p.fecha_hora) as fecha,
@@ -42,11 +53,12 @@ if ($tipo_reporte == 'diario') {
         FROM pedido p
         LEFT JOIN pedido_detalle pd ON p.pedido_id = pd.pedido_pedido_id
         WHERE DATE(p.fecha_hora) BETWEEN '$fecha_inicio' AND '$fecha_fin'
-        AND p.estado = 'entregado'  -- CORREGIDO
+        AND p.estado = 'entregado'
         GROUP BY DATE(p.fecha_hora)
         ORDER BY fecha DESC
     ";
 } else {
+    // Agrupar ventas por mes y año
     $sql_ventas_periodo = "
         SELECT 
             YEAR(p.fecha_hora) as año,
@@ -56,19 +68,20 @@ if ($tipo_reporte == 'diario') {
         FROM pedido p
         LEFT JOIN pedido_detalle pd ON p.pedido_id = pd.pedido_pedido_id
         WHERE DATE(p.fecha_hora) BETWEEN '$fecha_inicio' AND '$fecha_fin'
-        AND p.estado = 'entregado'  -- CORREGIDO
+        AND p.estado = 'entregado'
         GROUP BY YEAR(p.fecha_hora), MONTH(p.fecha_hora)
         ORDER BY año DESC, mes DESC
     ";
 }
 
+// Ejecutar consulta de ventas por período
 $ventas_periodo = mysqli_query($conexion, $sql_ventas_periodo);
 if (!$ventas_periodo) {
     echo "Error en consulta de ventas por período: " . mysqli_error($conexion);
     $ventas_periodo = [];
 }
 
-// Consulta corregida para platos populares
+// Consulta para obtener los platos más populares
 $sql_platos_populares = "
     SELECT 
         pl.nombre,
@@ -79,17 +92,19 @@ $sql_platos_populares = "
     LEFT JOIN pedido_detalle pd ON pl.plato_id = pd.plato_plato_id
     LEFT JOIN pedido p ON pd.pedido_pedido_id = p.pedido_id
     WHERE (p.fecha_hora IS NULL OR DATE(p.fecha_hora) BETWEEN '$fecha_inicio' AND '$fecha_fin')
-    AND (p.estado IS NULL OR p.estado = 'entregado')  -- CORREGIDO
+    AND (p.estado IS NULL OR p.estado = 'entregado')
     GROUP BY pl.plato_id, pl.nombre, pl.precio
     ORDER BY veces_vendido DESC, total_ventas DESC
     LIMIT 10
 ";
 
+// Ejecutar consulta de platos populares
 $platos_populares_result = mysqli_query($conexion, $sql_platos_populares);
 if (!$platos_populares_result) {
     echo "Error en consulta de platos populares: " . mysqli_error($conexion);
     $platos_populares_data = [];
 } else {
+    // Procesar resultados de platos populares
     $platos_populares_data = [];
     $total_vendido = 0;
     while($plato = mysqli_fetch_assoc($platos_populares_result)) {
@@ -98,7 +113,7 @@ if (!$platos_populares_result) {
     }
 }
 
-// Para debug: mostrar consultas (puedes comentar esto después)
+// Registrar consultas para debugging (se puede comentar en producción)
 error_log("SQL Ventas Totales: " . $sql_ventas_totales);
 error_log("SQL Ventas Período: " . $sql_ventas_periodo);
 error_log("SQL Platos Populares: " . $sql_platos_populares);
@@ -129,7 +144,7 @@ error_log("SQL Platos Populares: " . $sql_platos_populares);
 
         <!-- Contenido principal con sidebar -->
         <div class="contenido-con-sidebar">
-            <!-- Sidebar de estadísticas de ventas -->
+            <!-- Sidebar de navegación para estadísticas -->
             <aside class="sidebar">
                 <ul>
                     <li><a href="#resumen-ventas">
@@ -151,11 +166,11 @@ error_log("SQL Platos Populares: " . $sql_platos_populares);
                 </ul>
             </aside>
 
-            <!-- Contenido principal -->
+            <!-- Contenido principal de estadísticas -->
             <main class="contenido-principal">
                 <section class="banner-admin">
                     <h1>Estadísticas de Ventas</h1>
-                    <!-- Mensaje de debug -->
+                    <!-- Información de debug sobre el período consultado -->
                     <div style="background: #f8f9fa; padding: 10px; margin: 10px 0; border-radius: 5px;">
                         <small>Período: <?php echo $fecha_inicio . ' a ' . $fecha_fin; ?> | 
                         Estado pedidos: entregado | 
@@ -163,7 +178,7 @@ error_log("SQL Platos Populares: " . $sql_platos_populares);
                     </div>
                 </section>
 
-                <!-- Filtros -->
+                <!-- Sección de filtros para el reporte -->
                 <section class="seccion-admin">
                     <h2>Filtros del Reporte</h2>
                     <div class="formulario-container">
@@ -192,7 +207,7 @@ error_log("SQL Platos Populares: " . $sql_platos_populares);
                     </div>
                 </section>
 
-                <!-- Resumen de Ventas -->
+                <!-- Resumen general de ventas -->
                 <section id="resumen-ventas" class="seccion-admin">
                     <h2>Resumen de Ventas</h2>
                     <?php if ($estadisticas['total_pedidos'] == 0): ?>
@@ -221,11 +236,11 @@ error_log("SQL Platos Populares: " . $sql_platos_populares);
                     </div>
                 </section>
 
-                <!-- Evolución de Ventas -->
+                <!-- Gráfico de evolución de ventas -->
                 <section id="evolucion-ventas" class="seccion-admin">
                     <h2>Evolución de Ventas</h2>
                     <?php 
-                    // Resetear el resultado para el gráfico
+                    // Verificar si hay datos para mostrar en el gráfico
                     mysqli_data_seek($ventas_periodo, 0);
                     $hay_datos_grafico = false;
                     while($venta = mysqli_fetch_assoc($ventas_periodo)) {
@@ -246,7 +261,7 @@ error_log("SQL Platos Populares: " . $sql_platos_populares);
                     <?php endif; ?>
                 </section>
 
-                <!-- Detalle de Ventas -->
+                <!-- Tabla detallada de ventas -->
                 <section id="detalle-ventas" class="seccion-admin">
                     <h2>Detalle de Ventas por <?php echo $tipo_reporte == 'diario' ? 'Día' : 'Mes'; ?></h2>
                     <div class="tabla-container">
@@ -261,12 +276,14 @@ error_log("SQL Platos Populares: " . $sql_platos_populares);
                             </thead>
                             <tbody>
                                 <?php 
+                                // Reiniciar puntero de resultados para recorrer nuevamente
                                 mysqli_data_seek($ventas_periodo, 0);
                                 while($venta = mysqli_fetch_assoc($ventas_periodo)): 
                                 ?>
                                     <tr>
                                         <td>
                                             <?php 
+                                            // Formatear fecha según el tipo de reporte
                                             if ($tipo_reporte == 'diario') {
                                                 echo $venta['fecha'];
                                             } else {
@@ -284,7 +301,7 @@ error_log("SQL Platos Populares: " . $sql_platos_populares);
                     </div>
                 </section>
 
-                <!-- Platos Populares -->
+                <!-- Tabla de platos más populares -->
                 <section id="platos-populares" class="seccion-admin">
                     <h2>Platos Más Populares</h2>
                     <div class="tabla-container">
@@ -305,6 +322,7 @@ error_log("SQL Platos Populares: " . $sql_platos_populares);
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($platos_populares_data as $plato): 
+                                        // Calcular porcentaje de popularidad
                                         $popularidad = $total_vendido > 0 ? ($plato['veces_vendido'] / $total_vendido) * 100 : 0;
                                     ?>
                                         <tr>
@@ -313,6 +331,7 @@ error_log("SQL Platos Populares: " . $sql_platos_populares);
                                             <td><?php echo $plato['veces_vendido']; ?></td>
                                             <td class="precio">$<?php echo number_format($plato['total_ventas'], 2); ?></td>
                                             <td>
+                                                <!-- Barra de progreso para mostrar popularidad -->
                                                 <div style="background: #3498db; height: 20px; width: <?php echo $popularidad; ?>%; border-radius: 10px; color: white; text-align: center; font-size: 12px; line-height: 20px;">
                                                     <?php echo number_format($popularidad, 1); ?>%
                                                 </div>
@@ -337,11 +356,13 @@ error_log("SQL Platos Populares: " . $sql_platos_populares);
     </footer>
   </div>
 
+    <!-- Script para generar gráfico de ventas -->
     <?php if ($hay_datos_grafico): ?>
     <script>
-        // Resetear el resultado para el gráfico
+        // Reiniciar puntero de resultados para el gráfico
         <?php mysqli_data_seek($ventas_periodo, 0); ?>
         
+        // Preparar datos para el gráfico - fechas
         const fechas = [
             <?php 
             while($venta = mysqli_fetch_assoc($ventas_periodo)) {
@@ -352,18 +373,19 @@ error_log("SQL Platos Populares: " . $sql_platos_populares);
                 }
             }
             ?>
-        ].reverse();
+        ].reverse(); // Invertir para mostrar de más antiguo a más reciente
         
         <?php mysqli_data_seek($ventas_periodo, 0); ?>
+        // Preparar datos para el gráfico - montos de venta
         const ventas = [
             <?php 
             while($venta = mysqli_fetch_assoc($ventas_periodo)) {
                 echo $venta['total_ventas'] . ",";
             }
             ?>
-        ].reverse();
+        ].reverse(); // Invertir para coincidir con las fechas
 
-        // Crear gráfico
+        // Crear gráfico con Chart.js
         const ctx = document.getElementById('ventasChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',

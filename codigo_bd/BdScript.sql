@@ -196,7 +196,7 @@ CREATE TABLE IF NOT EXISTS `restaurante`.`plato` (
   `descripcion` VARCHAR(50) NOT NULL,
   `precio` DECIMAL(10,2) NOT NULL,
   `menu_id menu` INT NOT NULL,
-  `imagen` LONGBLOB NOT NULL,
+  `imagen` VARCHAR(255) NULL,
   PRIMARY KEY (`plato_id`, `menu_id menu`),
   INDEX `fk_plato_menu1_idx` (`menu_id menu` ASC),
   CONSTRAINT `fk_plato_menu1`

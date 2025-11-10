@@ -1,99 +1,117 @@
+/* Reset universal: elimina todos los márgenes y rellenos por defecto del navegador */
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: sans-serif;
+    box-sizing: border-box; /* Incluye el padding y border en el cálculo del width/height */
+    font-family: sans-serif; /* Establece una fuente sans-serif genérica para todos los elementos */
 }
+
+/* Estilos para el cuerpo del documento */
 body {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #f0f2f5;
+    min-height: 100vh; /* Altura mínima del 100% del viewport (ventana visible) */
+    display: flex; /* Activa flexbox para el layout */
+    justify-content: center; /* Centra horizontalmente los elementos hijos */
+    align-items: center; /* Centra verticalmente los elementos hijos */
+    background: #f0f2f5; /* Color de fondo gris claro */
 }
 
-.contenedor{
-    width: 100%;
-    max-width: 500px;
-    margin: auto;
-    background: #fff;
-    padding: 32px 24px;
-    border-radius: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* Contenedor principal del formulario */
+.contenedor {
+    width: 100%; /* Ocupa el 100% del ancho disponible */
+    max-width: 500px; /* Ancho máximo de 500px para evitar que se expanda demasiado */
+    margin: auto; /* Centra el contenedor horizontalmente */
+    background: #fff; /* Fondo blanco para contrastar con el fondo de la página */
+    padding: 32px 24px; /* Relleno interno: 32px arriba/abajo, 24px izquierda/derecha */
+    border-radius: 12px; /* Esquinas redondeadas */
+    display: flex; /* Activa flexbox para el contenido interno */
+    justify-content: center; /* Centra horizontalmente el contenido interno */
+    align-items: center; /* Centra verticalmente el contenido interno */
 }
 
+/* Estructura del formulario */
 .formulario {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    width: 100%; /* Ocupa todo el ancho del contenedor */
+    display: flex; /* Activa flexbox */
+    flex-direction: column; /* Organiza los elementos en columna (vertical) */
+    gap: 16px; /* Espacio de 16px entre cada elemento hijo */
 }
 
-
+/* Título del formulario */
 .formulario h2 {
-    text-align: center;
-    margin-bottom: 8px;
+    text-align: center; /* Centra el texto horizontalmente */
+    margin-bottom: 8px; /* Margen inferior de 8px para separar del siguiente elemento */
 }
 
+/* Etiquetas de los campos del formulario */
 .formulario label {
-    font-weight: bold;
-    margin-bottom: 4px;
+    font-weight: bold; /* Texto en negrita para mayor énfasis */
+    margin-bottom: 4px; /* Pequeño margen inferior para separar del campo de entrada */
 }
 
+/* Campos de entrada de texto */
 .formulario input {
-    padding: 10px;
-    border-radius: 15px;
-    border: 1px solid #ccc;
-    font-size: 16px;
+    padding: 10px; /* Relleno interno para que el texto no esté pegado a los bordes */
+    border-radius: 15px; /* Bordes muy redondeados (forma ovalada) */
+    border: 1px solid #ccc; /* Borde gris claro */
+    font-size: 16px; /* Tamaño de fuente legible */
 }
 
+/* Botón de registro */
 .registrarse {
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
-    background: #3b5998;
-    color: #fff;
-    font-size: 18px;
-    cursor: pointer;
-    margin-top: 8px;
+    padding: 12px; /* Relleno interno para hacer el botón más táctil */
+    border-radius: 8px; /* Bordes redondeados (menos que los inputs) */
+    border: none; /* Elimina el borde por defecto */
+    background: #3b5998; /* Color azul característico (similar al de Facebook) */
+    color: #fff; /* Texto blanco para contraste */
+    font-size: 18px; /* Tamaño de fuente más grande para el botón */
+    cursor: pointer; /* Cambia el cursor a "mano" al pasar sobre el botón */
+    margin-top: 8px; /* Margen superior para separar de los elementos anteriores */
 }
 
+/* Efecto hover para el botón de registro */
 .registrarse:hover {
-    background: #2d4373;
+    background: #2d4373; /* Color azul más oscuro al pasar el mouse */
 }
 
+/* Contenedor de opciones adicionales */
 .opciones {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-top: 12px;
-    text-align: center;
+    display: flex; /* Activa flexbox */
+    flex-direction: column; /* Organiza los elementos en columna */
+    gap: 6px; /* Espacio reducido entre elementos */
+    margin-top: 12px; /* Margen superior para separar del botón */
+    text-align: center; /* Centra el texto de todos los elementos hijos */
 }
 
+/* Enlaces dentro de las opciones */
 .opciones a {
-    color: #3b5998;
-    text-decoration: none;
-    font-size: 15px;
+    color: #3b5998; /* Mismo color azul que el botón para mantener consistencia */
+    text-decoration: none; /* Elimina el subrayado por defecto de los enlaces */
+    font-size: 15px; /* Tamaño de fuente ligeramente más pequeño */
 }
 
+/* Efecto hover para los enlaces */
 .opciones a:hover {
-    text-decoration: underline;
+    text-decoration: underline; /* Subraya el enlace al pasar el mouse */
 }
+
+/* Botón de iniciar sesión */
 .iniciar-sesion {
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
-    background: #3b984a;
-    color: #fff;
-    font-size: 18px;
-    cursor: pointer;
-    margin-top: 8px;
+    padding: 12px; /* Mismo padding que el botón de registro */
+    border-radius: 8px; /* Mismo border-radius que el botón de registro */
+    border: none; /* Sin borde */
+    background: #3b984a; /* Color verde para diferenciarlo del botón azul */
+    color: #fff; /* Texto blanco */
+    font-size: 18px; /* Mismo tamaño de fuente que el botón de registro */
+    cursor: pointer; /* Cursor de mano */
+    margin-top: 8px; /* Margen superior */
 }
-.opcion1{
-    border-bottom: 3px solid #140f0f;
+
+/* Línea divisoria (posiblemente para separar secciones) */
+.opcion1 {
+    border-bottom: 3px solid #140f0f; /* Línea inferior negra de 3px de grosor */
 }
+
+/* Efecto hover para el botón de iniciar sesión */
 .iniciar-sesion:hover {
-     background: #2a6e36;
+     background: #2a6e36; /* Verde más oscuro al pasar el mouse */
 }

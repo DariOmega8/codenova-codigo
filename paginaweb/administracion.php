@@ -1,12 +1,17 @@
 <?php
+// Iniciar sesión para acceder a las variables de sesión del usuario
 session_start();
+
+// Incluir archivo de conexión a la base de datos
 include "conexion.php";
 
+// Verificar si el usuario es administrador, si no, redirigir al inicio
 if (!isset($_SESSION['es_administrador']) || !$_SESSION['es_administrador']) {
     header("Location: inicio.php");
     exit();
 }
 
+// Obtener mensajes de éxito o error desde la URL (si existen)
 $mensaje = isset($_GET['mensaje']) ? $_GET['mensaje'] : '';
 $error = isset($_GET['error']) ? $_GET['error'] : '';
 ?>
@@ -16,14 +21,17 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Zona administrativa</title>
+  <!-- Incluir hoja de estilos con versión para evitar cache -->
   <link rel="stylesheet" href="estilos/estilo_general.css?v=<?php echo time(); ?>">
+  <!-- Iconos de FontAwesome -->
   <script src="https://kit.fontawesome.com/69a3421d9e.js" crossorigin="anonymous"></script>
 </head>
 <body>
   <div class="contenedor-principal">
-    <!-- Header superior -->
+    <!-- ========== HEADER SUPERIOR ========== -->
     <header class="menu">
       <div class="logo">
+        <!-- Logo del restaurante -->
         <img src="estilos/imagenes/logo.jpeg" alt="La Chacra Gourmet" class="logo-img" onerror="this.style.display='none'">
       </div>
       <nav class="navegacion-principal">
@@ -31,22 +39,25 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
           <li><a href="inicio.php">Inicio</a></li>
           <li><a href="redes_pagos.php">Redes y pagos</a></li>
           <li><a href="reservas1.php">Reservas</a></li>
+          <!-- Mostrar enlace para empleados solo si el usuario es empleado -->
           <?php if (isset($_SESSION['es_empleado']) && $_SESSION['es_empleado'] === true): ?>
             <li><a href="zona_staff.php">Mozos orden</a></li>
           <?php endif; ?>
           <li><a href="historia.php">Historia</a></li>
           <li><a href="menu.php">Menu</a></li>
           <li><a href="galeria.php">Galería</a></li>
+          <!-- Enlace para cerrar sesión mostrando el nombre del usuario -->
           <li><a href="cerrar_sesion.php" class="btn-logout">Cerrar Sesión (<?php echo htmlspecialchars($_SESSION['nombre']); ?>)</a></li>
         </ul>
       </nav>
     </header>
 
-    <!-- Contenido principal con sidebar -->
+    <!-- ========== CONTENIDO PRINCIPAL CON SIDEBAR ========== -->
     <div class="contenido-con-sidebar">
-      <!-- Sidebar de administración -->
+      <!-- ========== SIDEBAR DE ADMINISTRACIÓN ========== -->
       <aside class="sidebar">
         <ul>
+          <!-- Enlaces de navegación del panel administrativo -->
           <li><a href="#gestion-usuarios">
             <i class="fas fa-users"></i>
             <span>Gestión de Usuarios</span>
@@ -86,27 +97,30 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
         </ul>
       </aside>
 
-      <!-- Contenido principal -->
+      <!-- ========== CONTENIDO PRINCIPAL ========== -->
       <main class="contenido-principal">
+        <!-- Banner principal del panel -->
         <section class="banner-admin">
           <h1>Panel de Administración</h1>
         </section>
 
-        <!-- Mensajes -->
+        <!-- ========== SECCIÓN DE MENSAJES ========== -->
+        <!-- Mostrar mensaje de éxito si existe -->
         <?php if ($mensaje): ?>
           <div class="mensaje-exito"><?php echo htmlspecialchars($mensaje); ?></div>
         <?php endif; ?>
         
+        <!-- Mostrar mensaje de error si existe -->
         <?php if ($error): ?>
           <div class="mensaje-error"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
 
-        <!-- Gestión de Usuarios -->
+        <!-- ========== GESTIÓN DE USUARIOS ========== -->
         <section id="gestion-usuarios" class="seccion-admin">
           <h2>Gestión de Usuarios</h2>
           
           <div class="formulario-container">
-            <!-- Crear Nuevo Usuario -->
+            <!-- Formulario para crear nuevo usuario -->
             <div class="formulario-seccion">
               <h3>Crear Nuevo Usuario</h3>
               <form action="crear_usuarios.php" method="post" class="formulario-admin">
@@ -152,7 +166,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                   </select>
                 </div>
 
-                <!-- Campo adicional para empleados -->
+                <!-- Campo de salario que se muestra solo para empleados -->
                 <div id="campo-salario" class="grupo-formulario" style="display: none;">
                   <label>Salario ($):</label>
                   <input type="number" name="salario" step="0.01" min="0" placeholder="Ej: 1500.00" required>
@@ -162,7 +176,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
               </form>
             </div>
 
-            <!-- Lista de Usuarios -->
+            <!-- Lista de usuarios existentes -->
             <div class="formulario-seccion">
               <h3>Usuarios del Sistema</h3>
               <div class="tabla-container">
@@ -180,7 +194,8 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                   </thead>
                   <tbody>
                     <?php
-                    // Consulta para administradores
+                    // CONSULTA PARA ADMINISTRADORES
+                    // Obtener todos los usuarios con rol de administrador
                     $admins = mysqli_query($conexion, "
                         SELECT u.id_usuario, u.nombre, u.apellido, u.gmail, 'Activo' as estado,
                                'administrador' as tipo
@@ -188,7 +203,8 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                         JOIN admin a ON u.id_usuario = a.usuario_id_usuario
                     ");
                     
-                    // Consulta para empleados
+                    // CONSULTA PARA EMPLEADOS
+                    // Obtener todos los usuarios con rol de empleado
                     $empleados = mysqli_query($conexion, "
                         SELECT u.id_usuario, u.nombre, u.apellido, u.gmail, e.estado,
                                'empleado' as tipo
@@ -196,6 +212,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                         JOIN empleado e ON u.id_usuario = e.usuario_id_usuario
                     ");
                     
+                    // Mostrar administradores en la tabla
                     while($admin = mysqli_fetch_assoc($admins)){
                       echo "<tr>
                               <td>".$admin['id_usuario']."</td>
@@ -205,6 +222,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                               <td><span class='etiqueta etiqueta-admin'>Administrador</span></td>
                               <td><span class='etiqueta etiqueta-activo'>".$admin['estado']."</span></td>
                               <td>
+                                <!-- Formulario para eliminar usuario -->
                                 <form action='crear_usuarios.php' method='post' class='form-acciones'>
                                   <input type='hidden' name='accion' value='eliminar_usuario'>
                                   <input type='hidden' name='id' value='".$admin['id_usuario']."'>
@@ -215,7 +233,9 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                             </tr>";
                     }
                     
+                    // Mostrar empleados en la tabla
                     while($emp = mysqli_fetch_assoc($empleados)){
+                      // Determinar clase CSS según el estado del empleado
                       $estado_clase = $emp['estado'] == 'activo' ? 'etiqueta-activo' : 'etiqueta-inactivo';
                       echo "<tr>
                               <td>".$emp['id_usuario']."</td>
@@ -225,6 +245,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                               <td><span class='etiqueta etiqueta-empleado'>Empleado</span></td>
                               <td><span class='etiqueta ".$estado_clase."'>".ucfirst($emp['estado'])."</span></td>
                               <td>
+                                <!-- Formulario para eliminar empleado -->
                                 <form action='crear_usuarios.php' method='post' class='form-acciones'>
                                   <input type='hidden' name='accion' value='eliminar_usuario'>
                                   <input type='hidden' name='id' value='".$emp['id_usuario']."'>
@@ -242,14 +263,15 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
           </div>
         </section>
 
-        <!-- Gestión de Platos -->
+        <!-- ========== GESTIÓN DE PLATOS ========== -->
         <section id="gestion-platos" class="seccion-admin">
           <h2>Gestión de Platos</h2>
           
           <div class="formulario-container">
-            <!-- Agregar Nuevo Plato -->
+            <!-- Formulario para agregar nuevo plato -->
             <div class="formulario-seccion">
               <h3>Agregar Nuevo Plato</h3>
+              <!-- Formulario con enctype multipart para subida de archivos -->
               <form action="editar_platos.php" method="post" enctype="multipart/form-data" class="formulario-admin">
                 <input type="hidden" name="accion" value="agregar_plato">
                 
@@ -275,7 +297,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                     <select name="menu_id_menu" required>
                       <option value="">Seleccionar menú...</option>
                       <?php
-                      // Consulta para menús disponibles
+                      // Consultar menús disponibles desde la base de datos
                       $menus = mysqli_query($conexion, "SELECT * FROM menu WHERE estado = 'disponible'");
                       while($m = mysqli_fetch_assoc($menus)){
                         echo "<option value='".$m['id_menu']."'>".$m['tipo']."</option>";
@@ -285,6 +307,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                   </div>
                   <div class="grupo-formulario">
                     <label>Imagen del plato:</label>
+                    <!-- Input para subir imagen -->
                     <input type="file" name="imagen" accept="image/*" required>
                   </div>
                 </div>
@@ -293,7 +316,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
               </form>
             </div>
 
-            <!-- Lista de Platos -->
+            <!-- Lista de platos existentes -->
             <div class="formulario-seccion">
               <h3>Platos Existentes</h3>
               <div class="tabla-container">
@@ -310,7 +333,8 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                   </thead>
                   <tbody>
                     <?php
-                    // Consulta CORREGIDA: usando el nombre correcto de la columna `menu_id menu`
+                    // Consulta para obtener todos los platos con información del menú
+                    // NOTA: Se usa backticks para el nombre de columna con espacio `menu_id menu`
                     $platos = mysqli_query($conexion, "SELECT p.*, m.tipo as menu_tipo FROM plato p JOIN menu m ON p.`menu_id menu` = m.id_menu");
                     while($p = mysqli_fetch_assoc($platos)){
                       echo "<tr>
@@ -321,6 +345,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                               <td>".htmlspecialchars($p['menu_tipo'])."</td>
                               <td>
                                 <div class='acciones-tabla'>
+                                  <!-- Formulario para editar plato (solo nombre y precio) -->
                                   <form action='editar_platos.php' method='post' class='form-acciones'>
                                     <input type='hidden' name='accion' value='editar_plato'>
                                     <input type='hidden' name='id' value='".$p['plato_id']."'>
@@ -328,6 +353,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                                     <input type='number' name='precio' value='".$p['precio']."' step='0.01' required>
                                     <button type='submit' class='btn-editar'>Editar</button>
                                   </form>
+                                  <!-- Formulario para eliminar plato -->
                                   <form action='editar_platos.php' method='post' class='form-acciones'>
                                     <input type='hidden' name='accion' value='eliminar_plato'>
                                     <input type='hidden' name='id' value='".$p['plato_id']."'>
@@ -345,12 +371,12 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
           </div>
         </section>
 
-        <!-- Gestión de Menús -->
+        <!-- ========== GESTIÓN DE MENÚS ========== -->
         <section id="gestion-menus" class="seccion-admin">
           <h2>Gestión de Menús</h2>
           
           <div class="formulario-container">
-            <!-- Agregar Nuevo Menú -->
+            <!-- Formulario para agregar nuevo menú -->
             <div class="formulario-seccion">
               <h3>Agregar Nuevo Menú</h3>
               <form action="editar_menu.php" method="post" class="formulario-admin">
@@ -374,7 +400,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
               </form>
             </div>
 
-            <!-- Lista de Menús -->
+            <!-- Lista de menús existentes -->
             <div class="formulario-seccion">
               <h3>Menús Existentes</h3>
               <div class="tabla-container">
@@ -389,9 +415,10 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                   </thead>
                   <tbody>
                     <?php
-                    // Consulta para menús
+                    // Consultar todos los menús
                     $menus_lista = mysqli_query($conexion, "SELECT * FROM menu");
                     while($m = mysqli_fetch_assoc($menus_lista)){
+                      // Determinar clase CSS según el estado del menú
                       $estado_clase = $m['estado'] == 'disponible' ? 'etiqueta-activo' : 'etiqueta-inactivo';
                       echo "<tr>
                               <td>".$m['id_menu']."</td>
@@ -399,6 +426,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                               <td><span class='etiqueta ".$estado_clase."'>".ucfirst($m['estado'])."</span></td>
                               <td>
                                 <div class='acciones-tabla'>
+                                  <!-- Formulario para editar menú -->
                                   <form action='editar_menu.php' method='post' class='form-acciones'>
                                     <input type='hidden' name='accion' value='editar_menu'>
                                     <input type='hidden' name='id' value='".$m['id_menu']."'>
@@ -409,6 +437,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                                     </select>
                                     <button type='submit' class='btn-editar'>Editar</button>
                                   </form>
+                                  <!-- Formulario para eliminar menú -->
                                   <form action='editar_menu.php' method='post' class='form-acciones'>
                                     <input type='hidden' name='accion' value='eliminar_menu'>
                                     <input type='hidden' name='id' value='".$m['id_menu']."'>
@@ -426,7 +455,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
           </div>
         </section>
 
-        <!-- Gestión de Reservas -->
+        <!-- ========== GESTIÓN DE RESERVAS ========== -->
         <section id="gestion-reservas" class="seccion-admin">
           <h2>Gestión de Reservas</h2>
           
@@ -447,9 +476,10 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                   </thead>
                   <tbody>
                     <?php
-                    // Consulta para reservas
+                    // Consultar todas las reservas ordenadas por fecha y hora
                     $reservas = mysqli_query($conexion, "SELECT * FROM reserva ORDER BY fecha DESC, hora_inicio DESC");
                     while($r = mysqli_fetch_assoc($reservas)){
+                      // Determinar clase CSS según el estado de la reserva
                       $estado_clase = '';
                       switch($r['estado']) {
                         case 'pendiente': $estado_clase = 'etiqueta-pendiente'; break;
@@ -465,6 +495,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                               <td>".$r['cantidad']." personas</td>
                               <td><span class='etiqueta ".$estado_clase."'>".ucfirst($r['estado'])."</span></td>
                               <td>
+                                <!-- Formulario para cambiar estado de reserva -->
                                 <form action='editar_reservas.php' method='post' class='form-acciones'>
                                   <input type='hidden' name='id' value='".$r['id_reserva']."'>
                                   <select name='estado_reserva'>
@@ -486,7 +517,9 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
           </div>
         </section>
 
-        <!-- Otras secciones -->
+        <!-- ========== OTRAS SECCIONES DEL PANEL ========== -->
+        <!-- Estas secciones redirigen a páginas específicas para cada funcionalidad -->
+
         <section id="gestion-stock" class="seccion-admin">
           <h2>Gestión de Stock</h2>
           <p>Gestión completa del inventario del restaurante</p>
@@ -519,7 +552,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
       </main>
     </div>
 
-    <!-- Footer -->
+    <!-- ========== FOOTER ========== -->
     <footer>
       <div class="footer-texto">LA CHACRA GOURMET - PANEL ADMINISTRATIVO</div>
       <div class="footer-buttons">
@@ -529,19 +562,23 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
     </footer>
   </div>
 
+  <!-- Script de Bootstrap -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
   
   <script>
+    // ========== JAVASCRIPT PARA FUNCIONALIDADES DEL PANEL ==========
+
     // Script para navegación suave entre secciones
     document.addEventListener('DOMContentLoaded', function() {
       // Navegación del sidebar
       const sidebarLinks = document.querySelectorAll('.sidebar a');
       const sections = document.querySelectorAll('.seccion-admin');
       
+      // Agregar evento click a cada enlace del sidebar
       sidebarLinks.forEach(link => {
         link.addEventListener('click', function(e) {
-          e.preventDefault();
-          const targetId = this.getAttribute('href').substring(1);
+          e.preventDefault(); // Prevenir comportamiento por defecto
+          const targetId = this.getAttribute('href').substring(1); // Obtener ID del objetivo
           const targetSection = document.getElementById(targetId);
           
           if (targetSection) {
@@ -553,29 +590,31 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
             // Mostrar la sección objetivo
             targetSection.style.display = 'block';
             
-            // Scroll suave
+            // Scroll suave hacia la sección
             targetSection.scrollIntoView({ behavior: 'smooth' });
           }
         });
       });
       
-      // Mostrar solo la primera sección al cargar
+      // Mostrar solo la primera sección al cargar la página
       if (sections.length > 0) {
         sections.forEach((section, index) => {
           section.style.display = index === 0 ? 'block' : 'none';
         });
       }
 
-      // Mostrar/ocultar campo de salario según tipo de usuario
+      // Mostrar/ocultar campo de salario según tipo de usuario seleccionado
       const tipoSelect = document.getElementById('tipo-usuario');
       const campoSalario = document.getElementById('campo-salario');
       
       if (tipoSelect && campoSalario) {
         tipoSelect.addEventListener('change', function() {
           if (this.value === 'empleado') {
+            // Mostrar campo de salario para empleados
             campoSalario.style.display = 'block';
             campoSalario.querySelector('input').required = true;
           } else {
+            // Ocultar campo de salario para otros tipos de usuario
             campoSalario.style.display = 'none';
             campoSalario.querySelector('input').required = false;
           }

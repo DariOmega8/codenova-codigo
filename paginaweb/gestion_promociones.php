@@ -1,22 +1,32 @@
+```php
 <?php
+// Iniciar sesión para acceder a las variables de sesión
 session_start();
+
+// Incluir archivo de conexión a la base de datos
 include "conexion.php";
 
+// Verificar si el usuario es administrador, si no, redirigir al inicio
 if (!isset($_SESSION['es_administrador']) || !$_SESSION['es_administrador']) {
     header("Location: inicio.php");
     exit();
 }
 
-// Crear nueva promoción
+// =============================================================================
+// CREAR NUEVA PROMOCIÓN
+// =============================================================================
+
+// Procesar creación de nueva promoción
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['crear_promocion'])) {
+    // Sanitizar datos del formulario
     $titulo = mysqli_real_escape_string($conexion, $_POST['titulo']);
     $descripcion = mysqli_real_escape_string($conexion, $_POST['descripcion']);
     $tipo = mysqli_real_escape_string($conexion, $_POST['tipo']);
     $condiciones = mysqli_real_escape_string($conexion, $_POST['condiciones']);
     $duracion = $_POST['duracion'];
-    $estado = 'activa';
+    $estado = 'activa'; // Estado por defecto al crear
 
-    // Consulta actualizada
+    // Insertar nueva promoción en la base de datos
     $sql = "INSERT INTO promocion (titulo, descripcion, tipo, condiciones, duracion, estado) 
             VALUES ('$titulo', '$descripcion', '$tipo', '$condiciones', '$duracion', '$estado')";
 
@@ -27,18 +37,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['crear_promocion'])) {
     }
 }
 
-// Asignar promoción a cliente
+// =============================================================================
+// ASIGNAR PROMOCIÓN A CLIENTE
+// =============================================================================
+
+// Procesar asignación de promoción a cliente
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_promocion'])) {
     $cliente_id = $_POST['cliente_id'];
     $promocion_id = $_POST['promocion_id'];
 
-    // Consulta actualizada - nueva tabla promo_cliente
+    // Verificar si la promoción ya está asignada al cliente
     $sql_verificar = "SELECT * FROM promo_cliente 
                      WHERE cliente_cliente_id = $cliente_id 
                      AND promocion_promocion_id = $promocion_id";
     
     if (mysqli_num_rows(mysqli_query($conexion, $sql_verificar)) == 0) {
-        // Consulta actualizada - solo cliente_id y promocion_id
+        // Asignar promoción al cliente
         $sql = "INSERT INTO promo_cliente (cliente_cliente_id, promocion_promocion_id) 
                 VALUES ($cliente_id, $promocion_id)";
 
@@ -52,20 +66,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_promocion'])) 
     }
 }
 
-// Cambiar estado de promoción
+// =============================================================================
+// CAMBIAR ESTADO DE PROMOCIÓN
+// =============================================================================
+
+// Procesar cambio de estado de promoción
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['cambiar_estado'])) {
     $promocion_id = $_POST['promocion_id'];
     $estado = $_POST['estado'];
 
-    // Consulta actualizada
+    // Actualizar estado de la promoción
     $sql = "UPDATE promocion SET estado = '$estado' WHERE promocion_id = $promocion_id";
     mysqli_query($conexion, $sql);
     $mensaje = "Estado de promoción actualizado";
 }
 
-// Consultas actualizadas
+// =============================================================================
+// CONSULTAS PARA OBTENER DATOS
+// =============================================================================
+
+// Consulta para obtener todas las promociones
 $promociones = mysqli_query($conexion, "SELECT * FROM promocion ORDER BY estado, promocion_id DESC");
 
+// Consulta para obtener todos los clientes
 $clientes = mysqli_query($conexion, "
     SELECT c.cliente_id, u.nombre, u.gmail 
     FROM cliente c 
@@ -73,7 +96,7 @@ $clientes = mysqli_query($conexion, "
     ORDER BY u.nombre
 ");
 
-// Consulta actualizada para incluir cálculo de expiración
+// Consulta para obtener promociones asignadas con información de expiración
 $promociones_asignadas = mysqli_query($conexion, "
     SELECT 
         cp.*, 
@@ -119,7 +142,7 @@ $promociones_asignadas = mysqli_query($conexion, "
 
         <!-- Contenido principal con sidebar -->
         <div class="contenido-con-sidebar">
-            <!-- Sidebar de gestión de promociones -->
+            <!-- Sidebar de navegación para gestión de promociones -->
             <aside class="sidebar">
                 <ul>
                     <li><a href="#crear-promocion">
@@ -141,13 +164,13 @@ $promociones_asignadas = mysqli_query($conexion, "
                 </ul>
             </aside>
 
-            <!-- Contenido principal -->
+            <!-- Contenido principal de gestión de promociones -->
             <main class="contenido-principal">
                 <section class="banner-admin">
                     <h1>Gestión de Promociones</h1>
                 </section>
 
-                <!-- Mensajes -->
+                <!-- Sección para mostrar mensajes de éxito o error -->
                 <?php if (isset($mensaje)): ?>
                     <div class="mensaje-exito"><?php echo $mensaje; ?></div>
                 <?php endif; ?>
@@ -156,7 +179,7 @@ $promociones_asignadas = mysqli_query($conexion, "
                     <div class="mensaje-error"><?php echo $error; ?></div>
                 <?php endif; ?>
 
-                <!-- Crear Nueva Promoción -->
+                <!-- Sección: Crear Nueva Promoción -->
                 <section id="crear-promocion" class="seccion-admin">
                     <h2>Crear Nueva Promoción</h2>
                     <div class="formulario-container">
@@ -201,7 +224,7 @@ $promociones_asignadas = mysqli_query($conexion, "
                     </div>
                 </section>
 
-                <!-- Asignar Promoción a Cliente -->
+                <!-- Sección: Asignar Promoción a Cliente -->
                 <section id="asignar-promocion" class="seccion-admin">
                     <h2>Asignar Promoción a Cliente</h2>
                     <div class="formulario-container">
@@ -224,8 +247,10 @@ $promociones_asignadas = mysqli_query($conexion, "
                                         <select name="promocion_id" required>
                                             <option value="">Seleccionar promoción...</option>
                                             <?php 
+                                            // Reiniciar puntero de resultados para recorrer nuevamente
                                             mysqli_data_seek($promociones, 0);
                                             while($promocion = mysqli_fetch_assoc($promociones)): 
+                                                // Mostrar solo promociones activas
                                                 if ($promocion['estado'] == 'activa'):
                                             ?>
                                                 <option value="<?php echo $promocion['promocion_id']; ?>">
@@ -245,7 +270,7 @@ $promociones_asignadas = mysqli_query($conexion, "
                     </div>
                 </section>
 
-                <!-- Lista de Promociones -->
+                <!-- Sección: Lista de Promociones del Sistema -->
                 <section id="lista-promociones" class="seccion-admin">
                     <h2>Promociones del Sistema</h2>
                     <div class="tabla-container">
@@ -264,8 +289,10 @@ $promociones_asignadas = mysqli_query($conexion, "
                             </thead>
                             <tbody>
                                 <?php 
+                                // Reiniciar puntero de resultados para recorrer nuevamente
                                 mysqli_data_seek($promociones, 0);
                                 while($promocion = mysqli_fetch_assoc($promociones)): 
+                                    // Determinar clase CSS según el estado
                                     $badge_class = $promocion['estado'] == 'activa' ? 'badge-activa' : 'badge-inactiva';
                                 ?>
                                     <tr>
@@ -274,6 +301,7 @@ $promociones_asignadas = mysqli_query($conexion, "
                                         <td><?php echo $promocion['descripcion']; ?></td>
                                         <td>
                                             <?php 
+                                            // Asignar emoji según el tipo de promoción
                                             $icono = '';
                                             switch($promocion['tipo']) {
                                                 case 'descuento': $icono = '💰'; break;
@@ -288,6 +316,7 @@ $promociones_asignadas = mysqli_query($conexion, "
                                         <td><?php echo $promocion['duracion']; ?> días</td>
                                         <td><span class="<?php echo $badge_class; ?>"><?php echo ucfirst($promocion['estado']); ?></span></td>
                                         <td>
+                                            <!-- Formulario para cambiar estado de la promoción -->
                                             <form method="POST" class="form-acciones">
                                                 <input type="hidden" name="promocion_id" value="<?php echo $promocion['promocion_id']; ?>">
                                                 <select name="estado" onchange="this.form.submit()">
@@ -304,7 +333,7 @@ $promociones_asignadas = mysqli_query($conexion, "
                     </div>
                 </section>
 
-                <!-- Promociones Asignadas -->
+                <!-- Sección: Promociones Asignadas a Clientes -->
                 <section id="promociones-asignadas" class="seccion-admin">
                     <h2>Promociones Asignadas a Clientes</h2>
                     <?php if (mysqli_num_rows($promociones_asignadas) > 0): ?>
@@ -322,6 +351,7 @@ $promociones_asignadas = mysqli_query($conexion, "
                                 </thead>
                                 <tbody>
                                     <?php while($asignacion = mysqli_fetch_assoc($promociones_asignadas)): 
+                                        // Calcular estado de la promoción según días restantes
                                         $dias_restantes = $asignacion['dias_restantes'];
                                         $estado_promocion = '';
                                         $badge_class = '';
@@ -342,6 +372,7 @@ $promociones_asignadas = mysqli_query($conexion, "
                                             <td>🎁 <?php echo $asignacion['promocion_titulo']; ?></td>
                                             <td>
                                                 <?php 
+                                                // Asignar emoji según el tipo de promoción
                                                 $icono = '';
                                                 switch($asignacion['tipo']) {
                                                     case 'descuento': $icono = '💰'; break;
@@ -389,14 +420,16 @@ $promociones_asignadas = mysqli_query($conexion, "
     </footer>
   </div>
 
+    <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     
+    <!-- Script para navegación suave entre secciones -->
     <script>
-        // Script para navegación suave entre secciones
         document.addEventListener('DOMContentLoaded', function() {
             const sidebarLinks = document.querySelectorAll('.sidebar a');
             const sections = document.querySelectorAll('.seccion-admin');
             
+            // Agregar evento click a cada enlace del sidebar
             sidebarLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -404,16 +437,19 @@ $promociones_asignadas = mysqli_query($conexion, "
                     const targetSection = document.getElementById(targetId);
                     
                     if (targetSection) {
+                        // Ocultar todas las secciones
                         sections.forEach(section => {
                             section.style.display = 'none';
                         });
                         
+                        // Mostrar la sección objetivo
                         targetSection.style.display = 'block';
                         targetSection.scrollIntoView({ behavior: 'smooth' });
                     }
                 });
             });
             
+            // Mostrar solo la primera sección al cargar
             if (sections.length > 0) {
                 sections.forEach((section, index) => {
                     section.style.display = index === 0 ? 'block' : 'none';

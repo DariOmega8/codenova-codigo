@@ -2,104 +2,115 @@
    ESTILO GENERAL — La Chacra Gourmet
    ========================================================= */
 
+/* Importar fuente Poppins de Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+/* Reset básico para eliminar márgenes y paddings por defecto */
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  box-sizing: border-box; /* Incluye padding y border en el ancho/alto */
 }
 
+/* Configuración base del html y body */
 html, body {
   height: 100%;
 }
 
+/* Estilos generales del body */
 body {
-  font-family: 'Poppins', Arial, sans-serif;
-  background-color: #E6F2FF;
-  color: #1A3A5F;
-  line-height: 1.6;
-  overflow-x: hidden;
+  font-family: 'Poppins', Arial, sans-serif; /* Fuente principal con fallbacks */
+  background-color: #E6F2FF; /* Color de fondo azul claro */
+  color: #1A3A5F; /* Color de texto azul oscuro */
+  line-height: 1.6; /* Espaciado entre líneas */
+  overflow-x: hidden; /* Evitar scroll horizontal */
 }
 
+/* Contenedor principal flex para estructura de página */
 .contenedor-principal {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100vh; /* Mínimo alto de toda la ventana */
 }
 
 /* =========================================================
    HEADER
    ========================================================= */
 
+/* Estilos del menú de navegación superior */
 .menu {
-  background-color: #2E86AB;
+  background-color: #2E86AB; /* Azul principal */
   height: 70px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-between; /* Logo a la izquierda, nav a la derecha */
   padding: 0 25px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2); /* Sombra sutil */
   position: relative;
-  z-index: 1000;
+  z-index: 1000; /* Asegurar que esté por encima de otros elementos */
   overflow: hidden;
 }
 
+/* Contenedor del logo */
 .logo {
   display: flex;
   align-items: center;
   height: 100%;
 }
 
+/* Estilos de la imagen del logo */
 .logo-img {
   height: 45px;
   width: auto;
   max-height: 60px;
-  object-fit: contain;
+  object-fit: contain; /* Mantener proporciones */
   border-radius: 5px;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease; /* Transición suave para hover */
 }
 
 .logo-img:hover {
-  transform: scale(1.05);
+  transform: scale(1.05); /* Efecto de zoom al pasar mouse */
 }
 
+/* Navegación principal */
 .navegacion-principal ul {
-  list-style: none;
+  list-style: none; /* Quitar viñetas */
   display: flex;
-  gap: 10px;
+  gap: 10px; /* Espacio entre elementos */
   align-items: center;
 }
 
+/* Estilos de los enlaces de navegación */
 .navegacion-principal ul li a {
   text-decoration: none;
   padding: 8px 18px;
   border-radius: 10px;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease; /* Transición suave para todos los efectos */
   font-weight: 500;
   font-size: 0.95rem;
   display: block;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra sutil */
 }
 
-/* Botones normales del header */
+/* Botones normales del header (excluyendo botones especiales) */
 .navegacion-principal ul li a:not(.btn-login):not(.btn-register):not(.btn-logout):not(.btn-admin-header):not(.btn-staff-header) {
-  background-color: #4CAF50;
+  background-color: #4CAF50; /* Verde */
   color: white;
-  border: 1px solid #2E7D32;
+  border: 1px solid #2E7D32; /* Borde verde oscuro */
 }
 
 .navegacion-principal ul li a:not(.btn-login):not(.btn-register):not(.btn-logout):not(.btn-admin-header):not(.btn-staff-header):hover {
-  background-color: #43A047;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  background-color: #43A047; /* Verde más oscuro al hover */
+  transform: translateY(-2px); /* Efecto de levantar */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* Sombra más pronunciada */
 }
 
 /* =========================================================
    BOTONES DE SESIÓN
    ========================================================= */
 
+/* Estilos base para botones de login, registro y logout */
 .btn-login, .btn-register, .btn-logout {
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   border: none;
@@ -107,29 +118,31 @@ body {
   transition: all 0.3s ease;
 }
 
+/* Botones de login y registro */
 .btn-login, .btn-register {
-  background-color: #2196F3;
+  background-color: #2196F3; /* Azul */
   color: white;
 }
 
 .btn-login:hover, .btn-register:hover {
-  background-color: #1976D2;
+  background-color: #1976D2; /* Azul más oscuro */
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
+/* Botón de logout */
 .btn-logout {
-  background-color: #F44336;
+  background-color: #F44336; /* Rojo */
   color: #fff;
 }
 
 .btn-logout:hover {
-  background-color: #D32F2F;
+  background-color: #D32F2F; /* Rojo más oscuro */
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-/* Botones especiales para header */
+/* Botones especiales para header de administración */
 .btn-admin-header {
   background-color: #4CAF50;
   color: white;
@@ -143,6 +156,7 @@ body {
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
+/* Botones especiales para header de staff */
 .btn-staff-header {
   background-color: #4CAF50;
   color: white;
@@ -160,34 +174,38 @@ body {
    LAYOUT PRINCIPAL
    ========================================================= */
 
+/* Contenedor flexible para sidebar + contenido */
 .contenido-con-sidebar {
   display: flex;
-  flex: 1;
+  flex: 1; /* Ocupar espacio disponible */
 }
 
 /* =========================================================
    SIDEBAR
    ========================================================= */
 
+/* Barra lateral de navegación */
 .sidebar {
-  background-color: rgba(42, 122, 178, 0.9);
+  background-color: rgba(42, 122, 178, 0.9); /* Azul semitransparente */
   width: 220px;
-  min-height: calc(100vh - 130px);
-  position: sticky;
-  top: 70px;
+  min-height: calc(100vh - 130px); /* Alto menos header y footer */
+  position: sticky; /* Se mantiene visible al hacer scroll */
+  top: 70px; /* Pegado debajo del header */
   padding: 25px 0;
-  flex-shrink: 0;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  flex-shrink: 0; /* No reducir tamaño */
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* Sombra a la derecha */
 }
 
+/* Lista del sidebar */
 .sidebar ul {
   list-style: none;
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Elementos en columna */
   gap: 12px;
   padding: 0 15px;
 }
 
+/* Enlaces del sidebar */
 .sidebar ul li a {
   display: flex;
   align-items: center;
@@ -198,16 +216,17 @@ body {
   border-radius: 10px;
   transition: all 0.3s ease;
   font-weight: 500;
-  gap: 12px;
+  gap: 12px; /* Espacio entre icono y texto */
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .sidebar ul li a:hover {
   background-color: #43A047;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  transform: translateX(5px);
+  transform: translateX(5px); /* Efecto de desplazamiento a la derecha */
 }
 
+/* Iconos del sidebar */
 .sidebar-icon {
   width: 20px;
   height: 20px;
@@ -221,12 +240,13 @@ body {
    CONTENIDO PRINCIPAL
    ========================================================= */
 
+/* Área de contenido principal */
 .contenido-principal {
-  flex: 1;
+  flex: 1; /* Ocupar espacio restante */
   padding: 25px;
   display: flex;
   flex-direction: column;
-  gap: 35px;
+  gap: 35px; /* Espacio entre secciones */
   background-color: #E6F2FF;
 }
 
@@ -234,9 +254,10 @@ body {
    BANNER
    ========================================================= */
 
+/* Banner principal con imagen de fondo */
 .banner {
   background-image: url('imagenes/imagen-local.jpeg');
-  background-size: cover;
+  background-size: cover; /* Cubrir todo el contenedor */
   background-position: center;
   background-repeat: no-repeat;
   height: 450px;
@@ -251,6 +272,7 @@ body {
   overflow: hidden;
 }
 
+/* Overlay oscuro sobre la imagen para mejor legibilidad */
 .banner::before {
   content: '';
   position: absolute;
@@ -258,18 +280,19 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5));
+  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)); /* Gradiente oscuro */
   border-radius: 15px;
 }
 
+/* Título del banner */
 .banner h1 {
   color: white;
   font-size: 2.8rem;
-  text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.8); /* Sombra de texto para contraste */
   max-width: 80%;
   font-weight: 600;
   position: relative;
-  z-index: 1;
+  z-index: 1; /* Por encima del overlay */
   line-height: 1.3;
 }
 
@@ -277,14 +300,16 @@ body {
    INFORMACIÓN
    ========================================================= */
 
+/* Sección de información corporativa */
 .informacion {
   background-color: #E6F2FF;
   padding: 35px;
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  border: 3px solid #2E86AB;
+  border: 3px solid #2E86AB; /* Borde azul */
 }
 
+/* Título de la sección información */
 .informacion h2 {
   font-size: 2.2rem;
   margin-bottom: 30px;
@@ -296,6 +321,7 @@ body {
   padding-bottom: 10px;
 }
 
+/* Línea decorativa bajo el título */
 .informacion h2::after {
   content: '';
   position: absolute;
@@ -308,18 +334,20 @@ body {
   border-radius: 2px;
 }
 
+/* Elementos individuales de información */
 .info-item {
   margin-bottom: 25px;
   padding: 20px;
-  background-color: rgba(46, 134, 171, 0.1);
+  background-color: rgba(46, 134, 171, 0.1); /* Fondo azul muy claro */
   border-radius: 10px;
-  border-left: 4px solid #2E86AB;
+  border-left: 4px solid #2E86AB; /* Borde lateral azul */
 }
 
 .info-item:last-child {
-  margin-bottom: 0;
+  margin-bottom: 0; /* Sin margen en el último elemento */
 }
 
+/* Subtítulos de información */
 .informacion h3 {
   color: #2E86AB;
   margin: 0 0 12px 0;
@@ -327,6 +355,7 @@ body {
   font-weight: 600;
 }
 
+/* Párrafos de información */
 .informacion p {
   line-height: 1.7;
   color: #1A3A5F;
@@ -337,6 +366,7 @@ body {
    PLATOS ESTRELLA - SOLUCIÓN SIMPLE Y DIRECTA
    ========================================================= */
 
+/* Sección de platos más populares */
 .platos-estrella {
   background-color: #E6F2FF;
   padding: 35px;
@@ -345,6 +375,7 @@ body {
   border: 3px solid #2E86AB;
 }
 
+/* Título de la sección platos estrella */
 .platos-estrella h2 {
   font-size: 2.2rem;
   margin-bottom: 35px;
@@ -356,6 +387,7 @@ body {
   padding-bottom: 10px;
 }
 
+/* Línea decorativa bajo el título */
 .platos-estrella h2::after {
   content: '';
   position: absolute;
@@ -368,13 +400,15 @@ body {
   border-radius: 2px;
 }
 
+/* Contenedor flexible para las tarjetas de platos */
 .contenedor-platos {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 30px;
+  flex-wrap: wrap; /* Permitir que las tarjetas pasen a siguiente línea */
+  gap: 30px; /* Espacio entre tarjetas */
 }
 
+/* Tarjeta individual de plato */
 .plato {
   background-color: white;
   border: 4px solid #2E86AB;
@@ -386,6 +420,7 @@ body {
   position: relative;
 }
 
+/* Barra superior decorativa */
 .plato::before {
   content: '';
   position: absolute;
@@ -393,13 +428,13 @@ body {
   left: 0;
   right: 0;
   height: 5px;
-  background: linear-gradient(90deg, #2E86AB, #4CAF50);
+  background: linear-gradient(90deg, #2E86AB, #4CAF50); /* Gradiente azul-verde */
   z-index: 1;
 }
 
 .plato:hover {
-  transform: translateY(-12px);
-  box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+  transform: translateY(-12px); /* Efecto de levantar al hover */
+  box-shadow: 0 12px 25px rgba(0,0,0,0.3); /* Sombra más pronunciada */
 }
 
 /* SOLUCIÓN DEFINITIVA PARA IMÁGENES DE PLATOS */
@@ -413,15 +448,16 @@ body {
 .plato-imagen-container img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* Cubrir contenedor manteniendo proporciones */
   display: block;
   transition: transform 0.4s ease;
 }
 
 .plato:hover .plato-imagen-container img {
-  transform: scale(1.1);
+  transform: scale(1.1); /* Zoom suave al hover */
 }
 
+/* Información del plato */
 .plato-info {
   padding: 20px;
   text-align: center;
@@ -455,7 +491,7 @@ body {
   gap: 5px;
   margin-top: 10px;
   padding: 5px 10px;
-  background: linear-gradient(135deg, #FF9800, #F57C00);
+  background: linear-gradient(135deg, #FF9800, #F57C00); /* Gradiente naranja */
   color: white;
   border-radius: 15px;
   font-size: 0.8rem;
@@ -471,6 +507,7 @@ body {
    UBICACIÓN - SOLUCIÓN SIMPLE
    ========================================================= */
 
+/* Sección de ubicación */
 .ubicacion {
   text-align: center;
   padding: 35px;
@@ -512,7 +549,7 @@ body {
   font-size: 1.1rem;
 }
 
-/* Mapa - SOLUCIÓN SIMPLE */
+/* Contenedor del mapa */
 .mapa-container {
   display: inline-block;
   border-radius: 15px;
@@ -539,6 +576,7 @@ body {
    FOOTER
    ========================================================= */
 
+/* Pie de página */
 footer {
   background-color: #2E86AB;
   height: 70px;
@@ -546,10 +584,11 @@ footer {
   align-items: center;
   justify-content: space-between;
   padding: 0 30px;
-  margin-top: auto;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  margin-top: auto; /* Empujar al fondo en layout flex */
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1); /* Sombra superior */
 }
 
+/* Iconos de redes sociales */
 .social-icons {
   display: flex;
   gap: 18px;
@@ -563,18 +602,19 @@ footer {
 }
 
 .social-icons a:hover {
-  transform: scale(1.15);
+  transform: scale(1.15); /* Efecto de agrandar al hover */
 }
 
 .social-icons img {
   height: 32px;
   width: 32px;
-  border-radius: 50%;
+  border-radius: 50%; /* Forma circular */
   object-fit: cover;
   border: 2px solid #4CAF50;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
+/* Texto del footer */
 .footer-texto {
   font-weight: 700;
   font-size: 1.2rem;
@@ -582,6 +622,7 @@ footer {
   letter-spacing: 1px;
 }
 
+/* Botones del footer */
 footer .footer-buttons a {
   text-decoration: none;
   background-color: #4CAF50;
@@ -621,7 +662,7 @@ footer .footer-buttons a:hover {
   padding: 15px;
   margin: 15px 0;
   border-radius: 8px;
-  border-left: 4px solid #27ae60;
+  border-left: 4px solid #27ae60; /* Borde verde */
 }
 
 .error {
@@ -630,7 +671,7 @@ footer .footer-buttons a:hover {
   padding: 15px;
   margin: 15px 0;
   border-radius: 8px;
-  border-left: 4px solid #e74c3c;
+  border-left: 4px solid #e74c3c; /* Borde rojo */
 }
 
 /* Estadísticas */
@@ -638,7 +679,7 @@ footer .footer-buttons a:hover {
   display: flex;
   gap: 15px;
   margin: 20px 0;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Permitir wrap en pantallas pequeñas */
 }
 
 .stat-card {
@@ -681,7 +722,7 @@ footer .footer-buttons a:hover {
 .form-group textarea:focus {
   outline: none;
   border-color: #1A3A5F;
-  box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.3);
+  box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.3); /* Efecto de glow */
 }
 
 /* Tablas */
@@ -709,7 +750,7 @@ th {
 }
 
 tr:nth-child(even) {
-  background: rgba(46, 134, 171, 0.1);
+  background: rgba(46, 134, 171, 0.1); /* Filas pares con fondo azul claro */
 }
 
 /* Botones generales */
@@ -731,6 +772,7 @@ tr:nth-child(even) {
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
+/* Variantes de botones por color */
 .btn-success {
   background: #4CAF50;
 }
@@ -755,30 +797,30 @@ tr:nth-child(even) {
   background: #D32F2F;
 }
 
-/* Tipos de productos */
+/* Tipos de productos con bordes de colores */
 .tipo-bebida {
-  border-left: 4px solid #2196F3;
+  border-left: 4px solid #2196F3; /* Azul */
 }
 
 .tipo-alimento {
-  border-left: 4px solid #F44336;
+  border-left: 4px solid #F44336; /* Rojo */
 }
 
 .tipo-limpieza {
-  border-left: 4px solid #9C27B0;
+  border-left: 4px solid #9C27B0; /* Púrpura */
 }
 
 .tipo-utensilio {
-  border-left: 4px solid #FF9800;
+  border-left: 4px solid #FF9800; /* Naranja */
 }
 
 /* Estados de stock */
 .bajo-stock {
-  background: #FFF9C4 !important;
+  background: #FFF9C4 !important; /* Amarillo claro */
 }
 
 .critico-stock {
-  background: #FFCDD2 !important;
+  background: #FFCDD2 !important; /* Rojo claro */
 }
 
 /* Formularios en tablas */
@@ -861,7 +903,7 @@ tr:nth-child(even) {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  min-width: 0; /* Permitir que se reduzca */
 }
 
 /* Botones de agregar y remover */
@@ -899,7 +941,7 @@ tr:nth-child(even) {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  flex-shrink: 0; /* No reducir tamaño */
   font-size: 1.1rem;
   font-weight: bold;
   transition: all 0.3s ease;
@@ -942,7 +984,7 @@ tr:nth-child(even) {
   font-size: 1rem;
   transition: all 0.3s ease;
   width: 100%;
-  height: 42px;
+  height: 42px; /* Altura consistente */
 }
 
 .select-plato:focus {
@@ -960,7 +1002,7 @@ tr:nth-child(even) {
   font-size: 1rem;
   transition: all 0.3s ease;
   width: 100%;
-  height: 42px;
+  height: 42px; /* Altura consistente con selects */
 }
 
 .fila-plato input[type="number"]:focus {
@@ -1019,7 +1061,7 @@ tr:nth-child(even) {
   margin-bottom: 20px;
   text-align: center;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  border-left: 5px solid #43A047;
+  border-left: 5px solid #43A047; /* Borde verde */
 }
 
 .mensaje-error {
@@ -1030,11 +1072,11 @@ tr:nth-child(even) {
   margin-bottom: 20px;
   text-align: center;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  border-left: 5px solid #D32F2F;
+  border-left: 5px solid #D32F2F; /* Borde rojo */
 }
 
 .badge-advertencia {
-    background-color: #f39c12;
+    background-color: #f39c12; /* Naranja */
     color: white;
     padding: 4px 8px;
     border-radius: 12px;
@@ -1180,7 +1222,7 @@ tr:nth-child(even) {
 
 /* Tablas de administración */
 .tabla-container {
-  overflow-x: auto;
+  overflow-x: auto; /* Scroll horizontal en pantallas pequeñas */
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
@@ -1209,11 +1251,11 @@ tr:nth-child(even) {
 }
 
 .tabla-admin tr:nth-child(even) {
-  background-color: rgba(46, 134, 171, 0.1);
+  background-color: rgba(46, 134, 171, 0.1); /* Filas pares con fondo claro */
 }
 
 .tabla-admin tr:hover {
-  background-color: rgba(46, 134, 171, 0.2);
+  background-color: rgba(46, 134, 171, 0.2); /* Fondo al pasar mouse */
 }
 
 /* Etiquetas de estado */
@@ -1226,50 +1268,51 @@ tr:nth-child(even) {
   display: inline-block;
 }
 
+/* Variantes de etiquetas por tipo */
 .etiqueta-admin {
-  background-color: #673AB7;
+  background-color: #673AB7; /* Púrpura */
   color: white;
 }
 
 .etiqueta-empleado {
-  background-color: #2196F3;
+  background-color: #2196F3; /* Azul */
   color: white;
 }
 
 .etiqueta-activo {
-  background-color: #4CAF50;
+  background-color: #4CAF50; /* Verde */
   color: white;
 }
 
 .etiqueta-inactivo {
-  background-color: #F44336;
+  background-color: #F44336; /* Rojo */
   color: white;
 }
 
 .etiqueta-pendiente {
-  background-color: #FF9800;
+  background-color: #FF9800; /* Naranja */
   color: white;
 }
 
 .etiqueta-confirmada {
-  background-color: #4CAF50;
+  background-color: #4CAF50; /* Verde */
   color: white;
 }
 
 .etiqueta-cancelada {
-  background-color: #F44336;
+  background-color: #F44336; /* Rojo */
   color: white;
 }
 
 .etiqueta-finalizada {
-  background-color: #2196F3;
+  background-color: #2196F3; /* Azul */
   color: white;
 }
 
 /* Precios */
 .precio {
   font-weight: 600;
-  color: #4CAF50;
+  color: #4CAF50; /* Verde */
 }
 
 /* Botones de acciones */
@@ -1282,7 +1325,7 @@ tr:nth-child(even) {
   font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  white-space: nowrap;
+  white-space: nowrap; /* Evitar salto de línea */
 }
 
 .btn-editar:hover {
@@ -1371,10 +1414,10 @@ tr:nth-child(even) {
   border-radius: 10px;
   background-color: #E6F2FF;
   font-size: 1rem;
-  font-family: 'Poppins', Arial, sans-serif;
+  font-family: 'Poppins', Arial, sans-serif; /* Misma fuente del body */
   transition: all 0.3s ease;
   width: 100%;
-  resize: vertical;
+  resize: vertical; /* Permitir redimensionar solo verticalmente */
   min-height: 100px;
   line-height: 1.5;
 }
@@ -1421,7 +1464,7 @@ tr:nth-child(even) {
 .contenedor-platos .plato a img {
   width: 100%;
   height: 220px;
-  object-fit: cover;
+  object-fit: cover; /* Cubrir contenedor manteniendo proporciones */
   display: block;
   border-bottom: 3px solid #2E86AB;
 }
@@ -1445,7 +1488,7 @@ tr:nth-child(even) {
 .plato-imagen img {
   width: 100%;
   max-height: 400px;
-  object-fit: contain;
+  object-fit: contain; /* Mostrar imagen completa sin recortar */
   border-radius: 15px;
   box-shadow: 0 6px 15px rgba(0,0,0,0.2);
   border: 3px solid #2E86AB;
@@ -1462,7 +1505,7 @@ tr:nth-child(even) {
   padding: 20px;
   background-color: rgba(46, 134, 171, 0.1);
   border-radius: 10px;
-  border-left: 4px solid #2E86AB;
+  border-left: 4px solid #2E86AB; /* Borde lateral azul */
 }
 
 .descripcion-completa h3 {
@@ -1482,32 +1525,33 @@ tr:nth-child(even) {
    RESPONSIVE DESIGN
    ========================================================= */
 
+/* Media queries para tablets y móviles */
 @media (max-width: 768px) {
   .menu {
-    flex-direction: column;
+    flex-direction: column; /* Cambiar a columna en móviles */
     height: auto;
     padding: 15px;
     gap: 15px;
   }
   
   .navegacion-principal ul {
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Permitir que los elementos pasen a siguiente línea */
     justify-content: center;
   }
   
   .contenido-con-sidebar {
-    flex-direction: column;
+    flex-direction: column; /* Sidebar arriba, contenido abajo */
   }
   
   .sidebar {
     width: 100%;
     min-height: auto;
-    position: static;
+    position: static; /* Quitar posición sticky */
   }
   
   .sidebar ul {
-    flex-direction: row;
-    overflow-x: auto;
+    flex-direction: row; /* Menú horizontal en móviles */
+    overflow-x: auto; /* Scroll horizontal si es necesario */
   }
   
   .contenido-principal {
@@ -1515,21 +1559,21 @@ tr:nth-child(even) {
   }
   
   .banner {
-    height: 300px;
+    height: 300px; /* Banner más bajo en móviles */
   }
   
   .banner h1 {
-    font-size: 1.8rem;
+    font-size: 1.8rem; /* Texto más pequeño */
   }
   
   .contenedor-platos {
-    flex-direction: column;
+    flex-direction: column; /* Platos en columna */
     align-items: center;
   }
   
   .plato {
     width: 100%;
-    max-width: 350px;
+    max-width: 350px; /* Ancho máximo en móviles */
   }
   
   footer {
@@ -1556,7 +1600,7 @@ tr:nth-child(even) {
   }
   
   .fila-formulario {
-    flex-direction: column;
+    flex-direction: column; /* Campos en columna */
   }
   
   .form-acciones {
@@ -1613,7 +1657,7 @@ tr:nth-child(even) {
   }
 
   .descripcion-completa p {
-    text-align: center;
+    text-align: center; /* Centrar texto en móviles */
   }
 }
 
@@ -1621,6 +1665,7 @@ tr:nth-child(even) {
    ANIMACIONES
    ========================================================= */
 
+/* Animación de entrada suave */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -1632,14 +1677,15 @@ tr:nth-child(even) {
   }
 }
 
+/* Aplicar animación a las secciones del contenido principal */
 .contenido-principal > section {
   animation: fadeIn 0.6s ease-out;
 }
 
+/* Animación específica para las tarjetas de platos */
 .plato {
   animation: fadeIn 0.8s ease-out;
 }
-
 
 /* =========================================================
    ESTILOS ESPECÍFICOS PARA ADMINISTRACIÓN
@@ -1687,7 +1733,7 @@ input[type="file"]:focus {
   background-color: white !important;
 }
 
-/* Estilo personalizado para el input file */
+/* Estilo personalizado para el botón de selección de archivos */
 input[type="file"]::file-selector-button {
   background-color: #4CAF50 !important;
   color: white !important;
@@ -1785,7 +1831,7 @@ input[type="file"]::file-selector-button:hover {
 
 /* Mejora visual para las tablas de administración */
 .tabla-admin td {
-  vertical-align: middle !important;
+  vertical-align: middle !important; /* Centrar verticalmente */
 }
 
 .tabla-admin .form-acciones {
@@ -1826,258 +1872,188 @@ input[type="file"]::file-selector-button:hover {
     margin-right: 10px !important;
   }
 }
+
+/* =========================================================
+   ESTILOS PARA GALERÍA (CAROUSEL Y TARJETAS)
+   ========================================================= */
+
 .carousel-img {
-      height: 600px;
-      object-fit: cover;
-    }
+  height: 600px;
+  object-fit: cover; /* Cubrir área manteniendo proporciones */
+}
 
-    .galeria-card {
-      border: 2px solid #C98A5E;
-      border-radius: 10px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+.galeria-card {
+  border: 2px solid #C98A5E; /* Color marrón/naranja del restaurante */
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-    .galeria-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(201, 138, 94, 0.3);
-    }
+.galeria-card:hover {
+  transform: translateY(-5px); /* Efecto de levantar */
+  box-shadow: 0 8px 25px rgba(201, 138, 94, 0.3); /* Sombra con color del tema */
+}
 
-    .galeria-card .card-img-top {
-      height: 250px;
-      object-fit: cover;
-      border-radius: 8px 8px 0 0;
-    }
+.galeria-card .card-img-top {
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0; /* Bordes redondeados solo arriba */
+}
 
-    .carousel-caption {
-      background: rgba(91, 58, 41, 0.8);
-      border-radius: 10px;
-      padding: 20px;
-    }
+.carousel-caption {
+  background: rgba(91, 58, 41, 0.8); /* Fondo marrón semitransparente */
+  border-radius: 10px;
+  padding: 20px;
+}
 
-    .carousel-control-prev-icon,
-    .carousel-control-next-icon {
-      background-color: #C98A5E;
-      border-radius: 50%;
-      padding: 15px;
-    }
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: #C98A5E; /* Color del tema */
+  border-radius: 50%; /* Forma circular */
+  padding: 15px;
+}
 
-    .carousel-indicators button {
-      background-color: #C98A5E;
-    }
+.carousel-indicators button {
+  background-color: #C98A5E; /* Color del tema para indicadores */
+}
 
-    .btn-primary {
-      background-color: #C98A5E;
-      border-color: #C98A5E;
-    }
+/* Botones con colores del tema */
+.btn-primary {
+  background-color: #C98A5E;
+  border-color: #C98A5E;
+}
 
-    .btn-primary:hover {
-      background-color: #B07A4E;
-      border-color: #B07A4E;
-    }
+.btn-primary:hover {
+  background-color: #B07A4E; /* Color más oscuro al hover */
+  border-color: #B07A4E;
+}
 
-    .btn-outline-primary {
-      color: #C98A5E;
-      border-color: #C98A5E;
-    }
+.btn-outline-primary {
+  color: #C98A5E;
+  border-color: #C98A5E;
+}
 
-    .btn-outline-primary:hover {
-      background-color: #C98A5E;
-      border-color: #C98A5E;
-      color: white;
-    }
+.btn-outline-primary:hover {
+  background-color: #C98A5E;
+  border-color: #C98A5E;
+  color: white;
+}
 
-    /* Asegurar que el header tenga un z-index alto */
-    .menu {
-      position: relative;
-      z-index: 1000;
-    }
+/* Asegurar que el header tenga un z-index alto */
+.menu {
+  position: relative;
+  z-index: 1000; /* Por encima del carousel */
+}
 
-    /* Asegurar que el contenido principal no interfiera */
-    .contenido-principal {
-      position: relative;
-      z-index: 1;
-    }
+/* Asegurar que el contenido principal no interfiera */
+.contenido-principal {
+  position: relative;
+  z-index: 1;
+}
 
-    /* Estilos mejorados para la sección de imagen */
-    .image-container {
-      min-height: 400px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+/* Estilos mejorados para la sección de imagen */
+.image-container {
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    .object-fit-cover {
-      object-fit: cover;
-    }
-.carousel-img {
-      height: 600px;
-      object-fit: cover;
-    }
+.object-fit-cover {
+  object-fit: cover; /* Cubrir contenedor manteniendo proporciones */
+}
 
-    .galeria-card {
-      border: 2px solid #C98A5E;
-      border-radius: 10px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+/* Responsive para galería */
+@media (max-width: 768px) {
+  .carousel-img {
+    height: 400px; /* Imágenes más bajas en tablets */
+  }
+  
+  .carousel-caption h5 {
+    font-size: 1rem; /* Texto más pequeño */
+  }
+  
+  .carousel-caption p {
+    font-size: 0.8rem;
+  }
 
-    .galeria-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(201, 138, 94, 0.3);
-    }
+  .image-container {
+    min-height: 300px;
+    margin-top: 2rem;
+  }
+}
 
-    .galeria-card .card-img-top {
-      height: 250px;
-      object-fit: cover;
-      border-radius: 8px 8px 0 0;
-    }
+@media (max-width: 576px) {
+  .carousel-img {
+    height: 300px; /* Imágenes más bajas en móviles */
+  }
+}
 
-    .carousel-caption {
-      background: rgba(91, 58, 41, 0.8);
-      border-radius: 10px;
-      padding: 20px;
-    }
+/* =========================================================
+   ESTILOS PARA REDES SOCIALES Y PAGOS
+   ========================================================= */
 
-    .carousel-control-prev-icon,
-    .carousel-control-next-icon {
-      background-color: #C98A5E;
-      border-radius: 50%;
-      padding: 15px;
-    }
-
-    .carousel-indicators button {
-      background-color: #C98A5E;
-    }
-
-    .btn-primary {
-      background-color: #C98A5E;
-      border-color: #C98A5E;
-    }
-
-    .btn-primary:hover {
-      background-color: #B07A4E;
-      border-color: #B07A4E;
-    }
-
-    .btn-outline-primary {
-      color: #C98A5E;
-      border-color: #C98A5E;
-    }
-
-    .btn-outline-primary:hover {
-      background-color: #C98A5E;
-      border-color: #C98A5E;
-      color: white;
-    }
-
-    /* Asegurar que el header tenga un z-index alto */
-    .menu {
-      position: relative;
-      z-index: 1000;
-    }
-
-    /* Asegurar que el contenido principal no interfiera */
-    .contenido-principal {
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Estilos mejorados para la sección de imagen */
-    .image-container {
-      min-height: 400px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .object-fit-cover {
-      object-fit: cover;
-    }
-
-    @media (max-width: 768px) {
-      .carousel-img {
-        height: 400px;
-      }
-      
-      .carousel-caption h5 {
-        font-size: 1rem;
-      }
-      
-      .carousel-caption p {
-        font-size: 0.8rem;
-      }
-
-      .image-container {
-        min-height: 300px;
-        margin-top: 2rem;
-      }
-    }
-
-    @media (max-width: 576px) {
-      .carousel-img {
-        height: 300px;
-      }
-    }
 .redes-sociales, .metodos-pago, .horario-atencion {
-      background: white;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      border: 2px solid #C98A5E;
-    }
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border: 2px solid #C98A5E; /* Color del tema */
+}
 
-    .contacto-item, .pago-item, .horario-item {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      padding: 15px 0;
-      border-bottom: 1px solid #eee;
-    }
+.contacto-item, .pago-item, .horario-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee; /* Separador sutil */
+}
 
-    .contacto-item:last-child, .pago-item:last-child, .horario-item:last-child {
-      border-bottom: none;
-    }
+.contacto-item:last-child, .pago-item:last-child, .horario-item:last-child {
+  border-bottom: none; /* Sin borde en el último elemento */
+}
 
-    .contacto-item i, .pago-item i {
-      font-size: 1.5rem;
-      color: #C98A5E;
-      width: 30px;
-      text-align: center;
-    }
+.contacto-item i, .pago-item i {
+  font-size: 1.5rem;
+  color: #C98A5E; /* Color del tema para iconos */
+  width: 30px;
+  text-align: center;
+}
 
-    .contacto-item strong, .pago-item strong, .horario-item strong {
-      color: #5B3A29;
-      display: block;
-      margin-bottom: 5px;
-    }
+.contacto-item strong, .pago-item strong, .horario-item strong {
+  color: #5B3A29; /* Marrón oscuro */
+  display: block;
+  margin-bottom: 5px;
+}
 
-    .contacto-item p, .pago-item p, .horario-item p {
-      color: #666;
-      margin: 0;
-    }
+.contacto-item p, .pago-item p, .horario-item p {
+  color: #666;
+  margin: 0;
+}
 
-    .horario-item {
-      justify-content: space-between;
-      padding: 12px 0;
-    }
+.horario-item {
+  justify-content: space-between; /* Horario y tiempo separados */
+  padding: 12px 0;
+}
 
-    .horario-item strong {
-      color: #5B3A29;
-    }
+.horario-item strong {
+  color: #5B3A29;
+}
 
-    .horario-item p {
-      color: #C98A5E;
-      font-weight: 600;
-    }
+.horario-item p {
+  color: #C98A5E; /* Color del tema para horarios */
+  font-weight: 600;
+}
 
-    @media (max-width: 768px) {
-      .contacto-item, .pago-item, .horario-item {
-        flex-direction: column;
-        text-align: center;
-        gap: 10px;
-      }
+/* Responsive para redes y pagos */
+@media (max-width: 768px) {
+  .contacto-item, .pago-item, .horario-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
 
-      .horario-item {
-        flex-direction: row;
-        text-align: left;
-      }
-    }
+  .horario-item {
+    flex-direction: row; /* Mantener en fila los horarios */
+    text-align: left;
+  }
+}

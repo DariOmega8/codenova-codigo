@@ -1,37 +1,48 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Configuración básica del documento HTML -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Hojas de estilo para el formulario -->
     <link rel="stylesheet" href="estilos/registrarse_cliente.css">
     <link rel="stylesheet" href="estilos/reponsive.css">
+    <!-- Script de validación del formulario -->
     <script src="validacion.js"></script>
     <title>Inicio cliente</title>
 </head>
 <body>
 
+      <!-- Contenedor principal del formulario -->
       <main class="contenedor">
+        <!-- Formulario de registro de cliente -->
         <form class="formulario" method="post" action="registrarse_cliente.php">
             <h2>Formulario</h2>
             
+            <!-- Campo para el nombre -->
             <label for="name">Nombre</label>
             <input type="text" name="nombre" placeholder="Nombre" required>
 
+            <!-- Campo para el apellido -->
             <label for="apellido">Apellido</label>
             <input type="text" name="apellido" placeholder="Apellido" required>
 
+            <!-- Campo para la fecha de nacimiento -->
             <label for="date">Fecha de nacimiento</label>
             <input type="date" name="fecha_nacimiento" required>
 
+            <!-- Campo para el email -->
             <label for="gmail">Gmail</label>
             <input type="email" name="gmail" placeholder="Correo electrónico" required>
             
+            <!-- Campo para la contraseña -->
             <label for="password">Contraseña</label>
             <input type="password" name="contraseña" placeholder="Contraseña" required>
 
+            <!-- Selector de nacionalidad con lista completa de países -->
             <label for="text">Nacionalidad</label>
             <select class="nacionalidad" name="nacionalidad" aria-label="Default select example" required>
-  <option value="Afganistán">Afganistán</option>
+   <option value="Afganistán">Afganistán</option>
   <option value="Albania">Albania</option>
   <option value="Alemania">Alemania</option>
   <option value="Andorra">Andorra</option>
@@ -225,15 +236,20 @@
   <option value="Zimbabue">Zimbabue</option>
             </select>
             
+          <!-- Campo para preferencias alimenticias (opcional) -->
           <label for="preferencias">Preferencias alimenticias</label>
             <textarea name="preferencias" placeholder="Ej: Vegetariano, Sin gluten, Alergias, etc." rows="3"></textarea>
 
+            <!-- Campo para el teléfono -->
             <label for="telefono">Telefono</label>
             <input type="text" name="telefono" placeholder="Teléfono" required>
             
+            <!-- Botón de envío del formulario -->
             <button type="submit" name="submit" class="registrarse">Ingresar</button>
         </form>
     </main>
+
+<!-- Scripts de Bootstrap para funcionalidades de UI -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>

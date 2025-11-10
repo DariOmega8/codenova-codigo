@@ -1,10 +1,13 @@
 <?php
+// Inicia la sesión para acceder a las variables de sesión del usuario
 session_start();
+// Incluye el archivo de conexión a la base de datos
 include "conexion.php";
 
-// Configurar zona horaria
+// Configurar zona horaria para Perú/Lima
 date_default_timezone_set('America/Lima');
 
+// Verifica que el usuario sea empleado o administrador, si no, redirige al inicio
 if (!isset($_SESSION['es_empleado']) && !isset($_SESSION['es_administrador'])) {
     header("Location: inicio.php");
     exit();
@@ -12,6 +15,7 @@ if (!isset($_SESSION['es_empleado']) && !isset($_SESSION['es_administrador'])) {
 
 // FUNCIÓN PARA LIBERAR MESAS AUTOMÁTICAMENTE DESPUÉS DE 6 HORAS
 function liberarMesasAntiguas($conexion) {
+    // Consulta SQL para liberar mesas ocupadas por más de 6 horas
     $sql_liberar = "UPDATE mesa 
                    SET estado = 'disponible' 
                    WHERE estado = 'ocupada' 
@@ -20,17 +24,19 @@ function liberarMesasAntiguas($conexion) {
     mysqli_query($conexion, $sql_liberar);
 }
 
-// Ejecutar la limpieza automática
+// Ejecutar la limpieza automática al cargar la página
 liberarMesasAntiguas($conexion);
 
+// Variables iniciales
 $cliente = null;
 $reservas = [];
 $mesas_disponibles = [];
 
+// Procesar búsqueda de cliente por email
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['buscar_cliente'])) {
     $email = mysqli_real_escape_string($conexion, $_POST['email']);
     
-    // CONSULTA ACTUALIZADA - Nuevo esquema
+    // CONSULTA ACTUALIZADA - Nuevo esquema de base de datos
     $sql_cliente = "SELECT u.id_usuario, u.nombre, u.gmail, c.cliente_id
                     FROM usuario u 
                     JOIN cliente c ON u.id_usuario = c.usuario_id_usuario
@@ -38,10 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['buscar_cliente'])) {
     
     $resultado = mysqli_query($conexion, $sql_cliente);
     
+    // Si se encuentra el cliente
     if ($resultado && mysqli_num_rows($resultado) > 0) {
         $cliente = mysqli_fetch_assoc($resultado);
         $cliente_id = $cliente['cliente_id'];
         
+        // Buscar reservas pendientes para hoy
         $hoy = date('Y-m-d');
         // CONSULTA ACTUALIZADA - Nuevo esquema
         $sql_reservas = "SELECT * FROM reserva 
@@ -54,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['buscar_cliente'])) {
             $reservas = mysqli_fetch_all($reservas_result, MYSQLI_ASSOC);
         }
         
+        // Si hay reservas, buscar mesas disponibles
         if (count($reservas) > 0) {
             $cantidad_personas = $reservas[0]['cantidad'];
             // CONSULTA ACTUALIZADA - Nuevo esquema
@@ -67,20 +76,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['buscar_cliente'])) {
             }
         }
     } else {
+        // Cliente no encontrado
         $error = "No se encontró ningún cliente con el email: $email";
     }
 }
 
+// Procesar asignación de mesa
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_mesa'])) {
     $reserva_id = $_POST['reserva_id'];
     $mesa_id = $_POST['mesa_id'];
     $cliente_id = $_POST['cliente_id'];
     
-    // Iniciar transacción
+    // Iniciar transacción para asegurar la consistencia de los datos
     mysqli_begin_transaction($conexion);
     
     try {
-        // 1. Actualizar el estado de la reserva - NUEVO ESQUEMA
+        // 1. Actualizar el estado de la reserva a 'confirmada' - NUEVO ESQUEMA
         $sql_actualizar_reserva = "UPDATE reserva SET estado = 'confirmada' WHERE id_reserva = $reserva_id";
         if (!mysqli_query($conexion, $sql_actualizar_reserva)) {
             throw new Exception("Error al actualizar reserva: " . mysqli_error($conexion));
@@ -108,14 +119,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_mesa'])) {
             throw new Exception("Error al crear nueva relación mesa-cliente: " . mysqli_error($conexion));
         }
         
-        // 5. Registrar la visita - NUEVO ESQUEMA
+        // 5. Registrar la visita en el registro - NUEVO ESQUEMA
         $sql_visita = "INSERT INTO `registro de visita` (fecha_hora, cantidad) 
                       VALUES (NOW(), 1)";
         if (!mysqli_query($conexion, $sql_visita)) {
             throw new Exception("Error al registrar visita: " . mysqli_error($conexion));
         }
         
-        // Confirmar todas las operaciones
+        // Confirmar todas las operaciones si todo salió bien
         mysqli_commit($conexion);
         $mensaje = "Mesa asignada correctamente al cliente y reserva confirmada";
         
@@ -136,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_mesa'])) {
 </head>
 <body>
   <div class="contenedor-principal">
-    <!-- Header -->
+    <!-- Header específico para empleados/administradores -->
     <header class="menu">
       <div class="logo">
         <img src="estilos/imagenes/logo.jpeg" alt="La Chacra Gourmet" class="logo-img" onerror="this.style.display='none'">
@@ -145,6 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_mesa'])) {
         <ul>
           <li><a href="inicio.php">Inicio</a></li>
           <li><a href="zona_staff.php">Volver a Mozos</a></li>
+          <!-- Muestra panel de administración solo para administradores -->
           <?php if (isset($_SESSION['es_administrador']) && $_SESSION['es_administrador']): ?>
             <li><a href="administracion.php">Panel Admin</a></li>
           <?php endif; ?>
@@ -157,11 +169,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_mesa'])) {
 
     <!-- Contenido Principal -->
     <main class="contenido-principal">
+      <!-- Banner de la página -->
       <section class="banner-admin">
         <h1>Verificar Reserva y Asignar Mesa</h1>
       </section>
 
       <section class="seccion-admin">
+        <!-- Mostrar mensajes de éxito o error -->
         <?php if (isset($mensaje)): ?>
           <div class="mensaje-exito"><?php echo $mensaje; ?></div>
         <?php endif; ?>
@@ -170,6 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_mesa'])) {
           <div class="mensaje-error"><?php echo $error; ?></div>
         <?php endif; ?>
 
+        <!-- Formulario para buscar cliente por email -->
         <form class="formulario-admin" method="POST">
           <h2>Buscar Cliente</h2>
           <div class="grupo-formulario">
@@ -179,6 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_mesa'])) {
           <button type="submit" name="buscar_cliente" class="btn-admin">Buscar Cliente</button>
         </form>
 
+        <!-- Si se encontró un cliente, mostrar su información -->
         <?php if ($cliente): ?>
           <div class="informacion" style="margin-top: 30px;">
             <h2>👤 Cliente: <?php echo $cliente['nombre']; ?></h2>
@@ -186,6 +202,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_mesa'])) {
             <p><strong>ID Cliente:</strong> <?php echo $cliente['cliente_id']; ?></p>
           </div>
           
+          <!-- Mostrar reservas pendientes del cliente -->
           <?php if (count($reservas) > 0): ?>
             <div class="seccion-admin" style="margin-top: 30px;">
               <h3>Reservas Pendientes para Hoy:</h3>
@@ -212,6 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_mesa'])) {
                           </span>
                         </td>
                         <td>
+                          <!-- Formulario para asignar mesa a la reserva -->
                           <?php if (count($mesas_disponibles) > 0): ?>
                             <form method="POST" class="form-acciones">
                               <input type="hidden" name="reserva_id" value="<?php echo $reserva['id_reserva']; ?>">
@@ -243,6 +261,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_mesa'])) {
             </div>
           <?php endif; ?>
 
+          <!-- Mostrar mesas disponibles -->
           <?php if (count($mesas_disponibles) > 0): ?>
             <div class="seccion-admin" style="margin-top: 30px;">
               <h3>Mesas Disponibles:</h3>
@@ -269,6 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_mesa'])) {
             </div>
           <?php endif; ?>
 
+        <!-- Mensaje si no se encontró el cliente -->
         <?php elseif ($_SERVER['REQUEST_METHOD'] == 'POST' && !$cliente): ?>
           <div class="mensaje-error">
             <p>No se encontró ningún cliente con ese email. Verifica que el cliente esté registrado en el sistema.</p>

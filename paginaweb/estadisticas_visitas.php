@@ -1,18 +1,25 @@
+```php
 <?php
+// Iniciar sesión para acceder a las variables de sesión
 session_start();
+
+// Incluir archivo de conexión a la base de datos
 include "conexion.php";
 
+// Verificar si el usuario es administrador, si no, redirigir al inicio
 if (!isset($_SESSION['es_administrador']) || !$_SESSION['es_administrador']) {
     header("Location: inicio.php");
     exit();
 }
 
+// Consulta para obtener estadísticas totales de visitas
 $sql_visitas_totales = "SELECT COUNT(*) as total, SUM(cantidad) as total_personas FROM `registro de visita`";
 $resultado_total = mysqli_query($conexion, $sql_visitas_totales);
 $visitas_totales = mysqli_fetch_assoc($resultado_total);
 $total_visitas = $visitas_totales['total'];
 $total_personas = $visitas_totales['total_personas'];
 
+// Consulta para obtener visitas mensuales (últimos 12 meses)
 $sql_visitas_mes = "SELECT 
     YEAR(fecha_hora) as año,
     MONTH(fecha_hora) as mes,
@@ -25,6 +32,7 @@ $sql_visitas_mes = "SELECT
 
 $visitas_mensuales = mysqli_query($conexion, $sql_visitas_mes);
 
+// Consulta para obtener visitas del día actual
 $hoy = date('Y-m-d');
 $sql_visitas_hoy = "SELECT COUNT(*) as hoy, SUM(cantidad) as personas_hoy 
                    FROM `registro de visita` 
@@ -61,7 +69,7 @@ $personas_hoy = $visitas_hoy_data['personas_hoy'];
 
         <!-- Contenido principal con sidebar -->
         <div class="contenido-con-sidebar">
-            <!-- Sidebar de estadísticas de visitas -->
+            <!-- Sidebar de navegación para estadísticas de visitas -->
             <aside class="sidebar">
                 <ul>
                     <li><a href="#resumen-visitas">
@@ -79,13 +87,13 @@ $personas_hoy = $visitas_hoy_data['personas_hoy'];
                 </ul>
             </aside>
 
-            <!-- Contenido principal -->
+            <!-- Contenido principal de estadísticas -->
             <main class="contenido-principal">
                 <section class="banner-admin">
                     <h1>Estadísticas de Visitas</h1>
                 </section>
 
-                <!-- Resumen de Visitas -->
+                <!-- Resumen general de visitas -->
                 <section id="resumen-visitas" class="seccion-admin">
                     <h2>Resumen de Visitas</h2>
                     <div class="stats-container">
@@ -120,7 +128,7 @@ $personas_hoy = $visitas_hoy_data['personas_hoy'];
                 </div>
            </section>
 
-                <!-- Evolución de Visitas -->
+                <!-- Gráfico de evolución de visitas -->
                 <section id="evolucion-visitas" class="seccion-admin">
                     <h2>Evolución de Visitas</h2>
                     <div class="chart-container">
@@ -128,7 +136,7 @@ $personas_hoy = $visitas_hoy_data['personas_hoy'];
                     </div>
                 </section>
 
-                <!-- Detalle Mensual -->
+                <!-- Tabla detallada de visitas mensuales -->
                 <section id="detalle-mensual" class="seccion-admin">
                     <h2>Detalle Mensual</h2>
                     <div class="tabla-container">
@@ -144,23 +152,26 @@ $personas_hoy = $visitas_hoy_data['personas_hoy'];
                             </thead>
                             <tbody>
                         <?php 
+                        // Procesar datos mensuales para la tabla
                         $meses_anteriores = [];
                         while($mes = mysqli_fetch_assoc($visitas_mensuales)) {
                             $meses_anteriores[] = $mes;
                         }
                         
+                        // Generar filas de la tabla con datos mensuales
                         foreach($meses_anteriores as $index => $mes): 
                             $nombre_mes = date('F Y', mktime(0, 0, 0, $mes['mes'], 1, $mes['año']));
                             $dias_mes = cal_days_in_month(CAL_GREGORIAN, $mes['mes'], $mes['año']);
                             $promedio_diario = $mes['total_visitas'] / $dias_mes;
                             
-                            $tendencia = '➡️';
+                            // Calcular tendencia comparando con el mes anterior
+                            $tendencia = '➡️'; // Tendencia neutral por defecto
                             if ($index < count($meses_anteriores) - 1) {
                                 $mes_anterior = $meses_anteriores[$index + 1];
                                 if ($mes['total_visitas'] > $mes_anterior['total_visitas']) {
-                                    $tendencia = '📈';
+                                    $tendencia = '📈'; // Tendencia ascendente
                                 } elseif ($mes['total_visitas'] < $mes_anterior['total_visitas']) {
-                                    $tendencia = '📉';
+                                    $tendencia = '📉'; // Tendencia descendente
                                 }
                             }
                         ?>
@@ -188,8 +199,9 @@ $personas_hoy = $visitas_hoy_data['personas_hoy'];
       </div>
     </footer>
   </div>
+        <!-- Script para generar gráfico de visitas con Chart.js -->
         <script>
-        // Datos para el gráfico
+        // Preparar datos para el gráfico - nombres de meses
         const meses = [
             <?php 
             foreach(array_reverse($meses_anteriores) as $mes) {
@@ -198,6 +210,7 @@ $personas_hoy = $visitas_hoy_data['personas_hoy'];
             ?>
         ];
         
+        // Preparar datos para el gráfico - número de visitas
         const visitas = [
             <?php 
             foreach(array_reverse($meses_anteriores) as $mes) {
@@ -206,7 +219,7 @@ $personas_hoy = $visitas_hoy_data['personas_hoy'];
             ?>
         ];
 
-        // Crear gráfico
+        // Crear gráfico de líneas con Chart.js
         const ctx = document.getElementById('visitasChart').getContext('2d');
         const visitasChart = new Chart(ctx, {
             type: 'line',
@@ -218,8 +231,8 @@ $personas_hoy = $visitas_hoy_data['personas_hoy'];
                     backgroundColor: 'rgba(52, 152, 219, 0.2)',
                     borderColor: 'rgba(52, 152, 219, 1)',
                     borderWidth: 3,
-                    tension: 0.4,
-                    fill: true
+                    tension: 0.4, // Suavizar la línea
+                    fill: true // Rellenar área bajo la línea
                 }]
             },
             options: {
