@@ -1,6 +1,3 @@
-Aquí tienes el código con comentarios explicando cada parte:
-
-```php
 <?php
 // Inicia la sesión para acceder a variables de sesión
 session_start();
