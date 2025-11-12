@@ -152,19 +152,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_mesa'])) {
       <div class="logo">
         <img src="estilos/imagenes/logo.jpeg" alt="La Chacra Gourmet" class="logo-img" onerror="this.style.display='none'">
       </div>
+      <!-- Navegación principal -->
       <nav class="navegacion-principal">
         <ul>
           <li><a href="inicio.php">Inicio</a></li>
           <li><a href="zona_staff.php">Volver a Mozos</a></li>
           <!-- Muestra panel de administración solo para administradores -->
-          <?php if (isset($_SESSION['es_administrador']) && $_SESSION['es_administrador']): ?>
-            <li><a href="administracion.php">Panel Admin</a></li>
+           <?php if (isset($_SESSION['es_administrador']) && $_SESSION['es_administrador']): ?>
+            <li><a href="administracion.php" class="btn-admin-header">Administración</a></li>
           <?php endif; ?>
+          <!-- Muestra zona staff para empleados y administradores -->
+          <?php if ((isset($_SESSION['es_empleado']) && $_SESSION['es_empleado']) || (isset($_SESSION['es_administrador']) && $_SESSION['es_administrador'])): ?>
+            <li><a href="zona_staff.php" class="btn-staff-header">Zona Mozos</a></li>
+          <?php endif; ?>
+            <li><a href="cerrar_sesion.php" class="btn-logout">Cerrar sesión</a></li>
         </ul>
       </nav>
-      <div class="botones-sesion">
-        <a href="cerrar_sesion.php" class="btn-logout">Cerrar Sesión</a>
-      </div>
     </header>
 
     <!-- Contenido Principal -->

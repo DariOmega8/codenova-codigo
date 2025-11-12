@@ -1,4 +1,3 @@
-```php
 <?php
 // Iniciar sesión para acceder a las variables de sesión
 session_start();

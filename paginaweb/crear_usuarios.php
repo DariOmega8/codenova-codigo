@@ -124,20 +124,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         // =====================================================================
-        // PROCESAMIENTO SEGURO DE LA CONTRASEÑA
-        // =====================================================================
-        
-        // Hash de la contraseña usando algoritmo seguro
-        // Nunca almacenar contraseñas en texto plano
-        $password_hash = password_hash($password, PASSWORD_DEFAULT);
-
-        // =====================================================================
         // INSERCIÓN EN LA BASE DE DATOS
         // =====================================================================
         
         // Paso 1: Insertar en la tabla usuario (tabla base)
         $sqlUsuario = "INSERT INTO usuario (nombre, apellido, fecha_nac, gmail, contraseña, fecha_registro, nacionalidad) 
-                       VALUES ('$nombre', '$apellido', '$fecha_nac', '$gmail', '$password_hash', NOW(), '$nacionalidad')";
+                       VALUES ('$nombre', '$apellido', '$fecha_nac', '$gmail', '$password', NOW(), '$nacionalidad')";
         
         // Ejecutar inserción del usuario base
         if (mysqli_query($conexion, $sqlUsuario)) {
