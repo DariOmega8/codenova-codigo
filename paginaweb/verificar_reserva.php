@@ -156,7 +156,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_mesa'])) {
       <nav class="navegacion-principal">
         <ul>
           <li><a href="inicio.php">Inicio</a></li>
-          <li><a href="zona_staff.php">Volver a Mozos</a></li>
           <!-- Muestra panel de administración solo para administradores -->
            <?php if (isset($_SESSION['es_administrador']) && $_SESSION['es_administrador']): ?>
             <li><a href="administracion.php" class="btn-admin-header">Administración</a></li>

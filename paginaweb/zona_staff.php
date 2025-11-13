@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['mesa'])) {
     $mesa_id = $_POST['mesa'];
     $exclusiones = $_POST['exclusiones'] ?? '';
     
-    // CONSULTA ACTUALIZADA - Nuevo esquema de base de datos
+    // Nuevo esquema de base de datos
     $sql_mesa = "SELECT m.mesa_id, mc.cliente_cliente_id, 
                         u.nombre as cliente_nombre
                  FROM mesa m 
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['mesa'])) {
         $mesa_id = $mesa_data['mesa_id'];
         $cliente_id = $mesa_data['cliente_cliente_id'];
         
-        // Crear pedido - NUEVO ESQUEMA
+        // Crear pedido 
         $sql_pedido = "INSERT INTO pedido (estado, fecha_hora, mesa_mesa_id) 
                       VALUES ('recibido', NOW(), $mesa_id)";
         if (mysqli_query($conexion, $sql_pedido)) {
@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['mesa'])) {
     }
 }
 
-// CONSULTA ACTUALIZADA para obtener mesas ocupadas
+// obtener mesas ocupadas
 $mesas_ocupadas = mysqli_query($conexion, "
     SELECT m.*, 
            u.nombre as cliente_nombre,

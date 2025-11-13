@@ -14,9 +14,6 @@
 $server = "localhost";
 
 // Usuario de la base de datos ('root' es el usuario por defecto en XAMPP/WAMP)
-$server = "localhost";
-
-// Usuario de la base de datos ('root' es el usuario por defecto en XAMPP/WAMP)
 $user = "root";
 
 // Contraseña de la base de datos (vacía por defecto en XAMPP/WAMP)
